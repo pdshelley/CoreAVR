@@ -28,11 +28,10 @@ public struct PowerManagementAndSleepModes: AVRPMSM {
     @inline(__always)
     public static var SleepModeControlRegister: UInt8 { //SMCR
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x33)
+            return _volatileRegisterReadUInt8(0x33)
         }
         set {
-//            _rawPointerWrite(address:0x33, value: newValue)
+            _rawPointerWrite(address:0x33, value: newValue)
         }
     }
     
@@ -40,11 +39,10 @@ public struct PowerManagementAndSleepModes: AVRPMSM {
     @inline(__always)
     public static var MCUControlRegister: UInt8 { //PRR
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x35)
+            return _volatileRegisterReadUInt8(0x35)
         }
         set {
-//            _rawPointerWrite(address:0x35, value: newValue)
+            _rawPointerWrite(address:0x35, value: newValue)
         }
     }
     
@@ -54,11 +52,10 @@ public struct PowerManagementAndSleepModes: AVRPMSM {
     @inline(__always)
     public static var PowerReductionRegister: UInt8 { //PRR
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x64)
+            return _volatileRegisterReadUInt8(0x64)
         }
         set {
-//            _rawPointerWrite(address:0x64, value: newValue)
+            _rawPointerWrite(address:0x64, value: newValue)
         }
     }
 }

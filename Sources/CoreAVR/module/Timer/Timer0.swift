@@ -18,11 +18,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
 
     static var timerCounterControlRegisterA: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x44) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x44) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x44, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x44, newValue) // TODO: Check HEX
         }
     }
     
@@ -37,11 +36,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     ///```
     static var timerCounterControlRegisterB: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x45) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x45) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x45, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x45, newValue) // TODO: Check HEX
         }
     }
     
@@ -63,10 +61,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var timerCounterNumber: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x46) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x46) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x46, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x46, newValue) // TODO: Check HEX
         }
     }
     
@@ -86,10 +84,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var outputCompareRegisterA: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x47) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x47) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x47, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x47, newValue) // TODO: Check HEX
         }
     }
     
@@ -109,10 +107,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var outputCompareRegisterB: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x48) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x48) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x48, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x48, newValue) // TODO: Check HEX
         }
     }
     
@@ -132,10 +130,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var timerInterruptMaskRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x6E) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x6E) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x6E, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x6E, newValue) // TODO: Check HEX
         }
     }
     
@@ -155,10 +153,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var timerInterruptFlagRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x35) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x35) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x35, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x35, newValue) // TODO: Check HEX
         }
     }
     
@@ -178,10 +176,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var asynchronousStatusRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0xB6) // TODO: is this register address shared by all timers? // TODO: Check HEX
+            _volatileRegisterReadUInt8(0xB6) // TODO: is this register address shared by all timers? // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB6, newValue) // TODO: is this register address shared by all timers? // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0xB6, newValue) // TODO: is this register address shared by all timers? // TODO: Check HEX
         }
     }
     
@@ -202,10 +200,10 @@ struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     static var generalTimerCounterControlRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x43) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x43) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0x43, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x43, newValue) // TODO: Check HEX
         }
     }
     

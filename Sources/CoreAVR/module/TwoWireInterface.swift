@@ -176,11 +176,10 @@ struct TwoWireInterface: TwoWireInterfacePort {
     @inline(__always)
     static var TWIBitRateRegister: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB8)
+            _volatileRegisterReadUInt8(0xB8)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB8, newValue)
+            _volatileRegisterWriteUInt8(0xB8, newValue)
         }
     }
     
@@ -206,11 +205,10 @@ struct TwoWireInterface: TwoWireInterfacePort {
     @inline(__always)
     static var TWIControlRegister: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xBC)
+            _volatileRegisterReadUInt8(0xBC)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xBC, newValue)
+            _volatileRegisterWriteUInt8(0xBC, newValue)
         }
     }
     
@@ -230,11 +228,10 @@ struct TwoWireInterface: TwoWireInterfacePort {
     @inline(__always)
     static var TWIStatusRegister: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB9)
+            _volatileRegisterReadUInt8(0xB9)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB9, newValue)
+            _volatileRegisterWriteUInt8(0xB9, newValue)
         }
     }
     
@@ -267,11 +264,10 @@ struct TwoWireInterface: TwoWireInterfacePort {
     @inline(__always)
     static var TWIDataRegister: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xBB)
+            _volatileRegisterReadUInt8(0xBB)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xBB, newValue)
+            _volatileRegisterWriteUInt8(0xBB, newValue)
         }
     }
     
@@ -299,11 +295,10 @@ struct TwoWireInterface: TwoWireInterfacePort {
     @inline(__always)
     static var TWISlaveAddressRegister: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xBA)
+            _volatileRegisterReadUInt8(0xBA)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xBA, newValue)
+            _volatileRegisterWriteUInt8(0xBA, newValue)
         }
     }
     
@@ -323,11 +318,10 @@ struct TwoWireInterface: TwoWireInterfacePort {
     @inline(__always)
     static var TWISlaveAddressMaskRegister: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xBD)
+            _volatileRegisterReadUInt8(0xBD)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xBD, newValue)
+            _volatileRegisterWriteUInt8(0xBD, newValue)
         }
     }
 }

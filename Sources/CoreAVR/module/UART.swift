@@ -139,11 +139,10 @@ public struct UART0: UARTPort {
     ///
     public static var USARTIODataRegister:   UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xC6)
+            _volatileRegisterReadUInt8(0xC6)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xC6, newValue)
+            _volatileRegisterWriteUInt8(0xC6, newValue)
         }
     }
 
@@ -163,11 +162,10 @@ public struct UART0: UARTPort {
     /// ```
     public static var USARTControlAndStatusRegisterA: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xC0)
+            _volatileRegisterReadUInt8(0xC0)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xC0, newValue)
+            _volatileRegisterWriteUInt8(0xC0, newValue)
         }
     }
 
@@ -186,11 +184,10 @@ public struct UART0: UARTPort {
     /// ```
     public static var USARTControlAndStatusRegisterB: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xC1)
+            _volatileRegisterReadUInt8(0xC1)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xC1, newValue)
+            _volatileRegisterWriteUInt8(0xC1, newValue)
         }
     }
 
@@ -209,11 +206,10 @@ public struct UART0: UARTPort {
     /// ```
     public static var USARTControlAndStatusRegisterC: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xC2)
+            _volatileRegisterReadUInt8(0xC2)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xC2, newValue)
+            _volatileRegisterWriteUInt8(0xC2, newValue)
         }
     }
     
@@ -239,11 +235,10 @@ public struct UART0: UARTPort {
     ///
     public static var USARTBaudRateRegisterH: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xC5)
+            _volatileRegisterReadUInt8(0xC5)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xC5, newValue)
+            _volatileRegisterWriteUInt8(0xC5, newValue)
         }
     }
 
@@ -266,11 +261,10 @@ public struct UART0: UARTPort {
     ///
     public static var USARTBaudRateRegisterL: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xC4)
+            _volatileRegisterReadUInt8(0xC4)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xC4, newValue)
+            _volatileRegisterWriteUInt8(0xC4, newValue)
         }
     }
 }
@@ -386,11 +380,10 @@ public extension UARTPort {
     @inline(__always)
     static var baudRate: UInt32 {
         get {
-            return 0
-//            return UInt32(cpuFrequency)/(UInt32(16*(baudRateRegister+1)))
+            return UInt32(cpuFrequency)/(UInt32(16*(baudRateRegister+1)))
         }
         set {
-//            baudRateRegister = UInt16((UInt32(cpuFrequency)/(16*newValue)) - 1)
+            baudRateRegister = UInt16((UInt32(cpuFrequency)/(16*newValue)) - 1)
         }
     }
 
@@ -547,10 +540,9 @@ extension UARTPort where PortDataType == UInt8 {
     @inlinable
     @inline(__always)
     public static func write(_ data: StaticString) {
-        // TODO: Bring back after fixing missing C++ files.
-//        for character in data {
-//            writeByte(character)
-//        }
+        for character in data {
+            writeByte(character)
+        }
     }
     
     @inlinable

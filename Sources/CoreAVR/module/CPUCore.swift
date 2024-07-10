@@ -17,11 +17,10 @@ public struct CPUCore: AVRCPUCore {
     @inline(__always)
     public static var statusRegister: UInt8 { //SREG
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x5F)
+            return _volatileRegisterReadUInt8(0x5F)
         }
         set {
-//            _rawPointerWrite(address:0x5F, value: newValue)
+            _rawPointerWrite(address:0x5F, value: newValue)
         }
     }
     
@@ -29,11 +28,10 @@ public struct CPUCore: AVRCPUCore {
     @inline(__always)
     public static var stackPointerHigh: UInt8 { //SPH
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x5E)
+            return _volatileRegisterReadUInt8(0x5E)
         }
         set {
-//            _rawPointerWrite(address:0x5E, value: newValue)
+            _rawPointerWrite(address:0x5E, value: newValue)
         }
     }
     
@@ -41,11 +39,10 @@ public struct CPUCore: AVRCPUCore {
     @inline(__always)
     public static var stackPointerLow: UInt8 { //SPL
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x5D)
+            return _volatileRegisterReadUInt8(0x5D)
         }
         set {
-//            _rawPointerWrite(address:0x5D, value: newValue)
+            _rawPointerWrite(address:0x5D, value: newValue)
         }
     }
 }

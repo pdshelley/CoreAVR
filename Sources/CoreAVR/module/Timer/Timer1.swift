@@ -18,11 +18,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
 
     static var timerCounterControlRegisterA: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x44) // TODO: Change hex
+            _volatileRegisterReadUInt8(0x44) // TODO: Change hex
         }
         set {
-//            _volatileRegisterWriteUInt8(0x44, newValue) // TODO: Change hex
+            _volatileRegisterWriteUInt8(0x44, newValue) // TODO: Change hex
         }
     }
     
@@ -41,11 +40,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     ///```
     static var timerCounterControlRegisterB: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x45) // TODO: Change hex
+            _volatileRegisterReadUInt8(0x45) // TODO: Change hex
         }
         set {
-//            _volatileRegisterWriteUInt8(0x45, newValue) // TODO: Change hex
+            _volatileRegisterWriteUInt8(0x45, newValue) // TODO: Change hex
         }
     }
     
@@ -71,10 +69,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var timerCounterNumber: UInt16 {
         get {
-            return 0 // _volatileRegisterReadUInt16(0x46) // TODO: Change hex and check to see if this works for 16 bit.
+            _volatileRegisterReadUInt16(0x46) // TODO: Change hex and check to see if this works for 16 bit.
         }
         set {
-//            _volatileRegisterWriteUInt16(0x46, newValue) // TODO: Change hex and check to see if this works for 16 bit.
+            _volatileRegisterWriteUInt16(0x46, newValue) // TODO: Change hex and check to see if this works for 16 bit.
         }
     }
     
@@ -98,10 +96,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var outputCompareRegisterA: UInt16 {
         get {
-            return 0 // _volatileRegisterReadUInt16(0x47) // TODO: Change hex and check to see if this works for 16 bit.
+            _volatileRegisterReadUInt16(0x47) // TODO: Change hex and check to see if this works for 16 bit.
         }
         set {
-//            _volatileRegisterWriteUInt16(0x47, newValue) // TODO: Change hex and check to see if this works for 16 bit.
+            _volatileRegisterWriteUInt16(0x47, newValue) // TODO: Change hex and check to see if this works for 16 bit.
         }
     }
     
@@ -125,10 +123,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var outputCompareRegisterB: UInt16 {
         get {
-            return 0 // _volatileRegisterReadUInt16(0x48) // TODO: Change hex and check to see if this works for 16 bit.
+            _volatileRegisterReadUInt16(0x48) // TODO: Change hex and check to see if this works for 16 bit.
         }
         set {
-//            _volatileRegisterWriteUInt16(0x48, newValue) // TODO: Change hex and check to see if this works for 16 bit.
+            _volatileRegisterWriteUInt16(0x48, newValue) // TODO: Change hex and check to see if this works for 16 bit.
         }
     }
     
@@ -152,10 +150,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var timerInterruptMaskRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x6E) // TODO: Change hex
+            _volatileRegisterReadUInt8(0x6E) // TODO: Change hex
         }
         set {
-//            _volatileRegisterWriteUInt8(0x6E, newValue) // TODO: Change hex
+            _volatileRegisterWriteUInt8(0x6E, newValue) // TODO: Change hex
         }
     }
     
@@ -179,10 +177,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var timerInterruptFlagRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x35) // TODO: Change hex
+            _volatileRegisterReadUInt8(0x35) // TODO: Change hex
         }
         set {
-//            _volatileRegisterWriteUInt8(0x35, newValue) // TODO: Change hex
+            _volatileRegisterWriteUInt8(0x35, newValue) // TODO: Change hex
         }
     }
     
@@ -206,10 +204,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var asynchronousStatusRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0xB6) // TODO: is this register address shared by all timers?
+            _volatileRegisterReadUInt8(0xB6) // TODO: is this register address shared by all timers?
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB6, newValue) // TODO: is this register address shared by all timers?
+            _volatileRegisterWriteUInt8(0xB6, newValue) // TODO: is this register address shared by all timers?
         }
     }
     
@@ -234,10 +232,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var generalTimerCounterControlRegister: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x43) // TODO: Change hex
+            _volatileRegisterReadUInt8(0x43) // TODO: Change hex
         }
         set {
-//            _volatileRegisterWriteUInt8(0x43, newValue) // TODO: Change hex
+            _volatileRegisterWriteUInt8(0x43, newValue) // TODO: Change hex
         }
     }
     
@@ -331,11 +329,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     
     static var timerCounterControlRegisterC: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x82)
+            _volatileRegisterReadUInt8(0x82)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x82, newValue)
+            _volatileRegisterWriteUInt8(0x82, newValue)
         }
     }
     
@@ -344,10 +341,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var TCNT1L: UInt8 { //TCNT1L
         get {
-            return 0 // _volatileRegisterReadUInt8(0x84)
+             _volatileRegisterReadUInt8(0x84)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x84, newValue)
+            _volatileRegisterWriteUInt8(0x84, newValue)
         }
     }
     
@@ -355,10 +352,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var TCNT1H: UInt8 { //TCNT1H
         get {
-            return 0 // _volatileRegisterReadUInt8(0x85)
+            _volatileRegisterReadUInt8(0x85)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x85, newValue)
+            _volatileRegisterWriteUInt8(0x85, newValue)
         }
     }
     
@@ -366,19 +363,19 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var OCR1AL: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x88)
+            _volatileRegisterReadUInt8(0x88)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x88, newValue)
+            _volatileRegisterWriteUInt8(0x88, newValue)
         }
     }
     
     static var OCR1AH: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x89)
+            _volatileRegisterReadUInt8(0x89)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x89, newValue)
+            _volatileRegisterWriteUInt8(0x89, newValue)
         }
     }
     
@@ -386,10 +383,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var OCR1BL: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x8A)
+            _volatileRegisterReadUInt8(0x8A)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x8A, newValue)
+            _volatileRegisterWriteUInt8(0x8A, newValue)
         }
     }
     
@@ -397,10 +394,10 @@ struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     static var OCR1BH: UInt8 {
         get {
-            return 0 // _volatileRegisterReadUInt8(0x8B)
+            _volatileRegisterReadUInt8(0x8B)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x8B, newValue)
+            _volatileRegisterWriteUInt8(0x8B, newValue)
         }
     }
     

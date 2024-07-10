@@ -68,11 +68,10 @@ public struct AnalogeDigitalConverter: AVRADC {
     @inline(__always)
     public static var MultiplexerSelectionRegister: UInt8 { //ADMUX
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x7C)
+            return _volatileRegisterReadUInt8(0x7C)
         }
         set {
-//            _rawPointerWrite(address:0x7C, value: newValue)
+            _rawPointerWrite(address:0x7C, value: newValue)
         }
     }
     
@@ -80,11 +79,10 @@ public struct AnalogeDigitalConverter: AVRADC {
     @inline(__always)
     public static var ControlAndStatusRegisterA: UInt8 { //ADCSRA
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x7A)
+            return _volatileRegisterReadUInt8(0x7A)
         }
         set {
-//            _rawPointerWrite(address:0x7A, value: newValue)
+            _rawPointerWrite(address:0x7A, value: newValue)
         }
     }
     
@@ -92,8 +90,7 @@ public struct AnalogeDigitalConverter: AVRADC {
     @inline(__always)
     public static var ControlAndStatusRegisterB: UInt8 { //ADCSRB
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x7B)
+            return _volatileRegisterReadUInt8(0x7B)
         }
         set {
 //            _rawPointerWrite(address:0x7B, value: newValue)
@@ -104,11 +101,10 @@ public struct AnalogeDigitalConverter: AVRADC {
     @inline(__always)
     public static var ADCH: UInt8 { //ADCSRA
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x79)
+            return _volatileRegisterReadUInt8(0x79)
         }
         set {
-//            _rawPointerWrite(address:0x79, value: newValue)
+            _rawPointerWrite(address:0x79, value: newValue)
         }
     }
     
@@ -116,11 +112,10 @@ public struct AnalogeDigitalConverter: AVRADC {
     @inline(__always)
     public static var ADCL: UInt8 { //ADCSRA
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x78)
+            return _volatileRegisterReadUInt8(0x78)
         }
         set {
-//            _rawPointerWrite(address:0x78, value: newValue)
+            _rawPointerWrite(address:0x78, value: newValue)
         }
     }
     
@@ -128,11 +123,10 @@ public struct AnalogeDigitalConverter: AVRADC {
     @inline(__always)
     public static var DigitalInputDisableRegister0: UInt8 { //DIDR0
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x7E)
+            return _volatileRegisterReadUInt8(0x7E)
         }
         set {
-//            _rawPointerWrite(address:0x7E, value: newValue)
+            _rawPointerWrite(address:0x7E, value: newValue)
         }
     }
 }

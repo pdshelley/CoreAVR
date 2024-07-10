@@ -117,11 +117,10 @@ public struct SPI0: SPIPort {
     @inline(__always)
     public static var controlRegister: UInt8 { //SPCR
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x4C)
+            return _volatileRegisterReadUInt8(0x4C)
         }
         set {
-//            _rawPointerWrite(address:0x4C, value: newValue)
+            _rawPointerWrite(address:0x4C, value: newValue)
         }
     }
     
@@ -285,11 +284,10 @@ public struct SPI0: SPIPort {
     @inline(__always)
     public static var statusRegister: UInt8 { //SPSR
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x4D)
+            return _volatileRegisterReadUInt8(0x4D)
         }
         set {
-//            _rawPointerWrite(address:0x4D, value: newValue)
+            _rawPointerWrite(address:0x4D, value: newValue)
         }
     }
     
@@ -363,11 +361,10 @@ public struct SPI0: SPIPort {
     @inline(__always)
     public static var dataRegister: UInt8 { //SPDR
         get {
-            return 0
-//            return _volatileRegisterReadUInt8(0x4E)
+            return _volatileRegisterReadUInt8(0x4E)
         }
         set {
-//            _rawPointerWrite(address:0x4E, value: newValue)
+            _rawPointerWrite(address:0x4E, value: newValue)
         }
     }
     

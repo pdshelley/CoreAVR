@@ -31,11 +31,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var dataRegister: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x25)
+                _volatileRegisterReadUInt8(0x25)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x25, newValue)
+                _volatileRegisterWriteUInt8(0x25, newValue)
             }
         }
 
@@ -44,11 +43,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var dataDirection: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x24)
+                _volatileRegisterReadUInt8(0x24)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x24, newValue)
+                _volatileRegisterWriteUInt8(0x24, newValue)
             }
         }
 
@@ -57,11 +55,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var inputAddress: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x23)
+                _volatileRegisterReadUInt8(0x23)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x23, newValue)
+                _volatileRegisterWriteUInt8(0x23, newValue)
             }
         }
     }
@@ -76,11 +73,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var dataRegister: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x28)
+                _volatileRegisterReadUInt8(0x28)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x28, newValue)
+                _volatileRegisterWriteUInt8(0x28, newValue)
             }
         }
 
@@ -89,11 +85,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var dataDirection: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x27)
+                _volatileRegisterReadUInt8(0x27)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x27, newValue)
+                _volatileRegisterWriteUInt8(0x27, newValue)
             }
         }
 
@@ -102,11 +97,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var inputAddress: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x26)
+                _volatileRegisterReadUInt8(0x26)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x26, newValue)
+                _volatileRegisterWriteUInt8(0x26, newValue)
             }
         }
     }
@@ -121,11 +115,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var dataRegister: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x2B)
+                _volatileRegisterReadUInt8(0x2B)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x2B, newValue)
+                _volatileRegisterWriteUInt8(0x2B, newValue)
             }
         }
 
@@ -134,11 +127,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var dataDirection: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x2A)
+                _volatileRegisterReadUInt8(0x2A)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x2A, newValue)
+                _volatileRegisterWriteUInt8(0x2A, newValue)
             }
         }
 
@@ -147,11 +139,10 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
         @inline(__always)
         public static var inputAddress: UInt8 {
             get {
-                return 0
-//                _volatileRegisterReadUInt8(0x29)
+                _volatileRegisterReadUInt8(0x29)
             }
             set {
-//                _volatileRegisterWriteUInt8(0x29, newValue)
+                _volatileRegisterWriteUInt8(0x29, newValue)
             }
         }
     }

@@ -29,11 +29,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var timerCounterControlRegisterA: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB0) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0xB0) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB0, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0xB0, newValue) // TODO: Check HEX
         }
     }
 
@@ -52,11 +51,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var timerCounterControlRegisterB: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB1) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0xB1) // TODO: Check HEX
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB1, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0xB1, newValue) // TODO: Check HEX
         }
     }
 
@@ -77,11 +75,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var TCNT2: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB2)
+            _volatileRegisterReadUInt8(0xB2)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB2, newValue)
+            _volatileRegisterWriteUInt8(0xB2, newValue)
         }
     }
     
@@ -102,11 +99,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var OCR2A: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB3)
+            _volatileRegisterReadUInt8(0xB3)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB3, newValue)
+            _volatileRegisterWriteUInt8(0xB3, newValue)
         }
     }
     
@@ -127,11 +123,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var OCR2B: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB4)
+            _volatileRegisterReadUInt8(0xB4)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB4, newValue)
+            _volatileRegisterWriteUInt8(0xB4, newValue)
         }
     }
     
@@ -152,11 +147,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var TIMSK2: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x70)
+            _volatileRegisterReadUInt8(0x70)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x70, newValue)
+            _volatileRegisterWriteUInt8(0x70, newValue)
         }
     }
     
@@ -176,11 +170,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var TIFR2: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x37)
+            _volatileRegisterReadUInt8(0x37)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x37, newValue)
+            _volatileRegisterWriteUInt8(0x37, newValue)
         }
     }
     
@@ -199,11 +192,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var ASSR: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0xB6)
+            _volatileRegisterReadUInt8(0xB6)
         }
         set {
-//            _volatileRegisterWriteUInt8(0xB6, newValue)
+            _volatileRegisterWriteUInt8(0xB6, newValue)
         }
     }
     
@@ -223,11 +215,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     static var GTCCR: UInt8 {
         get {
-            return 0
-//            _volatileRegisterReadUInt8(0x43)
+            _volatileRegisterReadUInt8(0x43)
         }
         set {
-//            _volatileRegisterWriteUInt8(0x43, newValue)
+            _volatileRegisterWriteUInt8(0x43, newValue)
         }
     }
     
