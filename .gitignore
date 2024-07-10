@@ -2,7 +2,7 @@
 *.xcuserstate
 UserInterfaceState.xcuserstate
 build/
-
 /.build
 /.project
+/.swiftpm
 *.xcworkspacedata
