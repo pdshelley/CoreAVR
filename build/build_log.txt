@@ -1,0 +1,12 @@
+<unknown>:0: warning: using (deprecated) legacy driver, Swift installation does not contain swift-driver at: '/Applications/Swift For Arduino.app/Contents/XPCServices/BuildEngine.xpc/Contents/Resources/swift/swift-driver-new'
+<unknown>:0: warning: libc not found for 'avr-atmel-linux-gnueabihf'; C stdlib may be unavailable
+Sources/CoreAVR/CoreAVR.swift:227:9: warning: initialization of immutable value 'bitFilter' was never used; consider replacing with assignment to '_' or removing it
+    let bitFilter = 1 << bit
+    ~~~~^~~~~~~~~
+    _
+<unknown>:0: warning: using (deprecated) legacy driver, Swift installation does not contain swift-driver at: '/Applications/Swift For Arduino.app/Contents/XPCServices/BuildEngine.xpc/Contents/Resources/swift/swift-driver-new'
+<unknown>:0: warning: libc not found for 'avr-atmel-linux-gnueabihf'; C stdlib may be unavailable
+Sources/CoreAVR/CoreAVR.swift:227:9: warning: initialization of immutable value 'bitFilter' was never used; consider replacing with assignment to '_' or removing it
+    let bitFilter = 1 << bit
+    ~~~~^~~~~~~~~
+    _
