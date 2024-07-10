@@ -1,0 +1,8 @@
+.DS_Store
+*.xcuserstate
+UserInterfaceState.xcuserstate
+build/
+/.build
+/.project
+/.swiftpm
+*.xcworkspacedata

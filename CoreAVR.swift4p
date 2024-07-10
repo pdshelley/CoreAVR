@@ -1,0 +1,21 @@
+files:
+- module.modulemap
+- Package.swift
+- CoreAVR.h
+- Sources/CoreAVR/DigitalValue.swift
+- Sources/CoreAVR/CoreAVR.swift
+- Sources/CoreAVR/Utilities.swift
+- Sources/CoreAVR/module/AnalogeDigitalConverter.swift
+- Sources/CoreAVR/module/CPUCore.swift
+- Sources/CoreAVR/module/GPIO.swift
+- Sources/CoreAVR/module/PowerManagement.swift
+- Sources/CoreAVR/module/SerialPeripheralInterface.swift
+- Sources/CoreAVR/module/Timer/Timer0.swift
+- Sources/CoreAVR/module/Timer/Timer1.swift
+- Sources/CoreAVR/module/Timer/Timer2.swift
+- Sources/CoreAVR/module/Timer/Timers.swift
+- Sources/CoreAVR/module/TwoWireInterface.swift
+- Sources/CoreAVR/module/UART.swift
+settings:
+  BUILD_DIR: build
+  INCLUDE_PRINTF_FLT: 'no'
