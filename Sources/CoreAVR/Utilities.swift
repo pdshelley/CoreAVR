@@ -29,7 +29,7 @@
 @inlinable
 @inline(__always)
 public func noOpperation() { // TODO: Figure out why this is not inlining in the assembly.
-//    _noOpperation()
+    _noOpperation()
 }
 
 //public func noInterrupts() {
