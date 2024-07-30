@@ -91,7 +91,7 @@ public extension AVRPMSM {
             return PMSM.SleepModeSelect.init(rawValue: mode) ?? .idle
         }
         set {
-            SleepModeControlRegister = SleepModeControlRegister | ((newValue.rawValue << 1) & 0b00001110)
+            SleepModeControlRegister = SleepModeControlRegister | ((newValue.rawValue << 1) & 0b00001110) // TODO: I think this has an error. 
         }
     }
     
