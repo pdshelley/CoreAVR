@@ -84,6 +84,16 @@ public enum SPI {
         case setup = 1   // Leading setup, trailing sample.
     }
     
+    // Below data from testing on an Arduino Uno R3
+    // nothing = 4 MHz (240 ns)
+    // .f4 = 0     4 MHz (240 ns)
+    // .f16 = 1    1 MHz (1 us)
+    // .f64 = 2  250 kHz (4 us)
+    // .f128 = 3 125 kHz (8 us)
+    // .f2 = 4     8 MHz (120 ns)
+    // .f8 = 5     2 MHz (480 ns)
+    // .f32 = 6  500 kHz (2 us)
+    // .64_2 = 7 250 kHz (4 us)
     public enum ClockRateSelect: UInt8 {
         case f4 = 0
         case f16 = 1
@@ -266,7 +276,6 @@ public struct SPI0: SPIPort {
     public static var clockRateSelect: SPI.ClockRateSelect { // SPI2X, SPR[1:0]
         get {
             let mode = (controlRegister & 0b00000011) | ((statusRegister & 0b00000001) << 2)
-            
             return SPI.ClockRateSelect.init(rawValue: mode) ?? .f4
         }
         set {
@@ -368,16 +377,47 @@ public struct SPI0: SPIPort {
         }
     }
     
-    @inlinable
-    @inline(__always)
+    
+    
     /// The lowest level of writing out data to hardware SPI.
     /// - Parameter byte: A single bite of data to be sent.
-    public static func write(_ byte: PortDataType) { // -> PortDataType {
+    @inlinable @inline(__always)
+    @discardableResult public static func write(_ byte: PortDataType) -> PortDataType {
         // Save data to SPDR
         dataRegister = byte
-        noOpperation() // Not needed but as per notes in the Arduino Library is added. // This is also not inlining as I would expect in the asm.
+        noOpperation() // If two bytes in a row are identical then the second one does not get sent without this No Opp here. // This is also not inlining as I would expect in the asm.
         while !interruptFlag { } // Needed even with out using interrupts to send more than one byte.
-    //    return dataRegister // How do we get data from the slave? This is not needed but might be useful.
+        return dataRegister // How do we get data from the slave?
+    }
+    
+//    // Write to the SPI bus (MOSI pin) and also receive (MISO pin)
+//    inline static uint8_t transfer(uint8_t data) {
+//      SPDR = data;
+//      /*
+//       * The following NOP introduces a small delay that can prevent the wait
+//       * loop form iterating when running at the maximum speed. This gives
+//       * about 10% more speed, even if it seems counter-intuitive. At lower
+//       * speeds it is unnoticed.
+//       */
+//      asm volatile("nop");
+//      while (!(SPSR & _BV(SPIF))) ; // wait // SPSR = SPI Status Register // SPIF is the Interupt flag
+//      return SPDR;
+//    }
+    
+    // TODO: This won't respect sending byte order for the least significant bit first. Fix.
+    @inlinable @inline(__always) public static func write16(_ byte: UInt16) -> UInt16 {
+        let highByte = write(UInt8((byte & 0b11111111_00000000) >> 8)) // Write High Byte
+        let lowByte = write(UInt8(byte & 0b11111111)) // Write Low Byte
+        return (UInt16(highByte) << 8) | UInt16(lowByte) // Data returned from the slave
+    }
+    
+    // TODO: This won't respect sending byte order for the least significant bit first. Fix.
+    @inlinable @inline(__always) public static func write32(_ byte: UInt32) -> UInt32 {
+        let byte1 = write(UInt8((byte & 0b11111111_00000000_00000000_00000000) >> 24))
+        let byte2 = write(UInt8((byte & 0b00000000_11111111_00000000_00000000) >> 16))
+        let byte3 = write(UInt8((byte & 0b00000000_00000000_11111111_00000000) >> 8)) // Write High Byte
+        let byte4 = write(UInt8(byte & 0b00000000_00000000_00000000_11111111)) // Write Low Byte
+        return (UInt32(byte1) << 24) | (UInt32(byte2) << 16) | (UInt32(byte3) << 8) | UInt32(byte4) // Data returned from the slave
     }
     
 //    @inlinable
@@ -426,6 +466,8 @@ public struct SPI0: SPIPort {
             // http://code.google.com/p/arduino/issues/detail?id=888
         // Set SCK to Output
         GPIO.pb5.setDataDirection(.output) // SCK
+        // Set MISO to Input
+        GPIO.pb4.setDataDirection(.output) // MISO
         // Set MOSI to Output
         GPIO.pb3.setDataDirection(.output) // MOSI
 
