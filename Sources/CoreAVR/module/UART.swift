@@ -612,4 +612,24 @@ extension UARTPort where PortDataType == UInt8 {
             currentDivisor /= 10 // Update the divisor
         }
     }
+    
+    @inlinable
+    @inline(__always)
+    public static func write(_ int: UInt32, withLeadingZeros: Bool = false) {
+        var remainingInteger = int
+        var currentDivisor: UInt32 = 100000000
+        var shouldPrintZero = withLeadingZeros
+        
+        while currentDivisor > 0 {
+            let currentInt = remainingInteger / currentDivisor
+            
+            if currentInt > 0 || shouldPrintZero || currentDivisor == 1  {
+                writeByte(UInt8(currentInt + 48))
+                shouldPrintZero = true
+            }
+            
+            remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
+            currentDivisor /= 10 // Update the divisor
+        }
+    }
 }
