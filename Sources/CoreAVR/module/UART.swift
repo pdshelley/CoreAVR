@@ -617,7 +617,7 @@ extension UARTPort where PortDataType == UInt8 {
     @inline(__always)
     public static func write(_ int: UInt32, withLeadingZeros: Bool = false) {
         var remainingInteger = int
-        var currentDivisor: UInt32 = 100000000
+        var currentDivisor: UInt32 = 1000000000
         var shouldPrintZero = withLeadingZeros
         
         while currentDivisor > 0 {
