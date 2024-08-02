@@ -377,17 +377,28 @@ public struct SPI0: SPIPort {
         }
     }
     
-    
+    @inlinable @inline(__always)
+    @discardableResult public static func transmit(_ buffer: UnsafeMutableBufferPointer<UInt8>) -> UnsafeMutableBufferPointer<UInt8> {
+        let recievedBuffer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: buffer.count)
+        
+        for index in 0..<buffer.count {
+            dataRegister = buffer[index]
+            noOpperation() // If two bytes in a row are identical then the second one does not get sent without this No Opp here. // This is also not inlining as I would expect in the asm.
+            while !interruptFlag { } // Needed even with out using interrupts to send more than one byte.
+            noOpperation()
+            recievedBuffer![index] = dataRegister
+        }
+        return recievedBuffer!
+    }
     
     /// The lowest level of writing out data to hardware SPI.
     /// - Parameter byte: A single bite of data to be sent.
     @inlinable @inline(__always)
     @discardableResult public static func write(_ byte: PortDataType) -> PortDataType {
-        // Save data to SPDR
-        dataRegister = byte
+        dataRegister = byte // Save data to SPDR
         noOpperation() // If two bytes in a row are identical then the second one does not get sent without this No Opp here. // This is also not inlining as I would expect in the asm.
         while !interruptFlag { } // Needed even with out using interrupts to send more than one byte.
-        return dataRegister // How do we get data from the slave?
+        return dataRegister
     }
     
 //    // Write to the SPI bus (MOSI pin) and also receive (MISO pin)
