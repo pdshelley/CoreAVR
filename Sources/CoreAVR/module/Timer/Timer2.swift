@@ -27,7 +27,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var TCCR2A: UInt8 {
+    static var timerCounterControlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB0)
         }
@@ -49,7 +49,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var TCCR2B: UInt8 {
+    static var timerCounterControlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB1)
         }
@@ -209,33 +209,6 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
         }
         set {
             _volatileRegisterWriteUInt8(0x43, newValue)
-        }
-    }
-    
-    
-    // Note to self during standup: Refactored this.
-    // All registers were using datasheet names, and then inline aliased it to a "swift" name, but TCCR2(A|B) didn't
-    // Renamed timerCounterControlRegisterA to TCCR2A, and made an inline alias with the old name. Same for B.
-    @inlinable
-    @inline(__always)
-    static var timerCounterControlRegisterA: UInt8 {
-        get {
-            return TCCR2A
-        }
-        set {
-            TCCR2A = newValue
-        }
-    }
-    
-    
-    @inlinable
-    @inline(__always)
-    static var timerCounterControlRegisterB: UInt8 {
-        get {
-            return TCCR2B
-        }
-        set {
-            TCCR2B = newValue
         }
     }
     
