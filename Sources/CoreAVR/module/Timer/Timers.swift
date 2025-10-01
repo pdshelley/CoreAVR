@@ -252,7 +252,7 @@ enum WaveformGenerationMode16Bit: UInt8 {
 }
 
 protocol HasExternalClock {
-    static var prescalor: HasExternalClockPrescaling { get set }
+    static var prescaler: HasExternalClockPrescaling { get set }
 }
 
 /// See ATtiny13A Datasheet Table 11-9.
@@ -293,7 +293,7 @@ enum HasExternalClockPrescaling: UInt8 {
 }
 
 protocol InternalClockOnly {
-    static var prescalor: InternalClockOnlyPrescaling { get set }
+    static var prescaler: InternalClockOnlyPrescaling { get set }
 }
 
 enum InternalClockOnlyPrescaling: UInt8 {
