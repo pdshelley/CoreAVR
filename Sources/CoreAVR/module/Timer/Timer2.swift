@@ -27,6 +27,8 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
+    @inlinable
+    @inline(__always)
     static var timerCounterControlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB0)
@@ -49,6 +51,8 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
+    @inlinable
+    @inline(__always)
     static var timerCounterControlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB1)
@@ -71,7 +75,11 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var TCNT2: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
+    @inlinable
+    @inline(__always)
+    static var timerCounterNumber: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB2)
         }
@@ -93,7 +101,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var OCR2A: UInt8 {
+    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
+    @inlinable
+    @inline(__always)
+    static var outputCompareRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB3)
         }
@@ -115,7 +126,10 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var OCR2B: UInt8 {
+    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
+    @inlinable
+    @inline(__always)
+    static var outputCompareRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB4)
         }
@@ -137,7 +151,11 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var TIMSK2: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var timerInterruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x70)
         }
@@ -159,7 +177,11 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var TIFR2: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var timerInterruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x37)
         }
@@ -181,7 +203,11 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var ASSR: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var asynchronousStatusRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB6)
         }
@@ -203,112 +229,16 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    static var GTCCR: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var generalTimerCounterControlRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x43)
         }
         set {
             _volatileRegisterWriteUInt8(0x43, newValue)
-        }
-    }
-    
-    
-    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
-    // TODO: Decide about simplifying this with OCR2A
-    @inlinable
-    @inline(__always)
-    static var outputCompareRegisterA: UInt8 {
-        get {
-            return OCR2A
-        }
-        set {
-            OCR2A = newValue
-        }
-    }
-    
-    
-    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
-    // TODO: Decide about simplifying this with OCR2B
-    @inlinable
-    @inline(__always)
-    static var outputCompareRegisterB: UInt8 {
-        get {
-            return OCR2B
-        }
-        set {
-            OCR2B = newValue
-        }
-    }
-    
-    
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
-    // TODO: Decide about simplifying this with TCNT2
-    @inlinable
-    @inline(__always)
-    static var timerCounterNumber: UInt8 {
-        get {
-            return TCNT2
-        }
-        set {
-            TCNT2 = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
-    // TODO: Decide about simplifying this with TIFR2
-    @inlinable
-    @inline(__always)
-    static var timerInterruptFlagRegister: UInt8 {
-        get {
-            return TIFR2
-        }
-        set {
-            TIFR2 = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
-    // TODO: Decide about simplifying this with TIMSK2
-    @inlinable
-    @inline(__always)
-    static var timerInterruptMaskRegister: UInt8 {
-        get {
-            return TIMSK2
-        }
-        set {
-            TIMSK2 = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
-    // TODO: Decide about simplifying this with ASSR
-    @inlinable
-    @inline(__always)
-    static var asynchronousStatusRegister: UInt8 {
-        get {
-            return ASSR
-        }
-        set {
-            ASSR = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
-    // TODO: Decide about simplifying this with GTCCR
-    @inlinable
-    @inline(__always)
-    static var generalTimerCounterControlRegister: UInt8 {
-        get {
-            return GTCCR
-        }
-        set {
-            GTCCR = newValue
         }
     }
     
