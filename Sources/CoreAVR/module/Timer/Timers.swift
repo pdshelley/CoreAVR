@@ -310,7 +310,7 @@ enum InternalClockOnlyPrescaling: UInt8 {
 // TODO: Verify that this assumption is correct.
 protocol AsyncTimer {
     // These are only used on the Async timer2?
-    static var ASSR:   UInt8 { get set } // TODO: Update this name.
-    static var GTCCR:  UInt8 { get set } // TODO: Update this name.
+    static var asynchronousStatusRegister:   UInt8 { get set }
+    static var generalTimerCounterControlRegister:  UInt8 { get set }
 }
 

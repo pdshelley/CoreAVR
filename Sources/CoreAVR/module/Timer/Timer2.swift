@@ -55,7 +55,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     static var timerCounterControlRegisterB: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0xB1)
+            _volatileRegisterReadUInt8(0xB1)
         }
         set {
             _volatileRegisterWriteUInt8(0xB1, newValue)
