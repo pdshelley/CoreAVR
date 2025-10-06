@@ -248,6 +248,77 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // while more advanced uses can use the timer interupt to dynamically change the pulse width to output complex wave forms.
     
     
+    /// Bits 7:6 – COM2A1:0: Compare Match Output A Mode
+    /// See ATMega328p Datasheet Table 18-2, Table 18-3, and Table 18-4.
+    ///
+    /// These bits control the Output Compare pin (OC2A) behavior. If one or both of the COM2A1:0 bits are set, the
+    /// OC2A output overrides the normal port functionality of the I/O pin it is connected to. However, note that the Data
+    /// Direction Register (DDR) bit corresponding to the OC2A pin must be set in order to enable the output driver.
+    /// When OC2A is connected to the pin, the function of the COM2A1:0 bits depends on the WGM22:0 bit setting.
+    /// Table 18-2 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to a normal or CTC mode
+    /// (non-PWM).
+    ///
+    /// Table 18-2. Compare Output Mode, non-PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2A1| COM2A0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC0A disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Toggle OC2A on Compare Match                                     |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2A on Compare Match                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2A on Compare Match                                        |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    ///
+    /// Table 18-3 shows the COM2A1:0 bit functionality when the WGM21:0 bits are set to fast PWM mode.
+    ///
+    /// Table 18-3. Compare Output Mode, Fast PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2A1| COM2A0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2A disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | WGM22 = 0: Normal Port Operation, OC0A Disconnected.             |
+    ///|        |       |       | WGM22 = 1: Toggle OC2A on Compare Match.                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2A on Compare Match, set OC2A at BOTTOM,                 |
+    ///|        |       |       | (non-inverting mode).                                            |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2A on Compare Match, clear OC2A at BOTTOM,                 |
+    ///|        |       |       | (inverting mode).                                                |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at BOTTOM. See ”Fast PWM Mode” on page 156 for more details.
+    ///
+    /// Table 18-4 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to phase correct PWM mode.
+    ///
+    /// Table 18-4. Compare Output Mode, Phase Correct PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2A1| COM2A0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2A disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | WGM22 = 0: Normal Port Operation, OC0A Disconnected.             |
+    ///|        |       |       | WGM22 = 1: Toggle OC2A on Compare Match.                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2A on Compare Match when up-counting.                    |
+    ///|        |       |       | Set OC2A on Compare Match when down-counting.                    |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2A on Compare Match when up-counting.                      |
+    ///|        |       |       | Clear OC2A on Compare Match when down-counting.                  |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
+    ///
+    ///
+    ///
     // TODO: Test This!
     // TODO: Add check for toggle?
     @inlinable
@@ -263,6 +334,76 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
+    /// Bits 5:4 – COM2B1:0: Compare Match Output B Mode
+    /// See ATMega328p Datasheet Table 18-5, Table 18-6, and Table 18-7.
+    ///
+    /// These bits control the Output Compare pin (OC2B) behavior. If one or both of the COM2B1:0 bits are set, the
+    /// OC2B output overrides the normal port functionality of the I/O pin it is connected to. However, note that the Data
+    /// Direction Register (DDR) bit corresponding to the OC2B pin must be set in order to enable the output driver.
+    /// When OC2B is connected to the pin, the function of the COM2B1:0 bits depends on the WGM22:0 bit setting.
+    /// Table 18-5 shows the COM2B1:0 bit functionality when the WGM22:0 bits are set to a normal or CTC mode
+    /// (non-PWM).
+    ///
+    /// Table 18-5. Compare Output Mode, non-PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2B1| COM2B0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC0B disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Toggle OC2B on Compare Match                                     |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2B on Compare Match                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2B on Compare Match                                        |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    ///
+    /// Table 18-6 shows the COM2B1:0 bit functionality when the WGM22:0 bits are set to fast PWM mode.
+    ///
+    /// Table 18-6. Compare Output Mode, Fast PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2B1| COM2B0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2B disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Reserved                                                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2B on Compare Match, set OC2B at BOTTOM,                 |
+    ///|        |       |       | (non-inverting mode).                                            |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2B on Compare Match, clear OC2B at BOTTOM,                 |
+    ///|        |       |       | (inverting mode).                                                |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2B equals TOP and COM2B1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at BOTTOM. See ”Phase Correct PWM Mode” on page 157 for more
+    ///       details.
+    ///
+    /// Table 18-7 shows the COM2B1:0 bit functionality when the WGM22:0 bits are set to phase correct PWM mode.
+    ///
+    /// Table 18-7. Compare Output Mode, Phase Correct PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2B1| COM2B0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2B disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Reserved                                                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2B on Compare Match when up-counting.                    |
+    ///|        |       |       | Set OC2B on Compare Match when down-counting.                    |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2B on Compare Match when up-counting.                      |
+    ///|        |       |       | Clear OC2B on Compare Match when down-counting.                  |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2B equals TOP and COM2B1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
+    ///
+    ///
+    ///
     // TODO: Test This!
     // TODO: Add check for toggle?
     @inlinable
@@ -304,6 +445,13 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     /// See ATMega328p Datasheet Table 18-8.
+    ///
+    /// Combined with the WGM22 bit found in the TCCR2B Register, these bits control the counting sequence of the
+    /// counter, the source for maximum (TOP) counter value, and what type of waveform generation to be used, see
+    /// Table 18-8. Modes of operation supported by the Timer/Counter unit are: Normal mode (counter), Clear Timer
+    /// on Compare Match (CTC) mode, and two types of Pulse Width Modulation (PWM) modes (see ”Modes of
+    /// Operation” on page 155).
+    ///
     /// Table 18-8. Waveform Generation Mode Bit Description
     ///```
     ///-----------------------------------------------------------------------------------------------------
@@ -326,8 +474,8 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///|    7   |   1   |   1   |   1   | Fast PWM           | OCRA  | BOTTOM            | TOP             |
     ///-----------------------------------------------------------------------------------------------------
     ///```
-    ///Notes: 1. MAX= 0xFF
-    ///       2. BOTTOM= 0x00
+    /// Notes: 1. MAX= 0xFF
+    ///      2. BOTTOM= 0x00
     ///
     @inlinable
     @inline(__always)
