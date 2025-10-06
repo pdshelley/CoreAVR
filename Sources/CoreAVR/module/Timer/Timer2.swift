@@ -289,6 +289,20 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
         }
     }
     
+    
+    // TODO: Test This!
+    @inlinable
+    @inline(__always)
+    static var timerSynchronizationMode: TimerSynchronizationModeOption {
+        get {
+            let mode = generalTimerCounterControlRegister & 0b10000000
+            return TimerSynchronizationModeOption.init(rawValue: mode) ?? .disabled
+        }
+        set {
+            generalTimerCounterControlRegister |= newValue.rawValue & 0b10000000
+        }
+    }
+    
     /// See ATMega328p Datasheet Table 18-8.
     /// Table 18-8. Waveform Generation Mode Bit Description
     ///```
