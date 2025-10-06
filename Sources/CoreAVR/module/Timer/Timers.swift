@@ -129,6 +129,18 @@ enum CompareOutputModeOption: UInt8 {
     case set = 3
 }
 
+
+/// Datasheet Section 17.4.1 GTCCR – Generaral Timer/Counter Control Register
+/// Bit 7
+enum TimerSynchronizationModeOption: UInt8 {
+    /// Enables TSM (Timer/Counter Synchronization) mode. In this mode, the values written to PSRASY and PSRSYNC are kept, keeping the corresponding prescaler reset signals asserted.
+    /// This ensures that the corresponding Timer/Counters are halted and can be configured to the same value without the risk of one of them advancing during configuration
+    case enabled = 128
+    /// Disables TSM (Timer/Counter Synchronization) mode. In this mode, PSRASY and PSRSYNC are cleared by hardware, and the Timer/Counters start counting simultaneously.
+    case disabled = 0
+}
+
+
 protocol Timer8Bit: Timer {
     
     /// 11.9.3 TCNT0 – Timer/Counter Register
