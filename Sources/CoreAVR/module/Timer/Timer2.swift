@@ -17,63 +17,69 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     
     /// 18.11.1 TCCR2A – Timer/Counter Control Register A
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xB0)       |COM2A1 |COM2A0 |COM2B1 |COM2B0 |   -   |   -   | WGM21 | WGM20 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB0)       |COM2A1 |COM2A0 |COM2B1 |COM2B0 |   -   |   -   | WGM21 | WGM20 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
+    @inlinable
+    @inline(__always)
     static var timerCounterControlRegisterA: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0xB0) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0xB0)
         }
         set {
-            _volatileRegisterWriteUInt8(0xB0, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0xB0, newValue)
         }
     }
-
+    
     
     /// 18.11.2 TCCR2B – Timer/Counter Control Register B
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xB1)       | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB1)       | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
+    @inlinable
+    @inline(__always)
     static var timerCounterControlRegisterB: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0xB1) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0xB1)
         }
         set {
-            _volatileRegisterWriteUInt8(0xB1, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0xB1, newValue)
         }
     }
-
-    
     
     
     /// 18.11.3 TCNT2 – Timer/Counter Register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |                         TCNT2                                 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB2)       |                         TCNT2                                 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var TCNT2: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
+    @inlinable
+    @inline(__always)
+    static var timerCounterNumber: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB2)
         }
@@ -83,21 +89,22 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    
-    
     /// 18.11.4 OCR2A – Output Compare Register A
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |                         OCR2A                                 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB3)       |                         OCR2A                                 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var OCR2A: UInt8 {
+    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
+    @inlinable
+    @inline(__always)
+    static var outputCompareRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB3)
         }
@@ -107,21 +114,22 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    
-    
     /// 18.11.5 OCR2B – Output Compare Register B
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |                         OCR2B                                 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB4)       |                         OCR2B                                 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var OCR2B: UInt8 {
+    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
+    @inlinable
+    @inline(__always)
+    static var outputCompareRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB4)
         }
@@ -131,21 +139,23 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    
-    
     /// 18.11.6 TIMSK2 – Timer/Counter2 Interrupt Mask Register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |   -   |   -   |   -   |   -   |   -   |OCIE2B |OCIE2A | TOIE2 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x70)       |   -   |   -   |   -   |   -   |   -   |OCIE2B |OCIE2A | TOIE2 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var TIMSK2: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var timerInterruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x70)
         }
@@ -155,20 +165,23 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    
     /// 18.11.7 TIFR2 – Timer/Counter2 Interrupt Flag Register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |   -   |   -   |   -   |   -   |   -   | OCF2B | OCF2A | TOV2  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x37)       |   -   |   -   |   -   |   -   |   -   | OCF2B | OCF2A | TOV2  |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var TIFR2: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var timerInterruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x37)
         }
@@ -180,17 +193,21 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     
     /// 18.11.8 ASSR – Asynchronous Status Register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |   -   | EXCLK |  AS2  |TCN2UB |OCR2AUB|OCR2BUB|TCR2AUB|TCR2BUB|
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |  R/W  |  R/W  |   R   |   R   |   R   |   R   |   R   |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB6)       |   -   | EXCLK |  AS2  |TCN2UB |OCR2AUB|OCR2BUB|TCR2AUB|TCR2BUB|
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |   R   |  R/W  |  R/W  |   R   |   R   |   R   |   R   |   R   |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var ASSR: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var asynchronousStatusRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB6)
         }
@@ -200,125 +217,28 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    
     /// 18.11.9 GTCCR – General Timer/Counter Control Register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       |  TSM  |   -   |   -   |   -   |   -   |   -   |PSRASY |PSRSYNC|
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x43)       |  TSM  |   -   |   -   |   -   |   -   |   -   |PSRASY |PSRSYNC|
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    static var GTCCR: UInt8 {
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
+    @inlinable
+    @inline(__always)
+    static var generalTimerCounterControlRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x43)
         }
         set {
             _volatileRegisterWriteUInt8(0x43, newValue)
-        }
-    }
-    
-    
-    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
-    // TODO: Decide about simplifying this with OCR2A
-    @inlinable
-    @inline(__always)
-    static var outputCompareRegisterA: UInt8 {
-        get {
-            return OCR2A
-        }
-        set {
-            OCR2A = newValue
-        }
-    }
-    
-    
-    // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
-    // TODO: Decide about simplifying this with OCR2B
-    @inlinable
-    @inline(__always)
-    static var outputCompareRegisterB: UInt8 {
-        get {
-            return OCR2B
-        }
-        set {
-            OCR2B = newValue
-        }
-    }
-    
-    
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
-    // TODO: Decide about simplifying this with TCNT2
-    @inlinable
-    @inline(__always)
-    static var timerCounterNumber: UInt8 {
-        get {
-            return TCNT2
-        }
-        set {
-            TCNT2 = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
-    // TODO: Decide about simplifying this with TIFR2
-    @inlinable
-    @inline(__always)
-    static var timerInterruptFlagRegister: UInt8 {
-        get {
-            return TIFR2
-        }
-        set {
-            TIFR2 = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
-    // TODO: Decide about simplifying this with TIMSK2
-    @inlinable
-    @inline(__always)
-    static var timerInterruptMaskRegister: UInt8 {
-        get {
-            return TIMSK2
-        }
-        set {
-            TIMSK2 = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
-    // TODO: Decide about simplifying this with ASSR
-    @inlinable
-    @inline(__always)
-    static var asynchronousStatusRegister: UInt8 {
-        get {
-            return ASSR
-        }
-        set {
-            ASSR = newValue
-        }
-    }
-    
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
-    // TODO: Decide about simplifying this with GTCCR
-    @inlinable
-    @inline(__always)
-    static var generalTimerCounterControlRegister: UInt8 {
-        get {
-            return GTCCR
-        }
-        set {
-            GTCCR = newValue
         }
     }
     
@@ -359,7 +279,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     
     @inlinable
     @inline(__always)
-    static var prescalor: InternalClockOnlyPrescaling {
+    static var prescaler: InternalClockOnlyPrescaling {
         get {
             let mode = timerCounterControlRegisterB & 0b00000111
             return InternalClockOnlyPrescaling.init(rawValue: mode) ?? .noClockSource
@@ -369,28 +289,42 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
         }
     }
     
+    
+    // TODO: Test This!
+    @inlinable
+    @inline(__always)
+    static var timerSynchronizationMode: TimerSynchronizationModeOption {
+        get {
+            let mode = generalTimerCounterControlRegister & 0b10000000
+            return TimerSynchronizationModeOption.init(rawValue: mode) ?? .disabled
+        }
+        set {
+            generalTimerCounterControlRegister |= newValue.rawValue & 0b10000000
+        }
+    }
+    
     /// See ATMega328p Datasheet Table 18-8.
     /// Table 18-8. Waveform Generation Mode Bit Description
     ///```
-    ///---------------------------------------------------------------------------------------------------
-    ///  Mode  | WGM22 | WGM21 | WGM20 | Mode of Operation  |  TOP  | Update of OCRx at | TOV Flag Set on |
-    ///---------------------------------------------------------------------------------------------------
-    ///    0   |   0   |   0   |   0   | Normal             | 0xFF  | Immediate         | MAX             |
-    ///---------------------------------------------------------------------------------------------------
-    ///    1   |   0   |   0   |   1   | PWM, Phase Correct | 0xFF  | TOP               | BOTTOM          |
-    ///---------------------------------------------------------------------------------------------------
-    ///    2   |   0   |   1   |   0   | CTC                | OCRA  | Immediate         | MAX             |
-    ///---------------------------------------------------------------------------------------------------
-    ///    3   |   0   |   1   |   1   | Fast PWM           | 0xFF  | BOTTOM            | MAX             |
-    ///---------------------------------------------------------------------------------------------------
-    ///    4   |   1   |   0   |   0   | Reserved           |   -   |         -         |        -        |
-    ///---------------------------------------------------------------------------------------------------
-    ///    5   |   1   |   0   |   1   | PWM, Phase Correct | OCRA  | TOP               | BOTTOM          |
-    ///---------------------------------------------------------------------------------------------------
-    ///    6   |   1   |   1   |   0   | Reserved           |   -   |         -         |        -        |
-    ///---------------------------------------------------------------------------------------------------
-    ///    7   |   1   |   1   |   1   | Fast PWM           | OCRA  | BOTTOM            | TOP             |
-    ///---------------------------------------------------------------------------------------------------
+    ///-----------------------------------------------------------------------------------------------------
+    ///|  Mode  | WGM22 | WGM21 | WGM20 | Mode of Operation  |  TOP  | Update of OCRx at | TOV Flag Set on |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    0   |   0   |   0   |   0   | Normal             | 0xFF  | Immediate         | MAX             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    1   |   0   |   0   |   1   | PWM, Phase Correct | 0xFF  | TOP               | BOTTOM          |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    2   |   0   |   1   |   0   | CTC                | OCRA  | Immediate         | MAX             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    3   |   0   |   1   |   1   | Fast PWM           | 0xFF  | BOTTOM            | MAX             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    4   |   1   |   0   |   0   | Reserved           |   -   |         -         |        -        |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    5   |   1   |   0   |   1   | PWM, Phase Correct | OCRA  | TOP               | BOTTOM          |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    6   |   1   |   1   |   0   | Reserved           |   -   |         -         |        -        |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    7   |   1   |   1   |   1   | Fast PWM           | OCRA  | BOTTOM            | TOP             |
+    ///-----------------------------------------------------------------------------------------------------
     ///```
     ///Notes: 1. MAX= 0xFF
     ///       2. BOTTOM= 0x00

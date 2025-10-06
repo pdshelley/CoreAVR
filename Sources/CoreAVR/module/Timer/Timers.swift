@@ -129,6 +129,18 @@ enum CompareOutputModeOption: UInt8 {
     case set = 3
 }
 
+
+/// Datasheet Section 17.4.1 GTCCR – Generaral Timer/Counter Control Register
+/// Bit 7
+enum TimerSynchronizationModeOption: UInt8 {
+    /// Enables TSM (Timer/Counter Synchronization) mode. In this mode, the values written to PSRASY and PSRSYNC are kept, keeping the corresponding prescaler reset signals asserted.
+    /// This ensures that the corresponding Timer/Counters are halted and can be configured to the same value without the risk of one of them advancing during configuration
+    case enabled = 128
+    /// Disables TSM (Timer/Counter Synchronization) mode. In this mode, PSRASY and PSRSYNC are cleared by hardware, and the Timer/Counters start counting simultaneously.
+    case disabled = 0
+}
+
+
 protocol Timer8Bit: Timer {
     
     /// 11.9.3 TCNT0 – Timer/Counter Register
@@ -252,7 +264,7 @@ enum WaveformGenerationMode16Bit: UInt8 {
 }
 
 protocol HasExternalClock {
-    static var prescalor: HasExternalClockPrescaling { get set }
+    static var prescaler: HasExternalClockPrescaling { get set }
 }
 
 /// See ATtiny13A Datasheet Table 11-9.
@@ -293,7 +305,7 @@ enum HasExternalClockPrescaling: UInt8 {
 }
 
 protocol InternalClockOnly {
-    static var prescalor: InternalClockOnlyPrescaling { get set }
+    static var prescaler: InternalClockOnlyPrescaling { get set }
 }
 
 enum InternalClockOnlyPrescaling: UInt8 {
@@ -310,7 +322,7 @@ enum InternalClockOnlyPrescaling: UInt8 {
 // TODO: Verify that this assumption is correct.
 protocol AsyncTimer {
     // These are only used on the Async timer2?
-    static var ASSR:   UInt8 { get set } // TODO: Update this name.
-    static var GTCCR:  UInt8 { get set } // TODO: Update this name.
+    static var asynchronousStatusRegister:   UInt8 { get set }
+    static var generalTimerCounterControlRegister:  UInt8 { get set }
 }
 
