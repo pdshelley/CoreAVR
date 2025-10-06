@@ -244,6 +244,27 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     
     // TODO: Figure out what FOC2A and FOC2B are for.
     
+    /// Bit 7 of TCCR2B – FOC2A: Force Output Compare A
+    /// The FOC2A bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
+    /// when operating in PWM mode. When writing a logical one to the FOC2A bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OC2A output is changed according to its COM2A1:0 bits setting.
+    /// Note that the FOC2A bit is implemented as a strobe. Therefore it is the value present in the COM2A1:0 bits that
+    /// determines the effect of the forced compare.
+    /// A FOC2A strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2A as TOP.
+    /// The FOC2A bit is always read as zero.
+    
+    /// Bit 6 – FOC2B: Force Output Compare B
+    /// The FOC2B bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
+    /// when operating in PWM mode. When writing a logical one to the FOC2B bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OC2B output is changed according to its COM2B1:0 bits setting.
+    /// Note that the FOC2B bit is implemented as a strobe. Therefore it is the value present in the COM2B1:0 bits that
+    /// determines the effect of the forced compare.
+    /// A FOC2B strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2B as TOP.
+    /// The FOC2B bit is always read as zero.
+    
+    
     // NOTE: There are many uses for PWM, some as simple as holding the same pulse width and only changing periodically for hobby servo control or LED brightness,
     // while more advanced uses can use the timer interupt to dynamically change the pulse width to output complex wave forms.
     
@@ -316,8 +337,6 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
     ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
-    ///
-    ///
     ///
     // TODO: Test This!
     // TODO: Add check for toggle?
@@ -402,8 +421,6 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// Note: 1. A special case occurs when OCR2B equals TOP and COM2B1 is set. In this case, the Compare Match is
     ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
     ///
-    ///
-    ///
     // TODO: Test This!
     // TODO: Add check for toggle?
     @inlinable
@@ -418,9 +435,37 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
         }
     }
     
+    
+    /// Bits 2 through 0 on TCCR2B – CS22:0: Clock Select
+    /// The three Clock Select bits select the clock source to be used by the Timer/Counter, see Table 18-9 on page 165.
+    ///
+    /// Table 18-9. Clock Select Bit Description
+    ///```
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |  Mode  | CS22  | CS21  | CS20  | Description                                                     |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    0   |   0   |   0   |   0   | No clock source (Timer/Counter stopped)                         |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    1   |   0   |   0   |   1   | clk T2S/(No prescaling)                                         |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    2   |   0   |   1   |   0   | clk T2S/8 (From prescaler)                                      |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    3   |   0   |   1   |   1   | clk T2S/32 (From prescaler)                                     |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    4   |   1   |   0   |   0   | clkI T2S/64 (From prescaler)                                    |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    5   |   1   |   0   |   1   | clkI T2S/128 (From prescaler)                                   |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    6   |   1   |   1   |   0   | clkI T2S/256 (From prescaler)                                   |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    7   |   1   |   1   |   1   | clkI T2S/1024 (From prescaler)                                  |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// ```
+    /// If external pin modes are used for the Timer/Counter0, transitions on the T0 pin will clock the counter even if the
+    /// pin is configured as an output. This feature allows software control of the counting.
     @inlinable
     @inline(__always)
-    static var prescaler: InternalClockOnlyPrescaling {
+    static var prescaler: InternalClockOnlyPrescaling { // Note: In the datasheet this is called the Clock Select. Prescaler is probably more descriptive.
         get {
             let mode = timerCounterControlRegisterB & 0b00000111
             return InternalClockOnlyPrescaling.init(rawValue: mode) ?? .noClockSource
@@ -431,18 +476,29 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
+    /// Bit 7 on GTCCR – TSM: Timer/Counter Synchronization Mode
+    ///
+    /// Writing the TSM bit to one activates the Timer/Counter Synchronization mode. In this mode, the value that is
+    /// written to the PSRASY and PSRSYNC bits is kept, hence keeping the corresponding prescaler reset signals
+    /// asserted. This ensures that the corresponding Timer/Counters are halted and can be configured to the same
+    /// value without the risk of one of them advancing during configuration. When the TSM bit is written to zero, the
+    /// PSRASY and PSRSYNC bits are cleared by hardware, and the Timer/Counters start counting simultaneously.
+    ///
     // TODO: Test This!
     @inlinable
     @inline(__always)
-    static var timerSynchronizationMode: TimerSynchronizationModeOption {
+    static var timerSynchronizationMode: Timer.TimerSynchronizationMode {
         get {
-            let mode = generalTimerCounterControlRegister & 0b10000000
-            return TimerSynchronizationModeOption.init(rawValue: mode) ?? .disabled
+            let mode = (generalTimerCounterControlRegister & 0b10000000) >> 7
+            return Timer.TimerSynchronizationMode.init(rawValue: mode) ?? .disabled
         }
         set {
-            generalTimerCounterControlRegister |= newValue.rawValue & 0b10000000
+            generalTimerCounterControlRegister |= (newValue.rawValue & 0b10000000) << UInt8(7)
         }
     }
+    
+    // TODO: Breakout the PSRASY and PSRSYNC bits on GTCCR (0x43).
+    
     
     /// See ATMega328p Datasheet Table 18-8.
     ///

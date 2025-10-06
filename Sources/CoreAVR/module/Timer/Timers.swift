@@ -90,6 +90,8 @@ protocol Timer {
     static var timerInterruptFlagRegister: UInt8 { get set }
     
     typealias CompareOutputMode = CompareOutputModeOption
+    
+    typealias TimerSynchronizationMode = TimerSynchronizationModeOption
 }
 
 // TODO: I've added notes from the datasheet that show the differences between all the modes for timers 0 and 2 which are 8 bit. This needs to be abstracted in some way and made safe.
@@ -135,7 +137,7 @@ enum CompareOutputModeOption: UInt8 {
 enum TimerSynchronizationModeOption: UInt8 {
     /// Enables TSM (Timer/Counter Synchronization) mode. In this mode, the values written to PSRASY and PSRSYNC are kept, keeping the corresponding prescaler reset signals asserted.
     /// This ensures that the corresponding Timer/Counters are halted and can be configured to the same value without the risk of one of them advancing during configuration
-    case enabled = 128
+    case enabled = 1
     /// Disables TSM (Timer/Counter Synchronization) mode. In this mode, PSRASY and PSRSYNC are cleared by hardware, and the Timer/Counters start counting simultaneously.
     case disabled = 0
 }
@@ -308,16 +310,55 @@ protocol InternalClockOnly {
     static var prescaler: InternalClockOnlyPrescaling { get set }
 }
 
+// Note: This chart is from the Atmega 328p Timer2 which is an 8 bit timer with an internal clock. TODO: Figure out the pattern.
+/// ```
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |  Mode  | CS22  | CS21  | CS20  | Description                                                     |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    0   |   0   |   0   |   0   | No clock source (Timer/Counter stopped)                         |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    1   |   0   |   0   |   1   | clk T2S/(No prescaling)                                         |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    2   |   0   |   1   |   0   | clk T2S/8 (From prescaler)                                      |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    3   |   0   |   1   |   1   | clk T2S/32 (From prescaler)                                     |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    4   |   1   |   0   |   0   | clkI T2S/64 (From prescaler)                                    |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    5   |   1   |   0   |   1   | clkI T2S/128 (From prescaler)                                   |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    6   |   1   |   1   |   0   | clkI T2S/256 (From prescaler)                                   |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// |    7   |   1   |   1   |   1   | clkI T2S/1024 (From prescaler)                                  |
+/// |--------|-------|-------|-------|-----------------------------------------------------------------|
+/// ```
 enum InternalClockOnlyPrescaling: UInt8 {
     case noClockSource = 0
     case none = 1
     case eight = 2
-    case sixtyFour = 3
-    case twoFiftySix = 4
-    case tenTwentyFour = 5
-    case externalClockOnFallingEdge = 6
-    case externalClockOnRisingEdge = 7
+    case thirtyTwo = 3 // clkT2S/32
+    case sixtyFour = 4 // clkT2S/64
+    case oneTwentyEight = 5 // clkT2S/128
+    case twoFiftySix = 6 // clkT2S/256
+    case tenTwentyFour = 7 // clkT2S/1024
 }
+
+// Note: This is an older version of the Internal Prescalor. It was incorrect for the Atmega 328p Timer2 which is an 8 bit timer with an internal clock.
+// I don't think this was a mistake but an inconsistancy in timers or we don't have the pattern figured out yet.
+//enum InternalClockOnlyPrescaling: UInt8 {
+//    case noClockSource = 0
+//    case none = 1
+//    case eight = 2
+//    case sixtyFour = 3
+//    case twoFiftySix = 4
+//    case tenTwentyFour = 5
+//    case externalClockOnFallingEdge = 6
+//    case externalClockOnRisingEdge = 7
+//}
+
+
+
+
 
 // TODO: Verify that this assumption is correct.
 protocol AsyncTimer {
