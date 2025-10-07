@@ -11,207 +11,161 @@
 
 typealias timer0 = Timer0
 
-/// Timer 2 implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
-// NOTE: PRTIM2 needs to be written to zero to enable Timer/Counter2 module. See Datasheet section 18.2
+/// Timer 0 implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
+// NOTE: PRTIM0 needs to be written to zero to enable Timer/Counter0 module. See Datasheet section 15.2
 struct Timer0: Timer8Bit, HasExternalClock {
-    
 
+    /// 15.9.1 TCCR0A – Timer/Counter Control Register A
+    /// ```
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| 0x24 (0x44)  |COM0A1 |COM0A0 |COM0B1 |COM0B0 |   -   |   -   | WGM01 | WGM00 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
+    /// ```
+    @inlinable
+    @inline(__always)
     static var timerCounterControlRegisterA: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x44) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x44)
         }
         set {
-            _volatileRegisterWriteUInt8(0x44, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x44, newValue)
         }
     }
     
     
-    /// 18.11.2 TCCR2B – Timer/Counter Control Register B
+    /// 15.9.2 TCCR0B – Timer/Counter Control Register B
     ///```
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///|--------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///| (0x45)       | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
+    ///| 0x25 (0x45)  | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
     ///| Read/Write   |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///```
+    @inlinable
+    @inline(__always)
     static var timerCounterControlRegisterB: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x45) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x45)
         }
         set {
-            _volatileRegisterWriteUInt8(0x45, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x45, newValue)
         }
     }
     
     
-    
-    
-    /// 18.11.3 TCNT2 – Timer/Counter Register
+    /// 15.9.3 TCNT0 – Timer/Counter Register
     ///```
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///|--------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///| (0xBC)       |                         TCNT2                                 |
+    ///| 0x26 (0x46)  |                         TCNT0                                 |
     ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///```
-    /// WARNING: This is not fully tested and understood.
-    /// TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
-    /// TODO: Decide about simplifying this with TCNT2
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TCNT0 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
     static var timerCounterNumber: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x46) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x46)
         }
         set {
-            _volatileRegisterWriteUInt8(0x46, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x46, newValue)
         }
     }
     
     
-    
-    /// 18.11.4 OCR2A – Output Compare Register A
+    /// 15.9.4 OCR0A – Output Compare Register A
     ///```
     ///|Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///|-------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///|(0xBC)       |                         OCR2A                                 |
+    ///|0x27 (0x47)  |                         OCR0A                                 |
     ///|Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///|InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///```
-    /// TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
-    /// TODO: Decide about simplifying this with OCR2A
+    // TODO: I believe OCR0A always needs to be larger than OCR0B. Should we have a safety for this?
     @inlinable
     @inline(__always)
     static var outputCompareRegisterA: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x47) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x47)
         }
         set {
-            _volatileRegisterWriteUInt8(0x47, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x47, newValue)
         }
     }
     
     
     
-    /// 18.11.5 OCR2B – Output Compare Register B
+    /// 15.9.5 OCR0B – Output Compare Register B
     ///```
     ///|Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///|-------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///|(0xBC)       |                         OCR2B                                 |
+    ///|0x28 (0x48)  |                         OCR0B                                 |
     ///|Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///|InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///```
-    /// TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
-    /// TODO: Decide about simplifying this with OCR2B
+    // TODO: I believe OCR0A always needs to be larger than OCR0B. Should we have a safety for this?
     @inlinable
     @inline(__always)
     static var outputCompareRegisterB: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x48) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x48)
         }
         set {
-            _volatileRegisterWriteUInt8(0x48, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x48, newValue)
         }
     }
     
     
-    /// 18.11.6 TIMSK2 – Timer/Counter2 Interrupt Mask Register
+    /// 15.9.6 TIMSK0 – Timer/Counter Interrupt Mask Register
     ///```
     ///|Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///|-------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///|(0xBC)       |   -   |   -   |   -   |   -   |   -   |OCIE2B |OCIE2A | TOIE2 |
+    ///|(0x6E)       |   -   |   -   |   -   |   -   |   -   |OCIE0B |OCIE0A | TOIE0 |
     ///|Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
     ///|InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///```
-    /// WARNING: This is not fully tested and understood.
-    /// TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
-    /// TODO: Decide about simplifying this with TIMSK2
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TIMSK0 (Timer Interrupt Mask Register) is used for.
     @inlinable
     @inline(__always)
     static var timerInterruptMaskRegister: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x6E) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x6E)
         }
         set {
-            _volatileRegisterWriteUInt8(0x6E, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x6E, newValue)
         }
     }
     
     
-    /// 18.11.7 TIFR2 – Timer/Counter2 Interrupt Flag Register
+    /// 15.9.7 TIFR0 – Timer/Counter Interrupt Flag Register
     ///```
     ///|Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///|-------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///|(0xBC)       |   -   |   -   |   -   |   -   |   -   | OCF2B | OCF2A | TOV2  |
+    ///|0x15 (0x35)  |   -   |   -   |   -   |   -   |   -   | OCF0B | OCF0A | TOV0  |
     ///|Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
     ///|InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///```
-    /// WARNING: This is not fully tested and understood.
-    /// TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
-    /// TODO: Decide about simplifying this with TIFR2
+    // WARNING: This is not fully tested and understood.
+    // TODO: Figure out what the TIFR (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
     static var timerInterruptFlagRegister: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x35) // TODO: Check HEX
+            _volatileRegisterReadUInt8(0x35)
         }
         set {
-            _volatileRegisterWriteUInt8(0x35, newValue) // TODO: Check HEX
+            _volatileRegisterWriteUInt8(0x35, newValue)
         }
     }
-    
-    
-    /// 18.11.8 ASSR – Asynchronous Status Register
-    ///```
-    ///|Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///|-------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///|(0xBC)       |   -   | EXCLK |  AS2  |TCN2UB |OCR2AUB|OCR2BUB|TCR2AUB|TCR2BUB|
-    ///|Read/Write   |   R   |  R/W  |  R/W  |   R   |   R   |   R   |   R   |   R   |
-    ///|InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///```
-    /// WARNING: This is not fully tested and understood.
-    /// TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
-    /// TODO: Decide about simplifying this with ASSR
-    @inlinable
-    @inline(__always)
-    static var asynchronousStatusRegister: UInt8 {
-        get {
-            _volatileRegisterReadUInt8(0xB6) // TODO: is this register address shared by all timers? // TODO: Check HEX
-        }
-        set {
-            _volatileRegisterWriteUInt8(0xB6, newValue) // TODO: is this register address shared by all timers? // TODO: Check HEX
-        }
-    }
-    
-    
-    
-    /// 18.11.9 GTCCR – General Timer/Counter Control Register
-    ///```
-    ///|Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///|-------------|-------|-------|-------|-------|-------|-------|-------|-------|
-    ///|(0xBC)       |  TSM  |   -   |   -   |   -   |   -   |   -   |PSRASY |PSRSYNC|
-    ///|Read/Write   |  R/W  |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |
-    ///|InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///```
-    /// WARNING: This is not fully tested and understood.
-    /// TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
-    /// TODO: Decide about simplifying this with GTCCR
-    @inlinable
-    @inline(__always)
-    static var generalTimerCounterControlRegister: UInt8 {
-        get {
-            _volatileRegisterReadUInt8(0x43) // TODO: Check HEX
-        }
-        set {
-            _volatileRegisterWriteUInt8(0x43, newValue) // TODO: Check HEX
-        }
-    }
-    
-    
-    // TODO: Figure out what FOC2A and FOC2B are for.
-    
-    // NOTE: There are many uses for PWM, some as simple as holding the same pulse width and only changing periodically for hobby servo control or LED brightness,
-    // while more advanced uses can use the timer interupt to dynamically change the pulse width to output complex wave forms.
     
     
     // TODO: Test This!
@@ -245,7 +199,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     
     @inlinable
     @inline(__always)
-    static var prescalor: HasExternalClockPrescaling {
+    static var prescaler: HasExternalClockPrescaling {
         get {
             let mode = timerCounterControlRegisterB & 0b00000111 // TODO: Check Bit Mask
             return HasExternalClockPrescaling.init(rawValue: mode) ?? .noClockSource
