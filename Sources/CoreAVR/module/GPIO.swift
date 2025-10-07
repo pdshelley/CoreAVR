@@ -21,10 +21,46 @@
 // Note: The ATMegaN8 comes in 4 different packages, a 28 pin DIP, a 28 pin QFN, a 32 pin QFP, and a 23 pin QFN. The two 32 pin chips have extra pins and thus have two extra ADC pins (ADC6 and ADC7).
 // See ATMega328p Datasheet Figure 1-1.
 public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or something similar. This will probably be the HAL layer for the avr5 core and I'll make a wrapper with a common HAL API that wraps this.
-
+    /// 14.4.1 MCUCR – MCU Control Register
+    /// ```
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | 0x35 (0x55)  |   -   | BODS  | BODSE |  PUD  |   -   |   -   | IVSEL | IVCE  |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |   R   |  R/W  |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// ```
+    /// Note: BODS and BODSE are only available for ATmega48PA/88PA/168PA/328P (picoPower devices)
+    // TODO: How should we make the Datasheet reference more generic? Include more of this documentation directly in the code?
+    // TODO: Bit 4 - PUD: Pull-up Disable
+    @inlinable
+    @inline(__always)
+    public static var mcuControlRegister: UInt8 {
+        get {
+            _volatileRegisterReadUInt8(0x55)
+        }
+        set {
+            _volatileRegisterWriteUInt8(0x55, newValue)
+        }
+    }
+    
     public enum PORTB: Port {
-
-        /// AKA: PORTB. See ATMega328p Datasheet section 14.4.2. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.2 PORTB – Port B Data Register
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x05 (0x25)  |PORTB7 |PORTB6 |PORTB5 |PORTB4 |PORTB3 |PORTB2 |PORTB1 |PORTB0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// ```
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         // Note: Should we make an alias for this named PORTB for people that want to have "Direct Access" to ports? This is more important for registers that are used for
         // multiple things but could maintain naming consistancy.
         @inlinable
@@ -38,7 +74,19 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
             }
         }
 
-        /// AKA: DDRB. See ATMega328p Datasheet section 14.4.3. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.3 DDRB – Port B Data Direction Register
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x04 (0x24)  |  DDB7 |  DDB6 |  DDB5 |  DDB4 |  DDB3 |  DDB2 |  DDB1 |  DDB0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// ```
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         @inlinable
         @inline(__always)
         public static var dataDirection: UInt8 {
@@ -50,7 +98,18 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
             }
         }
 
-        /// AKA: PINB. See ATMega328p Datasheet section 14.4.4. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.4 PINB – Port B Input Pins Address
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x03 (0x23)  | PINB7 | PINB6 | PINB5 | PINB4 | PINB3 | PINB2 | PINB1 | PINB0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         @inlinable
         @inline(__always)
         public static var inputAddress: UInt8 {
@@ -66,7 +125,19 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
 
     public enum PORTC: Port {
 
-        /// AKA: PORTC. See ATMega328p Datasheet section 14.4.2. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.5 PORTC – Port C Data Register
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x08 (0x28)  |PORTC7 |PORTC6 |PORTC5 |PORTC4 |PORTC3 |PORTC2 |PORTC1 |PORTC0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// ```
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         // Note: Should we make an alias for this named PORTC for people that want to have "Direct Access" to ports? This is more important for registers that are used for
         // multiple things but could maintain naming consistancy.
         @inlinable
@@ -80,7 +151,19 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
             }
         }
 
-        /// AKA: DDRC. See ATMega328p Datasheet section 14.4.3. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.6 DDRC – Port C Data Direction Register
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x07 (0x27)  |   -   |  DDC6 |  DDC5 |  DDC4 |  DDC3 |  DDC2 |  DDC1 |  DDC0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// ```
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         @inlinable
         @inline(__always)
         public static var dataDirection: UInt8 {
@@ -92,7 +175,18 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
             }
         }
 
-        /// AKA: PINC. See ATMega328p Datasheet section 14.4.4. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.7 PINC – Port C Input Pins Address
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x06 (0x26)  |   -   | PINC6 | PINC5 | PINC4 | PINC3 | PINC2 | PINC1 | PINC0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         @inlinable
         @inline(__always)
         public static var inputAddress: UInt8 {
@@ -108,7 +202,19 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
 
     public enum PORTD: Port {
 
-        /// AKA: PORTD. See ATMega328p Datasheet section 14.4.2. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.8 PORTD – Port D Data Register
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x0B (0x2B)  |PORTD7 |PORTD6 |PORTD5 |PORTD4 |PORTD3 |PORTD2 |PORTD1 |PORTD0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// ```
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         // Note: Should we make an alias for this named PORTD for people that want to have "Direct Access" to ports? This is more important for registers that are used for
         // multiple things but could maintain naming consistancy.
         @inlinable
@@ -122,7 +228,19 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
             }
         }
 
-        /// AKA: DDRD. See ATMega328p Datasheet section 14.4.3. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.9 DDRD – Port D Data Direction Register
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x0A (0x2A)  |  DDD7 |  DDD6 |  DDD5 |  DDD4 |  DDD3 |  DDD2 |  DDD1 |  DDD0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// ```
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         @inlinable
         @inline(__always)
         public static var dataDirection: UInt8 {
@@ -134,7 +252,18 @@ public struct GPIO { // TODO: I think I want to rename this struct to AVR5 or so
             }
         }
 
-        /// AKA: PIND. See ATMega328p Datasheet section 14.4.4. // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
+        /// 14.4.10 PIND – Port D Input Pins Address
+        /// ```
+        /// --------------------------------------------------------------------------------
+        /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+        /// --------------------------------------------------------------------------------
+        /// | 0x09 (0x29)  | PIND7 | PIND6 | PIND5 | PIND4 | PIND3 | PIND2 | PIND1 | PIND0 |
+        /// --------------------------------------------------------------------------------
+        /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+        /// --------------------------------------------------------------------------------
+        /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+        /// --------------------------------------------------------------------------------
+        // TODO: How should we make the Datasheet refrence more generic? Include more of this documentation directly in the code?
         @inlinable
         @inline(__always)
         public static var inputAddress: UInt8 {
