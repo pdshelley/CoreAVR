@@ -110,17 +110,17 @@ public struct UART0: UARTPort {
     
     /// 20.11.1 UDRn – USART I/O Data Register n
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    ///              |                          RXB                                  |
-    ///-------------------------------------------------------------------------------
-    ///              |                          TXB                                  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// |              |                          RXB                                  |
+    /// --------------------------------------------------------------------------------
+    /// |              |                          TXB                                  |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     /// The USART Transmit Data Buffer Register and USART Receive Data Buffer Registers share the same I/O address referred to as
     /// USART Data Register or UDRn. The Transmit Data Buffer Register (TXB) will be the destination for data written to the UDRn
@@ -137,6 +137,8 @@ public struct UART0: UARTPort {
     /// to this behavior of the receive buffer, do not use Read-Modify-Write instructions (SBI and CBI) on this location. Be careful
     /// when using bit test instructions (SBIC and SBIS), since these also will change the state of the FIFO.
     ///
+    @inlinable
+    @inline(__always)
     public static var USARTIODataRegister:   UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC6)
@@ -150,16 +152,18 @@ public struct UART0: UARTPort {
     /// 20.11.2 UCSRnA – USART Control and Status Register n A
     /// 
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    ///              | RXCn  | TXCn  | UDREn |  FEn  | DORn  | UPEn  | U2Xn  | MPCMn |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |  R/W  |   R   |   R   |   R   |   R   |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   1   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// |              | RXCn  | TXCn  | UDREn |  FEn  | DORn  | UPEn  | U2Xn  | MPCMn |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |   R   |  R/W  |   R   |   R   |   R   |   R   |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   1   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
+    @inlinable
+    @inline(__always)
     public static var USARTControlAndStatusRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC0)
@@ -172,16 +176,18 @@ public struct UART0: UARTPort {
 
     /// 20.11.3 UCSRnB – USART Control and Status Register n B
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    ///              |RXCIEn |TXCIEn |UDRIEn | RXENn | TXENn |UCSZn2 | RXB8n | TXB8n |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |   R   |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// |              |RXCIEn |TXCIEn |UDRIEn | RXENn | TXENn |UCSZn2 | RXB8n | TXB8n |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |   R   |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
+    @inlinable
+    @inline(__always)
     public static var USARTControlAndStatusRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC1)
@@ -194,16 +200,18 @@ public struct UART0: UARTPort {
 
     /// 20.11.4 UCSRnC – USART Control and Status Register n C
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    ///              |UMSELn1|UMSELn0| UPMn1 | UPMn0 | USBSn |UCSZn1 |UCSZn0 |UCPOLn |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   1   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// |              |UMSELn1|UMSELn0| UPMn1 | UPMn0 | USBSn |UCSZn1 |UCSZn0 |UCPOLn |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   1   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
+    @inlinable
+    @inline(__always)
     public static var USARTControlAndStatusRegisterC: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC2)
@@ -216,15 +224,15 @@ public struct UART0: UARTPort {
 
     /// 20.11.5 UBRRnH – USART Baud Rate Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |  15   |  14   |  13   |  12   |  11   |  10   |   9   |   8   |
-    ///-------------------------------------------------------------------------------
-    ///              |   -   |   -   |   -   |   -   |            UBRRn              |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |  15   |  14   |  13   |  12   |  11   |  10   |   9   |   8   |
+    /// --------------------------------------------------------------------------------
+    /// |              |   -   |   -   |   -   |   -   |            UBRRn              |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     ///```
     /// Bits 15 through 12 are reserved for future use. For compatibility with future devices, these bit must be written to zero
     /// when UBRRnH is written.
@@ -233,6 +241,8 @@ public struct UART0: UARTPort {
     /// UBRRnL contains the eight least significant bits of the USART baud rate. Ongoing transmissions by the Transmitter and Receiver
     /// will be corrupted if the baud rate is changed. Writing UBRRnL will trigger an immediate update of the baud rate prescaler.
     ///
+    @inlinable
+    @inline(__always)
     public static var USARTBaudRateRegisterH: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC5)
@@ -245,20 +255,22 @@ public struct UART0: UARTPort {
 
     /// 20.11.5 UBRRnL – USART Baud Rate Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    ///              |                         UBRRn                                 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// |              |                         UBRRn                                 |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     /// This is a 12-bit register which contains the USART baud rate. The UBRRnH contains the four most significant bits, and the
     /// UBRRnL contains the eight least significant bits of the USART baud rate. Ongoing transmissions by the Transmitter and Receiver
     /// will be corrupted if the baud rate is changed. Writing UBRRnL will trigger an immediate update of the baud rate prescaler.
     ///
+    @inlinable
+    @inline(__always)
     public static var USARTBaudRateRegisterL: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC4)
@@ -360,7 +372,25 @@ public extension UARTPort {
         }
     }
 
-    /// Baud Rate Register
+    /// UBBRn – USART Baud Rate Register
+    /// ```
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// |              |   -   |   -   |   -   |   -   |         UBRRn[12:8]           |
+    /// |              |                       UBRRn[7:0]                              |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// ```
+    /// Bits 15 through 12 are reserved for future use. For compatibility with future devices, these bit must be written to zero
+    /// when UBRRnH is written.
+    ///
+    /// This is a 12-bit register which contains the USART baud rate. The UBRRnH contains the four most significant bits, and the
+    /// UBRRnL contains the eight least significant bits of the USART baud rate. Ongoing transmissions by the Transmitter and Receive
+    /// will be corrupted if the baud rate is changed. Writing UBRRnL will trigger an immediate update of the baud rate prescaler.
     @inlinable
     @inline(__always)
     static var baudRateRegister: UInt16 {
@@ -368,7 +398,7 @@ public extension UARTPort {
             return (UInt16(USARTBaudRateRegisterH) << 8) | UInt16(USARTBaudRateRegisterL)
         }
         set {
-            USARTBaudRateRegisterH = UInt8((newValue & 0b1111111100000000) >> 8)
+            USARTBaudRateRegisterH = UInt8((newValue & 0b11111111_00000000) >> 8)
             USARTBaudRateRegisterL = UInt8(newValue & 0b11111111)
         }
     }
