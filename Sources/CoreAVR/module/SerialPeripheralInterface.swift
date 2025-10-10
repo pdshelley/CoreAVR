@@ -119,13 +119,21 @@ public protocol SPIPort {
 public typealias spi0 = SPI0
 
 public struct SPI0: SPIPort {
-    /// -------------------------------------
-    /// SPI Control Register
-    /// -------------------------------------
-    
+    /// 19.5.1 SPCR – SPI Control Register
+    /// ```
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | 0x2C (0x4C)  |  SPIE |  SPE  |  DORD |  MSTR | CPOL  |  CPHA |  SPR1 |  SPR0 |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// ```
     @inlinable
     @inline(__always)
-    public static var controlRegister: UInt8 { //SPCR
+    public static var controlRegister: UInt8 {
         get {
             return _volatileRegisterReadUInt8(0x4C)
         }
@@ -147,7 +155,7 @@ public struct SPI0: SPIPort {
             return !((controlRegister & 0b10000000) == 0)
         }
         set {
-            controlRegister = (controlRegister & ~0b10000000) | (((newValue == true) ? 1 : 0) << 7 & 0b10000000)
+            controlRegister = (controlRegister & ~0b10000000) | ((newValue ? 1 : 0) << 7 & 0b10000000)
         }
     }
     
@@ -163,7 +171,7 @@ public struct SPI0: SPIPort {
             return !((controlRegister & 0b01000000) == 0)
         }
         set {
-            controlRegister = (controlRegister & ~0b01000000) | (((newValue == true) ? 1 : 0) << 6 & 0b01000000)
+            controlRegister = (controlRegister & ~0b01000000) | ((newValue ? 1 : 0) << 6 & 0b01000000)
         }
     }
     
@@ -180,7 +188,7 @@ public struct SPI0: SPIPort {
             return !((controlRegister & 0b00100000) == 0)
         }
         set {
-            controlRegister = (controlRegister & ~0b00100000) | (((newValue == true) ? 1 : 0) << 5 & 0b00100000)
+            controlRegister = (controlRegister & ~0b00100000) | ((newValue ? 1 : 0) << 5 & 0b00100000)
         }
     }
     
@@ -198,7 +206,7 @@ public struct SPI0: SPIPort {
             return !((controlRegister & 0b00010000) == 0)
         }
         set {
-            controlRegister = (controlRegister & ~0b00010000) | (((newValue == true) ? 1 : 0) << 4 & 0b00010000)
+            controlRegister = (controlRegister & ~0b00010000) | ((newValue ? 1 : 0) << 4 & 0b00010000)
         }
     }
     
@@ -284,14 +292,21 @@ public struct SPI0: SPIPort {
         }
     }
     
-    /// -------------------------------------
-    /// SPI Status Register
-    /// -------------------------------------
-    
-    
+    /// 19.5.2 SPSR – SPI Status Register
+    /// ```
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | 0x2D (0x4D)  |  SPIF |  WCOL |   -   |   -   |   -   |   -   |   -   | SPI2X |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |   R   |   R   |   R   |   R   |   R   |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// ```
     @inlinable
     @inline(__always)
-    public static var statusRegister: UInt8 { //SPSR
+    public static var statusRegister: UInt8 {
         get {
             return _volatileRegisterReadUInt8(0x4D)
         }
@@ -317,7 +332,7 @@ public struct SPI0: SPIPort {
             return !((statusRegister & 0b10000000) == 0)
         }
         set {
-            statusRegister = (statusRegister & ~0b10000000) | (((newValue == true) ? 1 : 0) << 7 & 0b10000000)
+            statusRegister = (statusRegister & ~0b10000000) | ((newValue ? 1 : 0) << 7 & 0b10000000)
         }
     }
     
@@ -335,7 +350,7 @@ public struct SPI0: SPIPort {
             return !((statusRegister & 0b01000000) == 0)
         }
         set {
-            statusRegister = (statusRegister & ~0b01000000) | (((newValue == true) ? 1 : 0) << 6 & 0b01000000)
+            statusRegister = (statusRegister & ~0b01000000) | ((newValue ? 1 : 0) << 6 & 0b01000000)
         }
     }
     
@@ -357,18 +372,25 @@ public struct SPI0: SPIPort {
             return !((statusRegister & 0b00000001) == 0)
         }
         set {
-            statusRegister = (statusRegister & ~0b00000001) | (((newValue == true) ? 1 : 0) & 0b00000001)
+            statusRegister = (statusRegister & ~0b00000001) | ((newValue ? 1 : 0) & 0b00000001)
         }
     }
     
-    /// -------------------------------------
-    /// SPI Data Register
-    /// -------------------------------------
-    
-    
+    /// 19.5.3 SPDR – SPI Data Register
+    /// ```
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | 0x2E (0x4E)  |  MSB  |   -   |   -   |   -   |   -   |   -   |   -   |  LSB  |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |   R   |   R   |   R   |   R   |   R   |   R   |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   X   |   X   |   X   |   X   |   X   |   X   |   X   |   X   |
+    /// --------------------------------------------------------------------------------
+    /// ```
     @inlinable
     @inline(__always)
-    public static var dataRegister: UInt8 { //SPDR
+    public static var dataRegister: UInt8 {
         get {
             return _volatileRegisterReadUInt8(0x4E)
         }
