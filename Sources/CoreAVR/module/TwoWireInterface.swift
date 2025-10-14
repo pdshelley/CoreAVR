@@ -159,15 +159,15 @@ struct TwoWireInterface: TwoWireInterfacePort {
     
     /// 22.9.1 TWBR – TWI Bit Rate Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       | TWBR7 | TWBR6 | TWBR5 | TWBR4 | TWBR3 | TWBR2 | TWBR1 | TWBR0 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | (0xB8)       | TWBR7 | TWBR6 | TWBR5 | TWBR4 | TWBR3 | TWBR2 | TWBR1 | TWBR0 |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     /// TWBR selects the division factor for the bit rate generator. The bit rate generator is a
     /// frequency divider which generates the SCL clock frequency in the Master modes. See ”Bit
@@ -185,15 +185,15 @@ struct TwoWireInterface: TwoWireInterfacePort {
     
     /// 22.9.2 TWCR – TWI Control Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBC)       | TWINT | TWEA  | TWSTA | TWSTO | TWWC  | TWEN  |   -   | TWIE  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |   R   |  R/W  |   R   |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | (0xBC)       | TWINT | TWEA  | TWSTA | TWSTO | TWWC  | TWEN  |   -   | TWIE  |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |   R   |  R/W  |   R   |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     /// The TWCR is used to control the operation of the TWI. It is used to enable the TWI, to
     /// initiate a Master access by applying a START condition to the bus, to generate a Receiver
@@ -214,15 +214,15 @@ struct TwoWireInterface: TwoWireInterfacePort {
     
     /// 2.9.3 TWSR – TWI Status Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xB9)       | TWS7  | TWS6  | TWS5  | TWS4  | TWS3  |   -   | TWPS1 | TWPS0 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |   R   |   R   |   R   |   R   |   R   |   R/W |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | (0xB9)       | TWS7  | TWS6  | TWS5  | TWS4  | TWS3  |   -   | TWPS1 | TWPS0 |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |   R   |   R   |   R   |   R   |   R   |   R   |   R/W |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
@@ -237,15 +237,15 @@ struct TwoWireInterface: TwoWireInterfacePort {
     
     /// 22.9.4 TWDR – TWI Data Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBB)       | TWD7  | TWD6  | TWD5  | TWD4  | TWD3  | TWD2  | TWD1  | TWD0  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | (0xBB)       | TWD7  | TWD6  | TWD5  | TWD4  | TWD3  | TWD2  | TWD1  | TWD0  |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     /// In Transmit mode, TWDR contains the next byte to be transmitted. In Receive mode, the TWDR
     /// contains the last byte received. It is writable while the TWI is not in the process of
@@ -273,15 +273,15 @@ struct TwoWireInterface: TwoWireInterfacePort {
     
     /// 22.9.5 TWAR – TWI (Slave) Address Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBA)       | TWA6  | TWA5  | TWA4  | TWA3  | TWA2  | TWA1  | TWA0  | TWGCE |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   1   |   1   |   1   |   1   |   1   |   1   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | (0xBA)       | TWA6  | TWA5  | TWA4  | TWA3  | TWA2  | TWA1  | TWA0  | TWGCE |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   1   |   1   |   1   |   1   |   1   |   1   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     /// The TWAR should be loaded with the 7-bit Slave address (in the seven most significant bits
     /// of TWAR) to which the TWI will respond when programmed as a Slave Transmitter or Receiver,
@@ -304,15 +304,15 @@ struct TwoWireInterface: TwoWireInterfacePort {
     
     /// 22.9.6 TWAMR – TWI (Slave) Address Mask Register
     /// ```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0xBD)       | TWAM6 | TWAM5 | TWAM4 | TWAM3 | TWAM2 | TWAM1 | TWAM0 |   -   |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |   R   |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// | (0xBD)       | TWAM6 | TWAM5 | TWAM4 | TWAM3 | TWAM2 | TWAM1 | TWAM0 |   -   |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |   R   |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
@@ -347,8 +347,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var interruptFlag: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 7) }
-        set { setRegisterBit(TWIControlRegister, bit: 7, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b10000000) >> UInt8(7)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001) << UInt8(7)
+        }
     }
     
     /// Enable Acknowledge
@@ -364,8 +369,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var enableAcknowledge: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 6) }
-        set { setRegisterBit(TWIControlRegister, bit: 6, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b01000000) >> UInt8(6)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001) << UInt8(6)
+        }
     }
     
     /// Start Condition
@@ -379,8 +389,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var startCondition: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 5) }
-        set { setRegisterBit(TWIControlRegister, bit: 5, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b00100000) >> UInt8(5)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001) << UInt8(5)
+        }
     }
     
     /// Stop Condition
@@ -394,8 +409,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var stopCondition: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 4) }
-        set { setRegisterBit(TWIControlRegister, bit: 4, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b00010000) >> UInt8(4)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001) << UInt8(4)
+        }
     }
     
     /// Write Collision Flag
@@ -406,8 +426,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var writeCollisionFlag: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 3) }
-        set { setRegisterBit(TWIControlRegister, bit: 3, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b00001000) >> UInt8(3)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001) << UInt8(3)
+        }
     }
     
     /// Enable
@@ -420,8 +445,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var enable: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 2) }
-        set { setRegisterBit(TWIControlRegister, bit: 2, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b00000100) >> UInt8(2)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001) << UInt8(2)
+        }
     }
     
     /// Interrupt Enable
@@ -432,8 +462,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var interruptEnable: Bool {
-        get { return getRegisterBit(TWIControlRegister, bit: 0) }
-        set { setRegisterBit(TWIControlRegister, bit: 0, value: newValue)}
+        get {
+            let flag = (TWIControlRegister & 0b00000001)
+            return flag == 1
+        }
+        set {
+            TWIControlRegister |= ((newValue ? 1 : 0) & 0b00000001)
+        }
     }
     
     /// Status
@@ -444,6 +479,10 @@ extension TwoWireInterfacePort {
     /// 5-bit status value and the 2-bit prescaler value. The application designer should mask the prescaler
     /// bits to zero when checking the Status bits. This makes status checking independent of prescaler
     /// setting. This approach is used in this datasheet, unless otherwise noted.
+    // TODO: Wrap this into an enum, instead of returning UInt8
+    // Thoughts: The datasheet mentioned the different status codes are described "later in this section".
+    // I have not been able to find "later in this section" as of writing this.
+    // I have found a table earlier in the section about status bits, but those only seem to be applying to I2C in Slave Mode.
     @inlinable
     @inline(__always)
     static var status: UInt8 {
@@ -457,17 +496,17 @@ extension TwoWireInterfacePort {
     /// These bits can be read and written, and control the bit rate prescaler.
     /// ```
     /// Table 22-7. TWI Bit Rate Prescaler
-    ///----------------------------------
-    /// TWPS1 | TWPS0 | Prescaler Value |
-    ///----------------------------------
-    ///   0   |   0   | 1               |
-    ///----------------------------------
-    ///   0   |   1   | 4               |
-    ///----------------------------------
-    ///   1   |   0   | 16              |
-    ///----------------------------------
-    ///   1   |   1   | 64              |
-    ///----------------------------------
+    /// -----------------------------------
+    /// | TWPS1 | TWPS0 | Prescaler Value |
+    /// -----------------------------------
+    /// |   0   |   0   | 1               |
+    /// -----------------------------------
+    /// |   0   |   1   | 4               |
+    /// -----------------------------------
+    /// |   1   |   0   | 16              |
+    /// -----------------------------------
+    /// |   1   |   1   | 64              |
+    /// -----------------------------------
     /// ```
     /// To calculate bit rates, see ”Bit Rate Generator Unit” on page 221. The value of TWPS1...0 is used
     /// in the equation.
@@ -506,8 +545,13 @@ extension TwoWireInterfacePort {
     @inlinable
     @inline(__always)
     static var generalCallRecognitionEnable: Bool {
-        get { return getRegisterBit(TWISlaveAddressRegister, bit: 0b00000001) }
-        set { setRegisterBit(TWISlaveAddressRegister, bit: 0b00000001, value: newValue)}
+        get {
+            let flag = (TWISlaveAddressRegister & 0b00000001)
+            return flag == 1
+        }
+        set {
+            TWISlaveAddressRegister |= ((newValue ? 1 : 0) & 0b00000001)
+        }
     }
     
     /// Slave Address Mask
