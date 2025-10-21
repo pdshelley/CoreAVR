@@ -9,11 +9,11 @@
 //===----------------------------------------------------------------------===//
 
 
-typealias timer2 = Timer2
+public typealias timer2 = Timer2
 
 /// Timer 2 implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
 // NOTE: PRTIM2 needs to be written to zero to enable Timer/Counter2 module. See Datasheet section 18.2
-struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
+public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     
     /// 18.11.1 TCCR2A – Timer/Counter Control Register A
     ///```
@@ -29,7 +29,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     @inlinable
     @inline(__always)
-    static var timerCounterControlRegisterA: UInt8 {
+    public static var timerCounterControlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB0)
         }
@@ -53,7 +53,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     @inlinable
     @inline(__always)
-    static var timerCounterControlRegisterB: UInt8 {
+    public static var timerCounterControlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB1)
         }
@@ -79,7 +79,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
-    static var timerCounterNumber: UInt8 {
+    public static var timerCounterNumber: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB2)
         }
@@ -104,7 +104,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    static var outputCompareRegisterA: UInt8 {
+    public static var outputCompareRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB3)
         }
@@ -129,7 +129,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    static var outputCompareRegisterB: UInt8 {
+    public static var outputCompareRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB4)
         }
@@ -155,7 +155,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
     @inlinable
     @inline(__always)
-    static var timerInterruptMaskRegister: UInt8 {
+    public static var timerInterruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x70)
         }
@@ -181,7 +181,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
-    static var timerInterruptFlagRegister: UInt8 {
+    public static var timerInterruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x37)
         }
@@ -207,7 +207,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
     @inlinable
     @inline(__always)
-    static var asynchronousStatusRegister: UInt8 {
+    public static var asynchronousStatusRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB6)
         }
@@ -233,7 +233,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
     @inlinable
     @inline(__always)
-    static var generalTimerCounterControlRegister: UInt8 {
+    public static var generalTimerCounterControlRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x43)
         }
@@ -342,7 +342,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    static var CompareOutputModeA: Timer.CompareOutputMode {
+    public static var CompareOutputModeA: Timer.CompareOutputMode {
         get {
             let mode = (timerCounterControlRegisterA & 0b11000000) >> UInt8(6)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -425,7 +425,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    static var CompareOutputModeB: Timer.CompareOutputMode {
+    public static var CompareOutputModeB: Timer.CompareOutputMode {
         get {
             let mode = (timerCounterControlRegisterB & 0b00110000) >> 4
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -465,7 +465,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// pin is configured as an output. This feature allows software control of the counting.
     @inlinable
     @inline(__always)
-    static var prescaler: InternalClockOnlyPrescaling { // Note: In the datasheet this is called the Clock Select. Prescaler is probably more descriptive.
+    public static var prescaler: InternalClockOnlyPrescaling { // Note: In the datasheet this is called the Clock Select. Prescaler is probably more descriptive.
         get {
             let mode = timerCounterControlRegisterB & 0b00000111
             return InternalClockOnlyPrescaling.init(rawValue: mode) ?? .noClockSource
@@ -487,7 +487,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Test This!
     @inlinable
     @inline(__always)
-    static var timerSynchronizationMode: Timer.TimerSynchronizationMode {
+    public static var timerSynchronizationMode: Timer.TimerSynchronizationMode {
         get {
             let mode = (generalTimerCounterControlRegister & 0b10000000) >> 7
             return Timer.TimerSynchronizationMode.init(rawValue: mode) ?? .disabled
@@ -535,7 +535,7 @@ struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///
     @inlinable
     @inline(__always)
-    static var waveformGenerationMode: Timer8Bit.WaveformGenerationMode {
+    public static var waveformGenerationMode: Timer8Bit.WaveformGenerationMode {
         get {
             let mode = ((timerCounterControlRegisterB & 0b00001000) >> 1) | (timerCounterControlRegisterA & 0b00000011)
             return Timer8Bit.WaveformGenerationMode(rawValue: mode) ?? .normal

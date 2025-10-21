@@ -9,11 +9,11 @@
 //===----------------------------------------------------------------------===//
 
 
-typealias timer1 = Timer1
+public typealias timer1 = Timer1
 
 /// Timer 1 implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
 // NOTE: PRTIM1 needs to be written to zero to enable Timer/Counter1 module. See Datasheet section 16.2
-struct Timer1: Timer16Bit, HasExternalClock {
+public struct Timer1: Timer16Bit, HasExternalClock {
     
 
     /// 16.11.1 TCCR1A – Timer/Counter1 Control Register A
@@ -24,7 +24,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     /// | Read/Write   |  R/W   |  R/W   |  R/W   |  R/W   |   R   |   R   |  R/W  |  R/W  |
     /// | InitialValue |   0    |   0    |   0    |   0    |   0   |   0   |   0   |   0   |
     /// ```
-    static var timerCounterControlRegisterA: UInt8 {
+    public static var timerCounterControlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x80)
         }
@@ -46,7 +46,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    static var timerCounterControlRegisterB: UInt8 {
+    public static var timerCounterControlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x81)
         }
@@ -68,7 +68,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    static var timerCounterControlRegisterC: UInt8 {
+    public static var timerCounterControlRegisterC: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x82)
         }
@@ -95,7 +95,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: Figure out what the TCNT1 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
-    static var timerCounterNumber: UInt16 {
+    public static var timerCounterNumber: UInt16 {
         get {
             _volatileRegisterReadUInt16(0x84) // TODO: Check if we need to read from 0x84 or 0x85 to get the correct value
         }
@@ -122,7 +122,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: I believe OCR1A always needs to be larger than OCR1B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    static var outputCompareRegisterA: UInt16 {
+    public static var outputCompareRegisterA: UInt16 {
         get {
             _volatileRegisterReadUInt16(0x88) // TODO: Check if we need to read from 0x88 or 0x89 to get the correct value
         }
@@ -149,7 +149,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: I believe OCR1A always needs to be larger than OCR1B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    static var outputCompareRegisterB: UInt16 {
+    public static var outputCompareRegisterB: UInt16 {
         get {
             _volatileRegisterReadUInt16(0x8A) // TODO: Check if we need to read from 0x8A or 0x8B to get the correct value
         }
@@ -174,7 +174,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     ///```
     @inlinable
     @inline(__always)
-    static var inputCaptureRegister: UInt16 {
+    public static var inputCaptureRegister: UInt16 {
         get {
             _volatileRegisterReadUInt16(0x86) // TODO: Check if we need to read from 0x86 or 0x87 to get the correct value
         }
@@ -200,7 +200,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: Figure out what the TIMSK1 (Timer Interrupt Mask Register) is used for.
     @inlinable
     @inline(__always)
-    static var timerInterruptMaskRegister: UInt8 {
+    public static var timerInterruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x6F)
         }
@@ -226,7 +226,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: Figure out what the TIFR1 (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
-    static var timerInterruptFlagRegister: UInt8 {
+    public static var timerInterruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x36)
         }
@@ -246,7 +246,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    static var CompareOutputModeA: Timer.CompareOutputMode {
+    public static var CompareOutputModeA: Timer.CompareOutputMode {
         get {
             let mode = (timerCounterControlRegisterA & 0b11000000) >> UInt8(6)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -261,7 +261,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    static var CompareOutputModeB: Timer.CompareOutputMode {
+    public static var CompareOutputModeB: Timer.CompareOutputMode {
         get {
             let mode = (timerCounterControlRegisterA & 0b00110000) >> 4
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -273,7 +273,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     
     @inlinable
     @inline(__always)
-    static var prescaler: HasExternalClockPrescaling {
+    public static var prescaler: HasExternalClockPrescaling {
         get {
             let mode = timerCounterControlRegisterA & 0b00000111
             return HasExternalClockPrescaling.init(rawValue: mode) ?? .noClockSource
@@ -311,7 +311,7 @@ struct Timer1: Timer16Bit, HasExternalClock {
     ///
     @inlinable
     @inline(__always)
-    static var waveformGenerationMode: Timer16Bit.WaveformGenerationMode {
+    public static var waveformGenerationMode: Timer16Bit.WaveformGenerationMode {
         get {
             let mode = ((timerCounterControlRegisterB & 0b00001000) >> 1) | (timerCounterControlRegisterA & 0b00000011)
             return Timer16Bit.WaveformGenerationMode.init(rawValue: mode) ?? .normal
