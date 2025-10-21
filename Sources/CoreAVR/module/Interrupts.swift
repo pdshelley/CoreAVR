@@ -586,7 +586,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask23: UInt8 {
+    public static var pinChangeEnableMask23: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b10000000) >> UInt8(7)
             return flag == 1
@@ -604,7 +604,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask22: UInt8 {
+    public static var pinChangeEnableMask22: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b01000000) >> UInt8(6)
             return flag == 1
@@ -622,7 +622,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask21: UInt8 {
+    public static var pinChangeEnableMask21: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b00100000) >> UInt8(5)
             return flag == 1
@@ -640,7 +640,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask20: UInt8 {
+    public static var pinChangeEnableMask20: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b00010000) >> UInt8(4)
             return flag == 1
@@ -658,7 +658,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask19: UInt8 {
+    public static var pinChangeEnableMask19: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b00001000) >> UInt8(3)
             return flag == 1
@@ -676,7 +676,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask18: UInt8 {
+    public static var pinChangeEnableMask18: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b00000100) >> UInt8(2)
             return flag == 1
@@ -694,7 +694,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask17: UInt8 {
+    public static var pinChangeEnableMask17: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b00000010) >> UInt8(1)
             return flag == 1
@@ -712,7 +712,7 @@ public struct Interrupts {
     /// pin. If PCINT[23:16] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask16: UInt8 {
+    public static var pinChangeEnableMask16: Bool {
         get {
             let flag = (pinChangeMaskRegister2 & 0b00000001)
             return flag == 1
@@ -732,7 +732,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask14: UInt8 {
+    public static var pinChangeEnableMask14: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b01000000) >> UInt8(6)
             return flag == 1
@@ -750,7 +750,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask13: UInt8 {
+    public static var pinChangeEnableMask13: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b00100000) >> UInt8(5)
             return flag == 1
@@ -768,7 +768,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask12: UInt8 {
+    public static var pinChangeEnableMask12: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b00010000) >> UInt8(4)
             return flag == 1
@@ -786,7 +786,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask11: UInt8 {
+    public static var pinChangeEnableMask11: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b00001000) >> UInt8(3)
             return flag == 1
@@ -804,7 +804,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask10: UInt8 {
+    public static var pinChangeEnableMask10: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b00000100) >> UInt8(2)
             return flag == 1
@@ -822,7 +822,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask9: UInt8 {
+    public static var pinChangeEnableMask9: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b00000010) >> UInt8(1)
             return flag == 1
@@ -840,7 +840,7 @@ public struct Interrupts {
     /// pin. If PCINT[14:8] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask8: UInt8 {
+    public static var pinChangeEnableMask8: Bool {
         get {
             let flag = (pinChangeMaskRegister1 & 0b00000001)
             return flag == 1
@@ -858,7 +858,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask7: UInt8 {
+    public static var pinChangeEnableMask7: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b10000000) >> UInt8(7)
             return flag == 1
@@ -876,7 +876,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask6: UInt8 {
+    public static var pinChangeEnableMask6: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b01000000) >> UInt8(6)
             return flag == 1
@@ -894,7 +894,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask5: UInt8 {
+    public static var pinChangeEnableMask5: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b00100000) >> UInt8(5)
             return flag == 1
@@ -912,7 +912,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask4: UInt8 {
+    public static var pinChangeEnableMask4: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b00010000) >> UInt8(4)
             return flag == 1
@@ -930,7 +930,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask3: UInt8 {
+    public static var pinChangeEnableMask3: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b00001000) >> UInt8(3)
             return flag == 1
@@ -948,7 +948,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask2: UInt8 {
+    public static var pinChangeEnableMask2: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b00000100) >> UInt8(2)
             return flag == 1
@@ -966,7 +966,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask1: UInt8 {
+    public static var pinChangeEnableMask1: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b00000010) >> UInt8(1)
             return flag == 1
@@ -984,7 +984,7 @@ public struct Interrupts {
     /// PCINT[7:0] is cleared, pin change interrupt on the corresponding I/O pin is disabled.
     @inlinable
     @inline(__always)
-    public static var pinChangeEnableMask0: UInt8 {
+    public static var pinChangeEnableMask0: Bool {
         get {
             let flag = (pinChangeMaskRegister0 & 0b00000001)
             return flag == 1
