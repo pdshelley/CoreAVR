@@ -9,11 +9,11 @@
 //===----------------------------------------------------------------------===//
 
 
-typealias timer0 = Timer0
+public typealias timer0 = Timer0
 
 /// Timer 0 implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
 // NOTE: PRTIM0 needs to be written to zero to enable Timer/Counter0 module. See Datasheet section 15.2
-struct Timer0: Timer8Bit, HasExternalClock {
+public struct Timer0: Timer8Bit, HasExternalClock {
 
     /// 15.9.1 TCCR0A – Timer/Counter Control Register A
     /// ```
@@ -29,7 +29,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     /// ```
     @inlinable
     @inline(__always)
-    static var timerCounterControlRegisterA: UInt8 {
+    public static var timerCounterControlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x44)
         }
@@ -49,7 +49,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     ///```
     @inlinable
     @inline(__always)
-    static var timerCounterControlRegisterB: UInt8 {
+    public static var timerCounterControlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x45)
         }
@@ -71,7 +71,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: Figure out what the TCNT0 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
-    static var timerCounterNumber: UInt8 {
+    public static var timerCounterNumber: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x46)
         }
@@ -92,7 +92,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: I believe OCR0A always needs to be larger than OCR0B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    static var outputCompareRegisterA: UInt8 {
+    public static var outputCompareRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x47)
         }
@@ -114,7 +114,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: I believe OCR0A always needs to be larger than OCR0B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    static var outputCompareRegisterB: UInt8 {
+    public static var outputCompareRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x48)
         }
@@ -136,7 +136,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: Figure out what the TIMSK0 (Timer Interrupt Mask Register) is used for.
     @inlinable
     @inline(__always)
-    static var timerInterruptMaskRegister: UInt8 {
+    public static var timerInterruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x6E)
         }
@@ -158,7 +158,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: Figure out what the TIFR (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
-    static var timerInterruptFlagRegister: UInt8 {
+    public static var timerInterruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x35)
         }
@@ -172,7 +172,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    static var CompareOutputModeA: Timer.CompareOutputMode {
+    public static var CompareOutputModeA: Timer.CompareOutputMode {
         get {
             let mode = (timerCounterControlRegisterA & 0b11000000) >> UInt8(6) // TODO: Check Bit Mask
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -187,7 +187,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    static var CompareOutputModeB: Timer.CompareOutputMode {
+    public static var CompareOutputModeB: Timer.CompareOutputMode {
         get {
             let mode = (timerCounterControlRegisterA & 0b00110000) >> 4 // TODO: Check Bit Mask
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -199,7 +199,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     
     @inlinable
     @inline(__always)
-    static var prescaler: HasExternalClockPrescaling {
+    public static var prescaler: HasExternalClockPrescaling {
         get {
             let mode = timerCounterControlRegisterB & 0b00000111 // TODO: Check Bit Mask
             return HasExternalClockPrescaling.init(rawValue: mode) ?? .noClockSource
@@ -229,7 +229,7 @@ struct Timer0: Timer8Bit, HasExternalClock {
     ///
     @inlinable
     @inline(__always)
-    static var waveformGenerationMode: Timer8Bit.WaveformGenerationMode {
+    public static var waveformGenerationMode: Timer8Bit.WaveformGenerationMode {
         get {
             let mode = ((timerCounterControlRegisterB & 0b00001000) >> 1) | (timerCounterControlRegisterA & 0b00000011) // TODO: Check Bit Mask
             return Timer8Bit.WaveformGenerationMode.init(rawValue: mode) ?? .normal

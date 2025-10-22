@@ -27,7 +27,7 @@
 // TODO: What happens with chips that have multiple Async Timers? Is this possible?
 // TODO: Explore using Generics vs Protocols
 
-protocol Timer {
+public protocol Timer {
     
     /// Timer/Counter Control Register A
     /// AKA TCCR0A See ATtiny13A Datasheet Section 11.9.1.
@@ -95,7 +95,7 @@ protocol Timer {
 }
 
 // TODO: I've added notes from the datasheet that show the differences between all the modes for timers 0 and 2 which are 8 bit. This needs to be abstracted in some way and made safe.
-enum CompareOutputModeOption: UInt8 {
+public enum CompareOutputModeOption: UInt8 {
     
     /// For A&B non-PWM Mode:           Normal port operation, Output Compare Pin disconnected. See Tables 15-2, 15-5, 18-2, or Table 18-5.
     /// For A&B Fast PWM Mode:          Normal port operation, Output Compare Pin disconnected. See Tables 18-3 or Table 18-6.
@@ -134,7 +134,7 @@ enum CompareOutputModeOption: UInt8 {
 
 /// Datasheet Section 17.4.1 GTCCR – Generaral Timer/Counter Control Register
 /// Bit 7
-enum TimerSynchronizationModeOption: UInt8 {
+public enum TimerSynchronizationModeOption: UInt8 {
     /// Enables TSM (Timer/Counter Synchronization) mode. In this mode, the values written to PSRASY and PSRSYNC are kept, keeping the corresponding prescaler reset signals asserted.
     /// This ensures that the corresponding Timer/Counters are halted and can be configured to the same value without the risk of one of them advancing during configuration
     case enabled = 1
@@ -143,7 +143,7 @@ enum TimerSynchronizationModeOption: UInt8 {
 }
 
 
-protocol Timer8Bit: Timer {
+public protocol Timer8Bit: Timer {
     
     /// 11.9.3 TCNT0 – Timer/Counter Register
     /// ```
@@ -194,7 +194,7 @@ protocol Timer8Bit: Timer {
     typealias WaveformGenerationMode = WaveformGenerationMode8Bit
 }
 
-protocol Timer16Bit: Timer {
+public protocol Timer16Bit: Timer {
     
     // TODO: 16 Bit timers have an extra control register C. Wave Form Generation has more modes, other settings might also be more granular.
     static var timerCounterControlRegisterC: UInt8 { get set }
@@ -236,7 +236,7 @@ protocol Timer16Bit: Timer {
 ///  Notes: 1. MAX= 0xFF
 ///       2. BOTTOM= 0x00
 ///
-enum WaveformGenerationMode8Bit: UInt8 {
+public enum WaveformGenerationMode8Bit: UInt8 {
     case normal = 0
     case phaseCorrectPWM = 1
     case clearTimerOnCompareMatch = 2
@@ -247,7 +247,7 @@ enum WaveformGenerationMode8Bit: UInt8 {
     case advancedFastPWM = 7  // TODO: What should this be called?
 }
 
-enum WaveformGenerationMode16Bit: UInt8 {
+public enum WaveformGenerationMode16Bit: UInt8 {
     case normal = 0
     case phaseCorrectPWM8Bit = 1
     case phaseCorrectPWM9Bit = 2
@@ -265,7 +265,7 @@ enum WaveformGenerationMode16Bit: UInt8 {
     case fastPWMOnOutputCompairRegister = 15
 }
 
-protocol HasExternalClock {
+public protocol HasExternalClock {
     static var prescaler: HasExternalClockPrescaling { get set }
 }
 
@@ -295,7 +295,7 @@ protocol HasExternalClock {
 /// ```
 /// If external pin modes are used for the Timer/Counter0, transitions on the T0 pin will clock the counter even if the pin is configured as an output. This feature allows software control of the counting.
 ///
-enum HasExternalClockPrescaling: UInt8 {
+public enum HasExternalClockPrescaling: UInt8 {
     case noClockSource = 0 // No Clock Source - counter is off
     case none = 1 // clkT2S - No Prescaler
     case eight = 2 // clkT2S/8
@@ -306,7 +306,7 @@ enum HasExternalClockPrescaling: UInt8 {
     case tenTwentyFour = 7 // clkT2S/1024
 }
 
-protocol InternalClockOnly {
+public protocol InternalClockOnly {
     static var prescaler: InternalClockOnlyPrescaling { get set }
 }
 
@@ -332,7 +332,7 @@ protocol InternalClockOnly {
 /// |    7   |   1   |   1   |   1   | clkI T2S/1024 (From prescaler)                                  |
 /// |--------|-------|-------|-------|-----------------------------------------------------------------|
 /// ```
-enum InternalClockOnlyPrescaling: UInt8 {
+public enum InternalClockOnlyPrescaling: UInt8 {
     case noClockSource = 0
     case none = 1
     case eight = 2
@@ -361,7 +361,7 @@ enum InternalClockOnlyPrescaling: UInt8 {
 
 
 // TODO: Verify that this assumption is correct.
-protocol AsyncTimer {
+public protocol AsyncTimer {
     // These are only used on the Async timer2?
     static var asynchronousStatusRegister:   UInt8 { get set }
     static var generalTimerCounterControlRegister:  UInt8 { get set }
