@@ -357,11 +357,11 @@ public struct Interrupts {
     @inline(__always)
     public static var interruptSenseControl1: InterruptSenseControl {
         get {
-            let sense = (externalInterruptControlRegisterA & 0b00000011)
+            let sense = (externalInterruptControlRegisterA & 0b00001100) >> UInt8(2)
             return .init(rawValue: sense) ?? .low
         }
         set {
-            externalInterruptControlRegisterA |= (newValue.rawValue & 0b00000011)
+            externalInterruptControlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(2)
         }
     }
     
@@ -378,11 +378,11 @@ public struct Interrupts {
     @inline(__always)
     public static var interruptSenseControl0: InterruptSenseControl {
         get {
-            let sense = (externalInterruptControlRegisterA & 0b00001100) >> UInt8(2)
+            let sense = (externalInterruptControlRegisterA & 0b00000011)
             return .init(rawValue: sense) ?? .low
         }
         set {
-            externalInterruptControlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(2)
+            externalInterruptControlRegisterA |= (newValue.rawValue & 0b00000011)
         }
     }
     
