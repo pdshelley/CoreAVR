@@ -565,11 +565,11 @@ public extension UARTPort {
     }
 }
 
-extension UARTPort where PortDataType == UInt8 {
+public extension UARTPort where PortDataType == UInt8 {
     // See Section 20.6.1
     @inlinable
     @inline(__always)
-    public static func write(_ data: StaticString) {
+    static func write(_ data: StaticString) {
         for character in data {
             writeByte(character)
         }
@@ -577,7 +577,7 @@ extension UARTPort where PortDataType == UInt8 {
     
     @inlinable
     @inline(__always)
-    public static func write(_ int: Int8) {
+    static func write(_ int: Int8) {
         var integer = int
 
         if integer < 0 {
@@ -591,7 +591,7 @@ extension UARTPort where PortDataType == UInt8 {
 
     @inlinable
     @inline(__always)
-    public static func write(_ int: Int16) {
+    static func write(_ int: Int16) {
         var integer = int
 
         if integer < 0 {
@@ -605,7 +605,7 @@ extension UARTPort where PortDataType == UInt8 {
 
     @inlinable
     @inline(__always)
-    public static func write(_ int: UInt8, withLeadingZeros: Bool = false) {
+    static func write(_ int: UInt8, withLeadingZeros: Bool = false) {
         var remainingInteger = int
         var currentDivisor: UInt8 = 100
         var shouldPrintZero = withLeadingZeros
@@ -625,7 +625,7 @@ extension UARTPort where PortDataType == UInt8 {
     
     @inlinable
     @inline(__always)
-    public static func write(_ int: UInt16, withLeadingZeros: Bool = false) {
+    static func write(_ int: UInt16, withLeadingZeros: Bool = false) {
         var remainingInteger = int
         var currentDivisor: UInt16 = 10000
         var shouldPrintZero = withLeadingZeros
@@ -645,7 +645,7 @@ extension UARTPort where PortDataType == UInt8 {
     
     @inlinable
     @inline(__always)
-    public static func write(_ int: UInt32, withLeadingZeros: Bool = false) {
+    static func write(_ int: UInt32, withLeadingZeros: Bool = false) {
         var remainingInteger = int
         var currentDivisor: UInt32 = 1000000000
         var shouldPrintZero = withLeadingZeros
