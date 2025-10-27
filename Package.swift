@@ -12,16 +12,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CCoreAVR",
-            path: "Sources/CCoreAVR",
-            publicHeadersPath: "include"
-        ),
-        .target(
             name: "CoreAVR",
-            dependencies: [
-                .target(name: "CCoreAVR")
-            ],
-            path: "Sources/CoreAVR"
+            publicHeadersPath: ".",
+            cSettings: [
+                .headerSearchPath(".")
+            ]
         )
     ]
 )
