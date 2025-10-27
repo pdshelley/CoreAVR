@@ -1,4 +1,5 @@
 files:
+- module.modulemap
 - Package.swift
 - Sources/CoreAVR/DigitalValue.swift
 - Sources/CoreAVR/CoreAVR.swift
