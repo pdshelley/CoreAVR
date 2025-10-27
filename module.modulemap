@@ -1,0 +1,5 @@
+module CoreAVR {
+    header "CoreAVR.h"
+    export *
+    link "CoreAVR"
+}
