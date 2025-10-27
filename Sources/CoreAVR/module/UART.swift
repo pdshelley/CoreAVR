@@ -11,6 +11,7 @@
 // UART Serial Communications
 //===----------------------------------------------------------------------===//
 
+import CCoreAVR
 
 // Note: The ATmega48A, ATmegaPA, ATmega88A, ATmegaPA, ATmega168A, ATmegaPA, ATmega328, and ATmega328P, are all pin compatible and have
 // the same hardware features and the only differences are in memory space.

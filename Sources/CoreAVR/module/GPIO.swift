@@ -8,6 +8,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+import CCoreAVR
 
 // Note: The ATmega48A, ATmegaPA, ATmega88A, ATmegaPA, ATmega168A, ATmegaPA, ATmega328, and ATmega328P, are all pin compatible and have the same hardware features and the only differences are in memory space.
 // The 328PB that has an additional UART, SPI, and I2C making a total of 2 each and comes in different package sizes.

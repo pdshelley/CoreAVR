@@ -5,6 +5,8 @@
 //  Created by xander rasschaert on 29/03/2023.
 //
 
+import CCoreAVR
+
 public enum PMSM {
     public enum SleepModeSelect: UInt8 {
         case idle = 0

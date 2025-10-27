@@ -5,6 +5,8 @@
 //  Created by xander rasschaert & Paul Shelley on 25/04/2023.
 //
 
+import CCoreAVR
+
 /// SPI🤞🏼– Serial Peripheral Interface
 ///
 /// 19.1 Features

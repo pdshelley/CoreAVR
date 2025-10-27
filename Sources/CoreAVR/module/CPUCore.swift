@@ -5,6 +5,8 @@
 //  Created by xander rasschaert on 26/04/2023.
 //
 
+import CCoreAVR
+
 public protocol AVRCPUCore{
     static var statusRegister: UInt8 { get set }
     static var stackPointerHigh: UInt8 { get set }

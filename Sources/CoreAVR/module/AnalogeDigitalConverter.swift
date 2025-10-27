@@ -5,6 +5,8 @@
 //  Created by xander rasschaert on 29/03/2023.
 //
 
+import CCoreAVR
+
 public protocol AVRADC{
     static var MultiplexerSelectionRegister: UInt8 { get set }
     static var ControlAndStatusRegisterA: UInt8 { get set }

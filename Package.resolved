@@ -1,0 +1,15 @@
+{
+  "originHash" : "850502fec508546506bf4df874b39a048d1dd52cc23d8c3c5b384c9072940f23",
+  "pins" : [
+    {
+      "identity" : "ccoreavr",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TheAlgorithm476/CCoreAVR.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "2a4c429c9bad945b89d08a263a5c6dc28ad4432d"
+      }
+    }
+  ],
+  "version" : 3
+}

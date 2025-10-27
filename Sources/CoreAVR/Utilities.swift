@@ -8,6 +8,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+import CCoreAVR
+
 //import libc
 //
 //// I think we probably want to expose the delay loops to Swift.

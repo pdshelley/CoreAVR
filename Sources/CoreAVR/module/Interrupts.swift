@@ -5,6 +5,8 @@
 //  Created by Brent Van den Abbeel on 2025-10-17.
 //
 
+import CCoreAVR
+
 public enum InterruptVector: UInt8 {
     /// RESET -  External Pin, Power-on Reset, Brown-out Reset and Watchdog System Reset
     case powerOnReset = 0
