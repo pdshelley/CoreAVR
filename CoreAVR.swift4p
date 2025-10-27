@@ -1,7 +1,7 @@
 files:
 - module.modulemap
 - Package.swift
-- CoreAVR.h
+- Sources/CCoreAVR/CCoreAVR.h
 - Sources/CoreAVR/DigitalValue.swift
 - Sources/CoreAVR/CoreAVR.swift
 - Sources/CoreAVR/Utilities.swift

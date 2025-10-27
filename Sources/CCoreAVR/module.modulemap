@@ -1,0 +1,5 @@
+module CCoreAVR {
+    header "CCoreAVR.h"
+    export *
+    link "CCoreAVR"
+}
