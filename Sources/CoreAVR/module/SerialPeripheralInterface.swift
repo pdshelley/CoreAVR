@@ -410,9 +410,9 @@ public struct SPI0: SPIPort {
             noOpperation() // If two bytes in a row are identical then the second one does not get sent without this No Opp here. // This is also not inlining as I would expect in the asm.
             while !interruptFlag { } // Needed even with out using interrupts to send more than one byte.
             noOpperation()
-            recievedBuffer![index] = dataRegister
+            recievedBuffer[index] = dataRegister
         }
-        return recievedBuffer!
+        return recievedBuffer
     }
     
     /// The lowest level of writing out data to hardware SPI.
