@@ -8,6 +8,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+import CCoreAVR
 
 // NOTE: This Port abstraction could also have the same issue. I think it's very safe to assume that all of the AVR chips will work this way but I am unfamiliar with how strong this convention is. I'll try to research this.
 // See ATmega48A/PA/88A/PA/168A/PA/328/P Datasheet section 14
@@ -238,3 +239,9 @@ public func setRegisterBit(_ register: UInt8, bit: UInt8, value: Bool) {
 }
 
 //------------------------------------------------------------------------------
+
+@inlinable
+@inline(__always)
+public func _rawPointerWrite(address: UInt, value: UInt8) {
+    _volatileRegisterWriteUInt8(address, value)
+}
