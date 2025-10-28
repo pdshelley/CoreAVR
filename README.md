@@ -53,6 +53,7 @@ This has to do with how SourceKit interprets modules. When a module contains a `
 However, there was a proposal going around to adding official support for so-called "mixed targets", modules containing both Swift and C/C++/Objective-C, which would exactly fit CoreAVR's needs. However, this proposal was canned in July 2025, because of the difficulties in implementing it, supporting Linux and Windows, and the efforts into unifying SPM's and Xcode's build systems. If this proposal were to get revisited in the future, CoreAVR could make use of it, and finally bring autocompletion support to the project.
 
 <h3>References, and other handy links:</h3>
+
 - [Swift Forums - Mixed Language Sources Pitch](https://forums.swift.org/t/pitch-adding-support-for-targets-with-mixed-language-sources/61564)
 - [GitHub - Swift Enhancement Proposal PR](https://github.com/swiftlang/swift-evolution/pull/1895)
 - [GitHub - Implementation PR](https://github.com/swiftlang/swift-package-manager/pull/5919)
