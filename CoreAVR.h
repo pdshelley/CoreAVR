@@ -54,3 +54,17 @@ static inline void _volatileRegisterWriteUInt16(uintptr_t address, uint16_t valu
 static inline void _noOpperation() {
     asm volatile("nop");
 }
+
+/**
+ * @brief Inserts a "Global Interrupt Enable" (`sei`) instruction at the current location.
+ */
+static inline void _sei() {
+    asm volatile("sei");
+}
+
+/**
+ * @brief Inserts a "Global Interrupt Disable" (`cli`) instruction at the current location.
+ */
+static inline void _cli() {
+    asm volatile("cli");
+}

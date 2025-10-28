@@ -26,8 +26,8 @@ as a template to then generate the same code for other AVR chips.
 | 9 | System Clock and Clock Options | ❌ |
 | 10 | Power Management and Sleep Modes | ❌ |
 | 11 | System Control and Reset | ❌ |
-| 12 | Interrupts | ❌ |
-| 13 | External Interrupts | ❌ |
+| 12 | Interrupts | ✅ |
+| 13 | External Interrupts | ✅ |
 | 14 | I/O-Ports | ✅ |
 | 15 | 8-bit Timer/Counter0 with PWM | ✅ |
 | 17 | 16-bit Timer/Counter1 with PWM | ✅ |

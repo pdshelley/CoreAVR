@@ -8,6 +8,7 @@ files:
 - Sources/CoreAVR/module/AnalogeDigitalConverter.swift
 - Sources/CoreAVR/module/CPUCore.swift
 - Sources/CoreAVR/module/GPIO.swift
+- Sources/CoreAVR/module/Interrupts.swift
 - Sources/CoreAVR/module/PowerManagement.swift
 - Sources/CoreAVR/module/SerialPeripheralInterface.swift
 - Sources/CoreAVR/module/Timer/Timer0.swift
