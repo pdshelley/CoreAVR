@@ -1,4 +1,0 @@
-module CoreAVR {
-    export *
-    link "CoreAVR"
-}
