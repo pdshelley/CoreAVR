@@ -15,7 +15,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CoreAVR"
+            name: "CoreAVR",
+            dependencies: ["CCoreAVR"]
         )
     ]
 )
