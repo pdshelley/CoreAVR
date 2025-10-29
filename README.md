@@ -44,3 +44,16 @@ as a template to then generate the same code for other AVR chips.
 | 29 | Boot Loader Support | ❌ |
 
 </h4>
+
+<h2>CoreAVR Module Resolution and SourceKit Autocompletion</h2>
+The current S4A IDE's toolchain uses a hybrid between SPM and Make, using SPM to download dependencies, and Make to compile and link everything together. As a result of that, if you try to write programs for the Arduino using Swift with an external editor, you will not be able to get proper autocomplete suggestions for CoreAVR, and instead only see C symbols.
+
+This has to do with how SourceKit interprets modules. When a module contains a `module.modulemap`-file, it will be interpreted as a Clang module, and thus only C symbols will be loaded. For it to be loaded as a Swift module, we'd have to remove the modulemap, and separate out the C sources into another package. However, because of the fact that S4A's Toolchain uses a mix of SPM and Make, CoreAVR needs its modulemap in order to be a valid S4A module, thus making it inherently incompatible with SourceKit.
+
+However, there was a proposal going around to adding official support for so-called "mixed targets", modules containing both Swift and C/C++/Objective-C, which would exactly fit CoreAVR's needs. However, this proposal was canned in July 2025, because of the difficulties in implementing it, supporting Linux and Windows, and the efforts into unifying SPM's and Xcode's build systems. If this proposal were to get revisited in the future, CoreAVR could make use of it, and finally bring autocompletion support to the project.
+
+<h3>References, and other handy links:</h3>
+
+- [Swift Forums - Mixed Language Sources Pitch](https://forums.swift.org/t/pitch-adding-support-for-targets-with-mixed-language-sources/61564)
+- [GitHub - Swift Enhancement Proposal PR](https://github.com/swiftlang/swift-evolution/pull/1895)
+- [GitHub - Implementation PR](https://github.com/swiftlang/swift-package-manager/pull/5919)
