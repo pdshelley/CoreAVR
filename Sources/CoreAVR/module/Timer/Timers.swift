@@ -72,7 +72,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     /// ```
-    static var timerInterruptMaskRegister: UInt8 { get set }
+    static var timerCounterInterruptMaskRegister: UInt8 { get set } // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
     
     /// 11.9.7 TIFR0 – Timer/Counter2 Interrupt Flag Register
     /// Note: the positions of OCF0B, OCF0A, and TOV0 are different than the 328P.
@@ -87,7 +87,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     /// ```
-    static var timerInterruptFlagRegister: UInt8 { get set }
+    static var timerCounterInterruptFlagRegister: UInt8 { get set }
     
     typealias CompareOutputMode = CompareOutputModeOption
     
@@ -157,7 +157,7 @@ public protocol Timer8Bit: Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|--------
     /// ```
-    static var timerCounterNumber: UInt8 { get set }
+    static var timerCounter: UInt8 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
     
     /// 11.9.4 OCR0A – Output Compare Register A
     /// ```
@@ -173,7 +173,7 @@ public protocol Timer8Bit: Timer {
     /// ```
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     // TODO: Decide about simplifying this with OCR2A
-    static var outputCompareRegisterA: UInt8 { get set }
+    static var timerCounterOutputCompareRegisterA: UInt8 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
     
     /// 11.9.5 OCR2B – Output Compare Register B
     /// ```
@@ -189,7 +189,7 @@ public protocol Timer8Bit: Timer {
     /// ```
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     // TODO: Decide about simplifying this with OCR2B
-    static var outputCompareRegisterB: UInt8 { get set }
+    static var timerCounterOutputCompareRegisterB: UInt8 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
     
     typealias WaveformGenerationMode = WaveformGenerationMode8Bit
 }
@@ -200,9 +200,9 @@ public protocol Timer16Bit: Timer {
     static var timerCounterControlRegisterC: UInt8 { get set }
     
     // Note: These 3 properties change type from UInt8 to UInt16 depending on if the timer is an 8 Bit timer or 16 Bit Timer.
-    static var timerCounterNumber: UInt16 { get set }
-    static var outputCompareRegisterA: UInt16 { get set }
-    static var outputCompareRegisterB: UInt16 { get set }
+    static var timerCounter: UInt16 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
+    static var timerCounterOutputCompareRegisterA: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
+    static var timerCounterOutputCompareRegisterB: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
     
     typealias WaveformGenerationMode = WaveformGenerationMode16Bit
 }

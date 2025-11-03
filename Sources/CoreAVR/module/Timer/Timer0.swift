@@ -291,7 +291,7 @@ public struct Timer0: Timer8Bit, HasExternalClock {
     // TODO: Figure out what the TIFR (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
-    public static var timerCounterInterruptFlagregister: UInt8 { // HALGEN: Renamed `timerCounterInterruptFlagregister` (was `timerInterruptFlagRegister`)
+    public static var timerCounterInterruptFlagRegister: UInt8 { // HALGEN: Renamed `timerCounterInterruptFlagRegister` (was `timerInterruptFlagRegister`)
         get {
             _volatileRegisterReadUInt8(0x35)
         }
@@ -307,11 +307,11 @@ public struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     public static var timerCounterOutputCompareFlag0B: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00000100) >> UInt8(2)
+            let flag = (timerCounterInterruptFlagRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -322,11 +322,11 @@ public struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     public static var timerCounterOutputCompareFlag0A: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00000010) >> UInt8(1)
+            let flag = (timerCounterInterruptFlagRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -337,11 +337,11 @@ public struct Timer0: Timer8Bit, HasExternalClock {
     @inline(__always)
     public static var timerCounterOverflowFlag: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00000001) >> UInt8(0)
+            let flag = (timerCounterInterruptFlagRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
     

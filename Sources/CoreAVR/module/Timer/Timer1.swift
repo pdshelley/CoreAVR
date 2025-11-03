@@ -131,11 +131,11 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var inputCaptureFlag1: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00100000) >> UInt8(5)
+            let flag = (timerCounterInterruptFlagRegister & 0b00100000) >> UInt8(5)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(5)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(5)
         }
     }
     
@@ -146,11 +146,11 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var outputCompareFlag1B: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00000100) >> UInt8(2)
+            let flag = (timerCounterInterruptFlagRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -161,11 +161,11 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var outputCompareFlag1A: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00000010) >> UInt8(1)
+            let flag = (timerCounterInterruptFlagRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -176,11 +176,11 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var timerCounterOverflowFlag: Bool {
         get {
-            let flag = (timerCounterInterruptFlagregister & 0b00000001) >> UInt8(0)
+            let flag = (timerCounterInterruptFlagRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
     
@@ -369,7 +369,7 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: Figure out what the TCNT1 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
-    public static var timerCounterBytes: UInt16 { // HALGEN: Renamed `timerCounterBytes` (was `timerCounterNumber`)
+    public static var timerCounter: UInt16 { // HALGEN: Renamed `timerCounter` (was `timerCounterNumber`)
         get {
             _volatileRegisterReadUInt16(0x84) // TODO: Check if we need to read from 0x84 or 0x85 to get the correct value
         }
@@ -396,7 +396,7 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: I believe OCR1A always needs to be larger than OCR1B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareRegisterBytesA: UInt16 { // HALGEN: Renamed `timerCounterOutputCompareRegisterBytesA` (was `outputCompareRegisterA`)
+    public static var timerCounterOutputCompareRegisterA: UInt16 { // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
         get {
             _volatileRegisterReadUInt16(0x88) // TODO: Check if we need to read from 0x88 or 0x89 to get the correct value
         }
@@ -423,7 +423,7 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     // TODO: I believe OCR1A always needs to be larger than OCR1B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareRegisterBytesB: UInt16 { // HALGEN: Renamed `timerCounterOutputCompareRegisterBytesB` (was `outputCompareRegisterB`)
+    public static var timerCounterOutputCompareRegisterB: UInt16 { // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
         get {
             _volatileRegisterReadUInt16(0x8A) // TODO: Check if we need to read from 0x8A or 0x8B to get the correct value
         }
@@ -490,9 +490,9 @@ public struct Timer1: Timer16Bit, HasExternalClock {
         }
         set {
             generalTimerCounterControlRegister |= (newValue.rawValue) & 0b00000001 << UInt8(7) // HALGEN: Missing `)`
-            // (newValue.rawValue
-            //                   ^
-            //                   here
+                                                                                               // (newValue.rawValue
+                                                                                               //                   ^
+                                                                                               //                   here
         }
     }
     

@@ -46,11 +46,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var timerCounterOutputCompareMatchBInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskregister & 0b00000100) >> UInt8(2)
+            let flag = (timerCounterInterruptMaskRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -61,11 +61,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var timerCounterOutputCompareMatchAInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskregister & 0b00000010) >> UInt8(1)
+            let flag = (timerCounterInterruptMaskRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -76,11 +76,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var timerCounterOverflowInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskregister & 0b00000001) >> UInt8(0)
+            let flag = (timerCounterInterruptMaskRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
     
@@ -626,7 +626,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     public static var timerCounterUpdateBusy: Bool {
         get {
             let flag = (asynchronousStatusRegister & 0b00010000) >> UInt8(4)
-            return flag
+            return flag == 1
         }
         set {
             asynchronousStatusRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(4)
@@ -668,7 +668,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// TCR2AUB – Timer/Counter Control Register2 Update Busy
     @inlinable
     @inline(__always)
-    public static var timerCounterControlRegisterAUpdateBusy:  {
+    public static var timerCounterControlRegisterAUpdateBusy: Bool {
         get {
             let flag = (asynchronousStatusRegister & 0b00000010) >> UInt8(1)
             return flag == 1
@@ -683,7 +683,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// TCR2BUB – Timer/Counter Control Register2 Update Busy
     @inlinable
     @inline(__always)
-    public static var timerCounterControlRegisterBUpdateBusy:  {
+    public static var timerCounterControlRegisterBUpdateBusy: Bool {
         get {
             let flag = (asynchronousStatusRegister & 0b00000001) >> UInt8(0)
             return flag == 1
@@ -774,11 +774,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var prescalerResetTimerCounter: Bool {
         get {
-            let flag = (generalTimerCounterControlregister & 0b00000010) >> UInt8(1)
+            let flag = (generalTimerCounterControlRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            generalTimerCounterControlregister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            generalTimerCounterControlRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
 }
