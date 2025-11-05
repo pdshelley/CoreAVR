@@ -1,10 +1,10 @@
 //===----------------------------------------------------------------------===//
 //
-// Timer1.swift
-// Swift For Arduino
+// Timer2.swift
+// CoreAVR
 //
-// Created by Paul Shelley on 08/29/2023.
-// Copyright © 2022 Paul Shelley. All rights reserved.
+// Created by Swift AVR Generator on 11/04/2025.
+// Copyright © 2025 Paul Shelley. All rights reserved.
 //
 //===----------------------------------------------------------------------===//
 
@@ -12,9 +12,9 @@
 public typealias timer2 = Timer2
 
 // NOTE: PRTIM2 needs to be written to zero to enable Timer/Counter2 module. See Datasheet section 18.2
-public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
+public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     
-    /// 18.11.6 TIMSK2 – Timer/Counter2 Interrupt Mask Register
+    /// TIMSK2 – Timer/Counter Interrupt Mask register
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -26,11 +26,9 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIMSK2 (Timer Interrupt Mask Register) is used for.
     @inlinable
     @inline(__always)
-    public static var timerCounterInterruptMaskRegister: UInt8 { // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
+    public static var interruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x70)
         }
@@ -44,13 +42,13 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// OCIE2B – Timer/Counter2 Output Compare Match B Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareMatchBInterruptEnable: Bool {
+    public static var outputCompareMatchBInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00000100) >> UInt8(2)
+            let flag = (interruptMaskRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -59,13 +57,13 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// OCIE2A – Timer/Counter2 Output Compare Match A Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareMatchAInterruptEnable: Bool {
+    public static var outputCompareMatchAInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00000010) >> UInt8(1)
+            let flag = (interruptMaskRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -74,18 +72,18 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// TOIE2 – Timer/Counter2 Overflow Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterOverflowInterruptEnable: Bool {
+    public static var overflowInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00000001) >> UInt8(0)
+            let flag = (interruptMaskRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
     
     
-    /// 18.11.7 TIFR2 – Timer/Counter2 Interrupt Flag Register
+    /// TIFR2 – Timer/Counter Interrupt Flag Register
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -101,7 +99,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
-    public static var timerCounterInterruptFlagRegister: UInt8 { // HALGEN: Renamed `timerCounterInterruptFlagRegister` (was `timerInterruptFlagRegister`)
+    public static var interruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x37)
         }
@@ -115,13 +113,13 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// OCF2B – Output Compare Flag 2B
     @inlinable
     @inline(__always)
-    public static var outputCompareFlag2B: Bool {
+    public static var outputCompareFlagB: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00000100) >> UInt8(2)
+            let flag = (interruptFlagRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -130,13 +128,13 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// OCF2A – Output Compare Flag 2A
     @inlinable
     @inline(__always)
-    public static var outputCompareFlag2A: Bool {
+    public static var outputCompareFlagA: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00000010) >> UInt8(1)
+            let flag = (interruptFlagRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -145,18 +143,18 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// TOV2 – Timer/Counter2 Overflow Flag
     @inlinable
     @inline(__always)
-    public static var timerCounterOverflagFlag: Bool {
+    public static var overflowFlag: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00000001) >> UInt8(0)
+            let flag = (interruptFlagRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
     
     
-    /// 18.11.1 TCCR2A – Timer/Counter Control Register A
+    /// TCCR2A – Timer/Counter2 Control Register A
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -170,7 +168,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     @inlinable
     @inline(__always)
-    public static var timerCounterControlRegisterA: UInt8 {
+    public static var controlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB0)
         }
@@ -180,17 +178,16 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    /// Bits 7:6 – COM2A1:0: Compare Match Output A Mode
-    /// See ATMega328p Datasheet Table 18-2, Table 18-3, and Table 18-4.
+    /// COM2A – Compare Output Mode bits
     ///
     /// These bits control the Output Compare pin (OC2A) behavior. If one or both of the COM2A1:0 bits are set, the
     /// OC2A output overrides the normal port functionality of the I/O pin it is connected to. However, note that the Data
     /// Direction Register (DDR) bit corresponding to the OC2A pin must be set in order to enable the output driver.
     /// When OC2A is connected to the pin, the function of the COM2A1:0 bits depends on the WGM22:0 bit setting.
-    /// Table 18-2 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to a normal or CTC mode
+    /// Table 1 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to a normal or CTC mode
     /// (non-PWM).
     ///
-    /// Table 18-2. Compare Output Mode, non-PWM Mode
+    /// Table 1. Compare Output Mode, non-PWM Mode
     ///```
     ///---------------------------------------------------------------------------------------------
     ///|  Mode  | COM2A1| COM2A0| Description                                                      |
@@ -205,9 +202,9 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///---------------------------------------------------------------------------------------------
     ///```
     ///
-    /// Table 18-3 shows the COM2A1:0 bit functionality when the WGM21:0 bits are set to fast PWM mode.
+    /// Table 2 shows the COM2A1:0 bit functionality when the WGM21:0 bits are set to fast PWM mode.
     ///
-    /// Table 18-3. Compare Output Mode, Fast PWM Mode
+    /// Table 2. Compare Output Mode, Fast PWM Mode
     ///```
     ///---------------------------------------------------------------------------------------------
     ///|  Mode  | COM2A1| COM2A0| Description                                                      |
@@ -225,11 +222,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///---------------------------------------------------------------------------------------------
     ///```
     /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
-    ///       ignored, but the set or clear is done at BOTTOM. See ”Fast PWM Mode” on page 156 for more details.
+    ///       ignored, but the set or clear is done at BOTTOM. See ”Fast PWM Mode” in datasheet  for more details.
     ///
-    /// Table 18-4 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to phase correct PWM mode.
+    /// Table 3 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to phase correct PWM mode.
     ///
-    /// Table 18-4. Compare Output Mode, Phase Correct PWM Mode
+    /// Table 3. Compare Output Mode, Phase Correct PWM Mode
     ///```
     ///---------------------------------------------------------------------------------------------
     ///|  Mode  | COM2A1| COM2A0| Description                                                      |
@@ -247,24 +244,22 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///---------------------------------------------------------------------------------------------
     ///```
     /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
-    ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
+    ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” in datasheet for more details.
     ///
-    // TODO: Test This!
-    // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    public static var compareOutputModeA: Timer.CompareOutputMode { // HALGEN: Renamed `compareOutputModeA` (was `CompareOutputModeA`)
+    public static var compareOutputModeA: Timer.CompareOutputMode {
         get {
-            let mode = (timerCounterControlRegisterA & 0b11000000) >> UInt8(6)
+            let mode = (controlRegisterA & 0b11000000) >> UInt8(6)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
         }
         set {
-            timerCounterControlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(6)
+            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(6)
         }
     }
     
     
-    /// Bits 5:4 – COM2B1:0: Compare Match Output B Mode
+    /// COM2B – Compare Output Mode bits
     /// See ATMega328p Datasheet Table 18-5, Table 18-6, and Table 18-7.
     ///
     /// These bits control the Output Compare pin (OC2B) behavior. If one or both of the COM2B1:0 bits are set, the
@@ -336,13 +331,13 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
-    public static var compareOutputModeB: Timer.CompareOutputMode { // HALGEN: Renamed `compareOutputModeB` (was `CompareOutputModeB`)
+    public static var compareOutputModeB: Timer.CompareOutputMode {
         get {
-            let mode = (timerCounterControlRegisterB & 0b00110000) >> UInt8(4) // HALGEN: wrapped 4 in UInt8
+            let mode = (controlRegisterA & 0b00110000) >> UInt8(4)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
         }
         set {
-            timerCounterControlRegisterB |= (newValue.rawValue & 0b00000011) << UInt8(4)
+            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(4)
         }
     }
     
@@ -408,7 +403,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///```
     @inlinable
     @inline(__always)
-    public static var timerCounterControlRegisterB: UInt8 {
+    public static var controlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB1)
         }
@@ -424,11 +419,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var forceOutputCompareA: Bool {
         get {
-            let flag = (timerCounterControlRegisterB & 0b10000000) >> UInt8(7)
+            let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
             return flag == 1
         }
         set {
-            timerCounterControlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
+            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
         }
     }
     
@@ -439,11 +434,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var forceOutputCompareB: Bool {
         get {
-            let flag = (timerCounterControlRegisterB & 0b01000000) >> UInt8(6)
+            let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
             return flag == 1
         }
         set {
-            timerCounterControlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
+            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
         }
     }
     
@@ -478,11 +473,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var prescaler: InternalClockOnlyPrescaling { // Note: In the datasheet this is called the Clock Select. Prescaler is probably more descriptive.
         get {
-            let mode = timerCounterControlRegisterB & 0b00000111
+            let mode = controlRegisterB & 0b00000111
             return InternalClockOnlyPrescaling.init(rawValue: mode) ?? .noClockSource
         }
         set {
-            timerCounterControlRegisterB |= newValue.rawValue & 0b00000111
+            controlRegisterB |= newValue.rawValue & 0b00000111
         }
     }
     
@@ -492,7 +487,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///--------------------------------------------------------------------------------
-    ///| (0xB2)       |                         TCNT2                                 |
+    ///| (0xB2)       |                             TCNT2                             |
     ///--------------------------------------------------------------------------------
     ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
@@ -513,12 +508,12 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    /// 18.11.5 OCR2B – Output Compare Register B
+    /// OCR2B – Timer/Counter2 Output Compare Register B
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///--------------------------------------------------------------------------------
-    ///| (0xB4)       |                         OCR2B                                 |
+    ///| (0xB4)       |                             OCR2B                             |
     ///--------------------------------------------------------------------------------
     ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
@@ -528,7 +523,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareRegisterB: UInt8 { // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
+    public static var outputCompareRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB4)
         }
@@ -538,12 +533,12 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     }
     
     
-    /// 18.11.4 OCR2A – Output Compare Register A
+    /// OCR2A – Timer/Counter2 Output Compare Register A
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///--------------------------------------------------------------------------------
-    ///| (0xB3)       |                         OCR2A                                 |
+    ///| (0xB3)       |                             OCR2A                             |
     ///--------------------------------------------------------------------------------
     ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
@@ -553,7 +548,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareRegisterA: UInt8 { // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
+    public static var outputCompareRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB3)
         }
@@ -710,7 +705,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
     @inlinable
     @inline(__always)
-    public static var generalTimerCounterControlRegister: UInt8 {
+    public static var generalControlRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x43)
         }
@@ -746,7 +741,7 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     // while more advanced uses can use the timer interupt to dynamically change the pulse width to output complex wave forms.
     
     
-    /// Bit 7 on GTCCR – TSM: Timer/Counter Synchronization Mode
+    /// TSM – Timer/Counter Synchronization Mode
     ///
     /// Writing the TSM bit to one activates the Timer/Counter Synchronization mode. In this mode, the value that is
     /// written to the PSRASY and PSRSYNC bits is kept, hence keeping the corresponding prescaler reset signals
@@ -759,11 +754,11 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     @inline(__always)
     public static var timerSynchronizationMode: Timer.TimerSynchronizationMode {
         get {
-            let mode = (generalTimerCounterControlRegister & 0b10000000) >> 7
+            let mode = (generalControlRegister & 0b10000000) >> UInt8(7)
             return Timer.TimerSynchronizationMode.init(rawValue: mode) ?? .disabled
         }
         set {
-            generalTimerCounterControlRegister |= (newValue.rawValue & 0b10000000) << UInt8(7)
+            generalControlRegister |= (newValue.rawValue & 0b00000001) << UInt8(7)
         }
     }
     
@@ -772,13 +767,13 @@ public struct Timer2: Timer8Bit, InternalClockOnly, AsyncTimer {
     /// PSRASY – Prescaler Reset Timer/Counter2
     @inlinable
     @inline(__always)
-    public static var prescalerResetTimerCounter: Bool {
+    public static var prescalerReset: Bool {
         get {
-            let flag = (generalTimerCounterControlRegister & 0b00000010) >> UInt8(1)
+            let flag = (generalControlRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            generalTimerCounterControlRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            generalControlRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
 }
