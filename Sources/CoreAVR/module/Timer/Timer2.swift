@@ -37,8 +37,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCIE2B – Timer/Counter2 Output Compare Match B Interrupt Enable
     @inlinable
     @inline(__always)
@@ -52,8 +50,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCIE2A – Timer/Counter2 Output Compare Match A Interrupt Enable
     @inlinable
     @inline(__always)
@@ -67,8 +63,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TOIE2 – Timer/Counter2 Overflow Interrupt Enable
     @inlinable
     @inline(__always)
@@ -95,8 +89,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIFR2 (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
     public static var interruptFlagRegister: UInt8 {
@@ -108,8 +100,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCF2B – Output Compare Flag 2B
     @inlinable
     @inline(__always)
@@ -123,8 +113,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCF2A – Output Compare Flag 2A
     @inlinable
     @inline(__always)
@@ -138,8 +126,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TOV2 – Timer/Counter2 Overflow Flag
     @inlinable
     @inline(__always)
@@ -327,8 +313,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     /// Note: 1. A special case occurs when OCR2B equals TOP and COM2B1 is set. In this case, the Compare Match is
     ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
     ///
-    // TODO: Test This!
-    // TODO: Add check for toggle?
     @inlinable
     @inline(__always)
     public static var compareOutputModeB: Timer.CompareOutputMode {
@@ -341,7 +325,58 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    /// See ATMega328p Datasheet Table 18-8.
+    
+    /// TCCR2B – Timer/Counter2 Control Register B
+    ///```
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0xB1)       | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///```
+    @inlinable
+    @inline(__always)
+    public static var controlRegisterB: UInt8 {
+        get {
+            _volatileRegisterReadUInt8(0xB1)
+        }
+        set {
+            _volatileRegisterWriteUInt8(0xB1, newValue)
+        }
+    }
+    
+    /// FOC2A – Force Output Compare A
+    @inlinable
+    @inline(__always)
+    public static var forceOutputCompareA: Bool {
+        get {
+            let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
+            return flag == 1
+        }
+        set {
+            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
+        }
+    }
+    
+    /// FOC2B – Force Output Compare B
+    @inlinable
+    @inline(__always)
+    public static var forceOutputCompareB: Bool {
+        get {
+            let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
+            return flag == 1
+        }
+        set {
+            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
+        }
+    }
+    
+    
+    /// WGM2 – Waveform Genration Mode
     ///
     /// Combined with the WGM22 bit found in the TCCR2B Register, these bits control the counting sequence of the
     /// counter, the source for maximum (TOP) counter value, and what type of waveform generation to be used, see
@@ -374,75 +409,21 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     /// Notes: 1. MAX= 0xFF
     ///      2. BOTTOM= 0x00
     ///
-    // HALGEN: Combined with TCCRB register
     @inlinable
     @inline(__always)
     public static var waveformGenerationMode: Timer8Bit.WaveformGenerationMode {
         get {
-            let mode = ((timerCounterControlRegisterB & 0b00001000) >> 1) | (timerCounterControlRegisterA & 0b00000011)
+            let mode = ((controlRegisterB & 0b00001000) >> 1) | (controlRegisterA & 0b00000011)
             return Timer8Bit.WaveformGenerationMode(rawValue: mode) ?? .normal
         }
         set {
-            timerCounterControlRegisterA |= (newValue.rawValue & 0b00000011)
-            timerCounterControlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
+            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(0))
+            controlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
         }
     }
     
     
-    /// 18.11.2 TCCR2B – Timer/Counter Control Register B
-    ///```
-    ///--------------------------------------------------------------------------------
-    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///--------------------------------------------------------------------------------
-    ///| (0xB1)       | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
-    ///--------------------------------------------------------------------------------
-    ///| Read/Write   |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///--------------------------------------------------------------------------------
-    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///--------------------------------------------------------------------------------
-    ///```
-    @inlinable
-    @inline(__always)
-    public static var controlRegisterB: UInt8 {
-        get {
-            _volatileRegisterReadUInt8(0xB1)
-        }
-        set {
-            _volatileRegisterWriteUInt8(0xB1, newValue)
-        }
-    }
-    
-    // HALGEN: Return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
-    /// FOC2A – Force Output Compare A
-    @inlinable
-    @inline(__always)
-    public static var forceOutputCompareA: Bool {
-        get {
-            let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
-            return flag == 1
-        }
-        set {
-            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
-        }
-    }
-    
-    // HALGEN: Return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
-    /// FOC2B – Force Output Compare B
-    @inlinable
-    @inline(__always)
-    public static var forceOutputCompareB: Bool {
-        get {
-            let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
-            return flag == 1
-        }
-        set {
-            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
-        }
-    }
-    
-        /// Bits 2 through 0 on TCCR2B – CS22:0: Clock Select
+    /// CS2 – Clock Select bits
     /// The three Clock Select bits select the clock source to be used by the Timer/Counter, see Table 18-9 on page 165.
     ///
     /// Table 18-9. Clock Select Bit Description
@@ -469,20 +450,22 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     /// ```
     /// If external pin modes are used for the Timer/Counter0, transitions on the T0 pin will clock the counter even if the
     /// pin is configured as an output. This feature allows software control of the counting.
+    ///
+    /// Note: In the datasheet this is called the Clock Select. Prescaler is probably more descriptive.
     @inlinable
     @inline(__always)
-    public static var prescaler: InternalClockOnlyPrescaling { // Note: In the datasheet this is called the Clock Select. Prescaler is probably more descriptive.
+    public static var prescaler: InternalClockOnlyPrescaling {
         get {
-            let mode = controlRegisterB & 0b00000111
+            let mode = (controlRegisterB & 0b00000111) >> UInt8(0)
             return InternalClockOnlyPrescaling.init(rawValue: mode) ?? .noClockSource
         }
         set {
-            controlRegisterB |= newValue.rawValue & 0b00000111
+            controlRegisterB |= (newValue.rawValue & 0b00000111) << UInt8(0)
         }
     }
     
     
-    /// 18.11.3 TCNT2 – Timer/Counter Register
+    /// TCNT2 – Timer/Counter2
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -494,11 +477,9 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TCNT2 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
-    public static var timerCounter: UInt8 { // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
+    public static var number: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB2)
         }
@@ -558,7 +539,7 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     }
     
     
-    /// 18.11.8 ASSR – Asynchronous Status Register
+    /// ASSR – Asynchronous Status Register
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -570,8 +551,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the ASSR (Asynchronous Status Register) is used for.
     @inlinable
     @inline(__always)
     public static var asynchronousStatusRegister: UInt8 {
@@ -583,8 +562,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// EXCLK – Enable External Clock Input
     @inlinable
     @inline(__always)
@@ -598,8 +575,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// AS2 – Asynchronous Timer/Counter2
     @inlinable
     @inline(__always)
@@ -613,12 +588,10 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TCN2UB – Timer/Counter2 Update Busy
     @inlinable
     @inline(__always)
-    public static var timerCounterUpdateBusy: Bool {
+    public static var updateBusy: Bool {
         get {
             let flag = (asynchronousStatusRegister & 0b00010000) >> UInt8(4)
             return flag == 1
@@ -628,8 +601,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCR2AUB – Output Compare Register2 Update Busy
     @inlinable
     @inline(__always)
@@ -643,8 +614,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCR2BUB – Output Compare Register 2 Update Busy
     @inlinable
     @inline(__always)
@@ -658,12 +627,10 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TCR2AUB – Timer/Counter Control Register2 Update Busy
     @inlinable
     @inline(__always)
-    public static var timerCounterControlRegisterAUpdateBusy: Bool {
+    public static var controlRegisterAUpdateBusy: Bool {
         get {
             let flag = (asynchronousStatusRegister & 0b00000010) >> UInt8(1)
             return flag == 1
@@ -673,12 +640,10 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TCR2BUB – Timer/Counter Control Register2 Update Busy
     @inlinable
     @inline(__always)
-    public static var timerCounterControlRegisterBUpdateBusy: Bool {
+    public static var controlRegisterBUpdateBusy: Bool {
         get {
             let flag = (asynchronousStatusRegister & 0b00000001) >> UInt8(0)
             return flag == 1
@@ -689,7 +654,7 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     }
     
     
-    /// 18.11.9 GTCCR – General Timer/Counter Control Register
+    /// GTCCR – General Timer Counter Control register
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -701,8 +666,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the GTCCR (General Timer/Counter Control Register) is used for.
     @inlinable
     @inline(__always)
     public static var generalControlRegister: UInt8 {
@@ -762,8 +725,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// PSRASY – Prescaler Reset Timer/Counter2
     @inlinable
     @inline(__always)
