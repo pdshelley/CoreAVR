@@ -350,6 +350,15 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     }
     
     /// FOC2A – Force Output Compare A
+    ///
+    /// The FOC2A bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
+    /// when operating in PWM mode. When writing a logical one to the FOC2A bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OC2A output is changed according to its COM2A1:0 bits setting.
+    /// Note that the FOC2A bit is implemented as a strobe. Therefore it is the value present in the COM2A1:0 bits that
+    /// determines the effect of the forced compare.
+    /// A FOC2A strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2A as TOP.
+    /// The FOC2A bit is always read as zero. 
     @inlinable
     @inline(__always)
     public static var forceOutputCompareA: Bool {
@@ -363,6 +372,15 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     }
     
     /// FOC2B – Force Output Compare B
+    ///
+    /// The FOC2B bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
+    /// when operating in PWM mode. When writing a logical one to the FOC2B bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OC2B output is changed according to its COM2B1:0 bits setting.
+    /// Note that the FOC2B bit is implemented as a strobe. Therefore it is the value present in the COM2B1:0 bits that
+    /// determines the effect of the forced compare.
+    /// A FOC2B strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2B as TOP.
+    /// The FOC2B bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareB: Bool {
@@ -677,33 +695,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
         }
     }
     
-    // TODO: Figure out what FOC2A and FOC2B are for.
-    
-    /// Bit 7 of TCCR2B – FOC2A: Force Output Compare A
-    /// The FOC2A bit is only active when the WGM bits specify a non-PWM mode.
-    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
-    /// when operating in PWM mode. When writing a logical one to the FOC2A bit, an immediate Compare Match is
-    /// forced on the Waveform Generation unit. The OC2A output is changed according to its COM2A1:0 bits setting.
-    /// Note that the FOC2A bit is implemented as a strobe. Therefore it is the value present in the COM2A1:0 bits that
-    /// determines the effect of the forced compare.
-    /// A FOC2A strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2A as TOP.
-    /// The FOC2A bit is always read as zero.
-    
-    /// Bit 6 – FOC2B: Force Output Compare B
-    /// The FOC2B bit is only active when the WGM bits specify a non-PWM mode.
-    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
-    /// when operating in PWM mode. When writing a logical one to the FOC2B bit, an immediate Compare Match is
-    /// forced on the Waveform Generation unit. The OC2B output is changed according to its COM2B1:0 bits setting.
-    /// Note that the FOC2B bit is implemented as a strobe. Therefore it is the value present in the COM2B1:0 bits that
-    /// determines the effect of the forced compare.
-    /// A FOC2B strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2B as TOP.
-    /// The FOC2B bit is always read as zero.
-    
-    
-    // NOTE: There are many uses for PWM, some as simple as holding the same pulse width and only changing periodically for hobby servo control or LED brightness,
-    // while more advanced uses can use the timer interupt to dynamically change the pulse width to output complex wave forms.
-    
-    
     /// TSM – Timer/Counter Synchronization Mode
     ///
     /// Writing the TSM bit to one activates the Timer/Counter Synchronization mode. In this mode, the value that is
@@ -712,7 +703,6 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
     /// value without the risk of one of them advancing during configuration. When the TSM bit is written to zero, the
     /// PSRASY and PSRSYNC bits are cleared by hardware, and the Timer/Counters start counting simultaneously.
     ///
-    // TODO: Test This!
     @inlinable
     @inline(__always)
     public static var timerSynchronizationMode: Timer.TimerSynchronizationMode {

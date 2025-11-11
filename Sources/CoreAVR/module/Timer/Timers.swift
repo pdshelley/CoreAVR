@@ -343,7 +343,7 @@ public enum InternalClockOnlyPrescaling: UInt8 {
     case tenTwentyFour = 7 // clkT2S/1024
 }
 
-// Note: This is an older version of the Internal Prescalor. It was incorrect for the Atmega 328p Timer2 which is an 8 bit timer with an internal clock.
+// Note: This is an older version of the Internal prescaler. It was incorrect for the Atmega 328p Timer2 which is an 8 bit timer with an internal clock.
 // I don't think this was a mistake but an inconsistancy in timers or we don't have the pattern figured out yet.
 //enum InternalClockOnlyPrescaling: UInt8 {
 //    case noClockSource = 0
