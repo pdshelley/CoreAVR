@@ -295,15 +295,17 @@ public protocol HasExternalClock {
 /// ```
 /// If external pin modes are used for the Timer/Counter0, transitions on the T0 pin will clock the counter even if the pin is configured as an output. This feature allows software control of the counting.
 ///
+// HALGEN: ATtiny85 has 4 Clock Select Bits on Timer1
+// HALGEN: ATmega32U4 (Leonardo) has the same prescaling as this one for Timer0, Timer1, Timer3. Timer4 has 4 Clock Select Bits.
 public enum HasExternalClockPrescaling: UInt8 {
     case noClockSource = 0 // No Clock Source - counter is off
     case none = 1 // clkT2S - No Prescaler
     case eight = 2 // clkT2S/8
-    case thirtyTwo = 3 // clkT2S/32
-    case sixtyFour = 4 // clkT2S/64
-    case oneTwentyEight = 5 // clkT2S/128
-    case twoFiftySix = 6 // clkT2S/256
-    case tenTwentyFour = 7 // clkT2S/1024
+    // HALGEN: Removed clkT2S/32, since it is not present in the datasheet.
+    case sixtyFour = 3 // clkT2S/64
+    // HALGEN: Removed clkT2S/128, since it is not present in the datasheet.
+    case twoFiftySix = 4 // clkT2S/256
+    case tenTwentyFour = 5 // clkT2S/1024
 }
 
 public protocol InternalClockOnly {
@@ -345,6 +347,7 @@ public enum InternalClockOnlyPrescaling: UInt8 {
 
 // Note: This is an older version of the Internal prescaler. It was incorrect for the Atmega 328p Timer2 which is an 8 bit timer with an internal clock.
 // I don't think this was a mistake but an inconsistancy in timers or we don't have the pattern figured out yet.
+// HALGEN: This isn't an older version, or an incorrect implementation. This is the Timer0 prescaler for the ATtiny85.
 //enum InternalClockOnlyPrescaling: UInt8 {
 //    case noClockSource = 0
 //    case none = 1
