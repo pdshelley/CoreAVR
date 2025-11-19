@@ -42,7 +42,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0    |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|--------|
     /// ```
-    static var timerCounterControlRegisterA: UInt8 { get set }
+    static var controlRegisterA: UInt8 { get set }
     
     /// Timer/Counter Controll Register B
     /// AKA TCCR0B See ATtiny13A Datasheet Section 11.9.2.
@@ -57,7 +57,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     ///```
-    static var timerCounterControlRegisterB: UInt8 { get set }
+    static var controlRegisterB: UInt8 { get set }
     
     /// 11.9.6 TIMSK0 – Timer/Counter2 Interrupt Mask Register
     /// Note: the positions of OCIE0B, OCIE0A, and TOIE0 are different than the 328P.
@@ -72,7 +72,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     /// ```
-    static var timerCounterInterruptMaskRegister: UInt8 { get set } // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
+    static var interruptMaskRegister: UInt8 { get set } // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
     
     /// 11.9.7 TIFR0 – Timer/Counter2 Interrupt Flag Register
     /// Note: the positions of OCF0B, OCF0A, and TOV0 are different than the 328P.
@@ -87,7 +87,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     /// ```
-    static var timerCounterInterruptFlagRegister: UInt8 { get set }
+    static var interruptFlagRegister: UInt8 { get set }
     
     typealias CompareOutputMode = CompareOutputModeOption
     
@@ -157,7 +157,7 @@ public protocol Timer8Bit: Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|--------
     /// ```
-    static var timerCounter: UInt8 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
+    static var number: UInt8 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
     
     /// 11.9.4 OCR0A – Output Compare Register A
     /// ```
@@ -173,7 +173,7 @@ public protocol Timer8Bit: Timer {
     /// ```
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     // TODO: Decide about simplifying this with OCR2A
-    static var timerCounterOutputCompareRegisterA: UInt8 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
+    static var outputCompareRegisterA: UInt8 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
     
     /// 11.9.5 OCR2B – Output Compare Register B
     /// ```
@@ -189,7 +189,7 @@ public protocol Timer8Bit: Timer {
     /// ```
     // TODO: I believe OCR2A always needs to be larger than OCR2B. Should we have a safety for this?
     // TODO: Decide about simplifying this with OCR2B
-    static var timerCounterOutputCompareRegisterB: UInt8 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
+    static var outputCompareRegisterB: UInt8 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
     
     typealias WaveformGenerationMode = WaveformGenerationMode8Bit
 }
@@ -197,12 +197,12 @@ public protocol Timer8Bit: Timer {
 public protocol Timer16Bit: Timer {
     
     // TODO: 16 Bit timers have an extra control register C. Wave Form Generation has more modes, other settings might also be more granular.
-    static var timerCounterControlRegisterC: UInt8 { get set }
+    static var controlRegisterC: UInt8 { get set }
     
     // Note: These 3 properties change type from UInt8 to UInt16 depending on if the timer is an 8 Bit timer or 16 Bit Timer.
-    static var timerCounter: UInt16 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
-    static var timerCounterOutputCompareRegisterA: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
-    static var timerCounterOutputCompareRegisterB: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
+    static var number: UInt16 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
+    static var outputCompareRegisterA: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
+    static var outputCompareRegisterB: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
     
     typealias WaveformGenerationMode = WaveformGenerationMode16Bit
 }
@@ -269,6 +269,6 @@ public enum WaveformGenerationMode16Bit: UInt8 {
 public protocol AsyncTimer {
     // These are only used on the Async timer2?
     static var asynchronousStatusRegister:   UInt8 { get set }
-    static var generalTimerCounterControlRegister:  UInt8 { get set }
+    static var generalControlRegister:  UInt8 { get set }
 }
 
