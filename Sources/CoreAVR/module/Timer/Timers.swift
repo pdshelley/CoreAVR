@@ -194,6 +194,23 @@ public protocol Timer8Bit: Timer {
     typealias WaveformGenerationMode = WaveformGenerationMode8Bit
 }
 
+public protocol Timer10Bit: Timer {
+    static var controlRegisterC: UInt8 { get set }
+    static var controlRegisterD: UInt8 { get set }
+    static var controlRegisterE: UInt8 { get set }
+    
+    static var count: UInt16 { get set }
+    
+    static var outputCompareRegisterA: UInt8 { get set }
+    static var outputCompareRegisterB: UInt8 { get set }
+    static var outputCompareRegisterC: UInt8 { get set }
+    static var outputCompareRegisterD: UInt8 { get set }
+    
+    static var deadTimeValue: UInt8 { get set }
+    
+    typealias WaveformGenerationMode = WaveformGenerationMode10Bit // TODO: 10-bit Waveform Generation Mode
+}
+
 public protocol Timer16Bit: Timer {
     
     // TODO: 16 Bit timers have an extra control register C. Wave Form Generation has more modes, other settings might also be more granular.
