@@ -1,20 +1,18 @@
 //===----------------------------------------------------------------------===//
 //
 // Timer1.swift
-// Swift For Arduino
+// CoreAVR
 //
-// Created by Paul Shelley on 08/29/2023.
-// Copyright © 2022 Paul Shelley. All rights reserved.
+// Created by Swift AVR Generator on 11/19/2025.
+// Copyright © 2025 Paul Shelley. All rights reserved.
 //
 //===----------------------------------------------------------------------===//
 
 
 public typealias timer1 = Timer1
 
-/// Timer 1 implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
-// NOTE: PRTIM1 needs to be written to zero to enable Timer/Counter1 module. See Datasheet section 16.2
-public struct Timer1: Timer16Bit, HasExternalClock {
-    /// 16.11.8 TIMSK1 – Timer/Counter1 Interrupt Mask Register
+public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
+    /// TIMSK1 – Timer/Counter Interrupt Mask Register
     ///```
     ///-------------------------------------------------------------------------------
     /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -26,11 +24,9 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIMSK1 (Timer Interrupt Mask Register) is used for.
     @inlinable
     @inline(__always)
-    public static var timerCounterInterruptMaskRegister: UInt8 { // HALGEN: 16-bit in 8-bit address // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
+    public static var interruptMaskRegister: UInt8 { // HALGEN: 16-bit in 8-bit address // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
         get {
             _volatileRegisterReadUInt8(0x6F)
         }
@@ -44,13 +40,13 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// ICIE1 – Timer/Counter1 Input Capture Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterInputCaptureInterruptEnable: Bool {
+    public static var inputCaptureInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00100000) >> UInt8(5)
+            let flag = (interruptMaskRegister & 0b00100000) >> UInt8(5)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(5)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(5)
         }
     }
     
@@ -59,13 +55,13 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// OCIE1B – Timer/Counter1 Output CompareB Match Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareBMatchInterruptEnable: Bool {
+    public static var outputCompareMatchBInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00000100) >> UInt8(2)
+            let flag = (interruptMaskRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -74,13 +70,13 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// OCIE1A – Timer/Counter1 Output CompareA Match Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareAMatchInterruptEnable: Bool {
+    public static var outputCompareMatchAInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00000010) >> UInt8(1)
+            let flag = (interruptMaskRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -89,33 +85,30 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// TOIE1 – Timer/Counter1 Overflow Interrupt Enable
     @inlinable
     @inline(__always)
-    public static var timerCounterOverflowInterruptEnable: Bool {
+    public static var overflowInterruptEnable: Bool {
         get {
-            let flag = (timerCounterInterruptMaskRegister & 0b00000001) >> UInt8(0)
+            let flag = (interruptMaskRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
-    
-    /// 16.11.9 TIFR1 – Timer/Counter1 Interrupt Flag Register
+    /// TIFR1 – Timer/Counter Interrupt Flag register
     ///```
     ///-------------------------------------------------------------------------------
     /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     ///-------------------------------------------------------------------------------
-    /// 0x16 (0x36)  |   -   |   -   |  ICF1 |   -   |   -   | OCF1B | OCF1A | TOV1  |
+    /// (0x36)       |   -   |   -   |  ICF1 |   -   |   -   | OCF1B | OCF1A | TOV1  |
     ///-------------------------------------------------------------------------------
     /// Read/Write   |   R   |   R   |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |
     ///-------------------------------------------------------------------------------
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TIFR1 (Timer Interrupt Flag Register) is used for.
     @inlinable
     @inline(__always)
-    public static var timerCounterInterruptFlagRegister: UInt8 { // HALGEN: 16-bit in 8-bit address // HALGEN: Renamed `timerCounterInterruptFlagRegister` (was `timerInterruptFlagRegister`)
+    public static var interruptFlagRegister: UInt8 { // HALGEN: 16-bit in 8-bit address // HALGEN: Renamed `timerCounterInterruptFlagRegister` (was `timerInterruptFlagRegister`)
         get {
             _volatileRegisterReadUInt8(0x36)
         }
@@ -131,11 +124,11 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var inputCaptureFlag1: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00100000) >> UInt8(5)
+            let flag = (interruptFlagRegister & 0b00100000) >> UInt8(5)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(5)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(5)
         }
     }
     
@@ -144,13 +137,13 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// OCF1B – Output Compare Flag 1B
     @inlinable
     @inline(__always)
-    public static var outputCompareFlag1B: Bool {
+    public static var outputCompareFlagB: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00000100) >> UInt8(2)
+            let flag = (interruptFlagRegister & 0b00000100) >> UInt8(2)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
     
@@ -159,13 +152,13 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// OCF1A – Output Compare Flag 1A
     @inlinable
     @inline(__always)
-    public static var outputCompareFlag1A: Bool {
+    public static var outputCompareFlagA: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00000010) >> UInt8(1)
+            let flag = (interruptFlagRegister & 0b00000010) >> UInt8(1)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
     
@@ -174,18 +167,17 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// TOV1 – Timer/Counter1 Overflow Flag
     @inlinable
     @inline(__always)
-    public static var timerCounterOverflowFlag: Bool {
+    public static var overflowFlag: Bool {
         get {
-            let flag = (timerCounterInterruptFlagRegister & 0b00000001) >> UInt8(0)
+            let flag = (interruptFlagRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            timerCounterInterruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
-    
 
-    /// 16.11.1 TCCR1A – Timer/Counter1 Control Register A
+    /// TCCR1A – Timer/Counter1 Control Register A
     ///```
     ///--------------------------------------------------------------------------------
     ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -197,7 +189,9 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    public static var timerCounterControlRegisterA: UInt8 { // HALGEN: 16-bit for 8-bit register
+    @inlinable
+    @inline(__always)
+    public static var controlRegisterA: UInt8 { // HALGEN: 16-bit for 8-bit register
         get {
             _volatileRegisterReadUInt8(0x80)
         }
@@ -205,50 +199,182 @@ public struct Timer1: Timer16Bit, HasExternalClock {
             _volatileRegisterWriteUInt8(0x80, newValue)
         }
     }
-    
-    // TODO: Test This!
-    // TODO: Add check for toggle?
+
+    /// COM1A – Compare Output Mode 1A, bits 
+    ///
+    /// These bits control the Output Compare pin (OC2A) behavior. If one or both of the COM2A1:0 bits are set, the
+    /// OC2A output overrides the normal port functionality of the I/O pin it is connected to. However, note that the Data
+    /// Direction Register (DDR) bit corresponding to the OC2A pin must be set in order to enable the output driver.
+    /// When OC2A is connected to the pin, the function of the COM2A1:0 bits depends on the WGM22:0 bit setting.
+    /// Table 1 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to a normal or CTC mode
+    /// (non-PWM).
+    ///
+    /// Table 1. Compare Output Mode, non-PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2A1| COM2A0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC0A disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Toggle OC2A on Compare Match                                     |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2A on Compare Match                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2A on Compare Match                                        |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    ///
+    /// Table 2 shows the COM2A1:0 bit functionality when the WGM21:0 bits are set to fast PWM mode.
+    ///
+    /// Table 2. Compare Output Mode, Fast PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2A1| COM2A0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2A disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | WGM22 = 0: Normal Port Operation, OC0A Disconnected.             |
+    ///|        |       |       | WGM22 = 1: Toggle OC2A on Compare Match.                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2A on Compare Match, set OC2A at BOTTOM,                 |
+    ///|        |       |       | (non-inverting mode).                                            |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2A on Compare Match, clear OC2A at BOTTOM,                 |
+    ///|        |       |       | (inverting mode).                                                |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at BOTTOM. See ”Fast PWM Mode” in datasheet  for more details.
+    ///
+    /// Table 3 shows the COM2A1:0 bit functionality when the WGM22:0 bits are set to phase correct PWM mode.
+    ///
+    /// Table 3. Compare Output Mode, Phase Correct PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2A1| COM2A0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2A disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | WGM22 = 0: Normal Port Operation, OC0A Disconnected.             |
+    ///|        |       |       | WGM22 = 1: Toggle OC2A on Compare Match.                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2A on Compare Match when up-counting.                    |
+    ///|        |       |       | Set OC2A on Compare Match when down-counting.                    |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2A on Compare Match when up-counting.                      |
+    ///|        |       |       | Clear OC2A on Compare Match when down-counting.                  |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2A equals TOP and COM2A1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” in datasheet for more details.
+    ///
     @inlinable
     @inline(__always)
     public static var compareOutputModeA: Timer.CompareOutputMode { // HALGEN: Renamed `compareOutputModeA` (was `CompareOutputModeA`)
         get {
-            let mode = (timerCounterControlRegisterA & 0b11000000) >> UInt8(6)
+            let mode = (controlRegisterA & 0b11000000) >> UInt8(6)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
         }
         set {
-            timerCounterControlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(6)
+            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(6)
         }
     }
-    
-    
-    // TODO: Test This!
-    // TODO: Add check for toggle?
+
+    /// COM1B – Compare Output Mode 1B, bits 
+    /// See ATMega328p Datasheet Table 18-5, Table 18-6, and Table 18-7.
+    ///
+    /// These bits control the Output Compare pin (OC2B) behavior. If one or both of the COM2B1:0 bits are set, the
+    /// OC2B output overrides the normal port functionality of the I/O pin it is connected to. However, note that the Data
+    /// Direction Register (DDR) bit corresponding to the OC2B pin must be set in order to enable the output driver.
+    /// When OC2B is connected to the pin, the function of the COM2B1:0 bits depends on the WGM22:0 bit setting.
+    /// Table 18-5 shows the COM2B1:0 bit functionality when the WGM22:0 bits are set to a normal or CTC mode
+    /// (non-PWM).
+    ///
+    /// Table 18-5. Compare Output Mode, non-PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2B1| COM2B0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC0B disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Toggle OC2B on Compare Match                                     |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2B on Compare Match                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2B on Compare Match                                        |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    ///
+    /// Table 18-6 shows the COM2B1:0 bit functionality when the WGM22:0 bits are set to fast PWM mode.
+    ///
+    /// Table 18-6. Compare Output Mode, Fast PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2B1| COM2B0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2B disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Reserved                                                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2B on Compare Match, set OC2B at BOTTOM,                 |
+    ///|        |       |       | (non-inverting mode).                                            |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2B on Compare Match, clear OC2B at BOTTOM,                 |
+    ///|        |       |       | (inverting mode).                                                |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2B equals TOP and COM2B1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at BOTTOM. See ”Phase Correct PWM Mode” on page 157 for more
+    ///       details.
+    ///
+    /// Table 18-7 shows the COM2B1:0 bit functionality when the WGM22:0 bits are set to phase correct PWM mode.
+    ///
+    /// Table 18-7. Compare Output Mode, Phase Correct PWM Mode
+    ///```
+    ///---------------------------------------------------------------------------------------------
+    ///|  Mode  | COM2B1| COM2B0| Description                                                      |
+    ///---------------------------------------------------------------------------------------------
+    ///| normal |   0   |   0   | Normal port operation, OC2B disconnected.                        |
+    ///---------------------------------------------------------------------------------------------
+    ///| toggle |   0   |   1   | Reserved                                                         |
+    ///---------------------------------------------------------------------------------------------
+    ///| clear  |   1   |   0   | Clear OC2B on Compare Match when up-counting.                    |
+    ///|        |       |       | Set OC2B on Compare Match when down-counting.                    |
+    ///---------------------------------------------------------------------------------------------
+    ///| set    |   1   |   1   | Set OC2B on Compare Match when up-counting.                      |
+    ///|        |       |       | Clear OC2B on Compare Match when down-counting.                  |
+    ///---------------------------------------------------------------------------------------------
+    ///```
+    /// Note: 1. A special case occurs when OCR2B equals TOP and COM2B1 is set. In this case, the Compare Match is
+    ///       ignored, but the set or clear is done at TOP. See ”Phase Correct PWM Mode” on page 157 for more details.
+    ///
     @inlinable
     @inline(__always)
     public static var compareOutputModeB: Timer.CompareOutputMode { // HALGEN: Renamed `compareOutputModeB` (was `CompareOutputModeB`)
         get {
-            let mode = (timerCounterControlRegisterA & 0b00110000) >> UInt8(4) // HALGEN: wrapped in UInt8
+            let mode = (controlRegisterA & 0b00110000) >> UInt8(4)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
         }
         set {
-            timerCounterControlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(4)
+            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(4)
         }
     }
-    
-    
-    /// 16.11.2 TCCR1B – Timer/Counter1 Control Register B
+
+    /// TCCR1B – Timer/Counter1 Control Register B
     ///```
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x81)       | ICNC1 | ICES1 |   -   | WGM11 | WGM10 | CS12  | CS11  | CS10  |
+    ///--------------------------------------------------------------------------------
+    /// Read/Write    |  R/W  |  R/W  |   R   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0x81)       | ICNC1 | ICES1 |   -   | WGM13 | WGM12 | CS12  | CS11  | CS10  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |   R   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// InitialValue  |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    public static var timerCounterControlRegisterB: UInt8 { // HALGEN: 16-bit for 8-bit register
+    @inlinable
+    @inline(__always)
+    public static var controlRegisterB: UInt8 { // HALGEN: 16-bit for 8-bit register
         get {
             _volatileRegisterReadUInt8(0x81)
         }
@@ -264,11 +390,11 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var inputCapture1NoiseCanceler: Bool {
         get {
-            let flag = (timerCounterControlRegisterB & 0b10000000) >> UInt8(7)
+            let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
             return flag == 1
         }
         set {
-            timerCounterControlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
+            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
         }
     }
     
@@ -279,20 +405,98 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     @inline(__always)
     public static var inputCapture1EdgeSelect: Bool {
         get {
-            let flag = (timerCounterControlRegisterB & 0b01000000) >> UInt8(6)
+            let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
             return flag == 1
         }
         set {
-            timerCounterControlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
+            controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
         }
+    }
+
+    /// WGM1 – Waveform Generation Mode 
+    ///
+    /// Combined with the WGM22 bit found in the TCCR2B Register, these bits control the counting sequence of the
+    /// counter, the source for maximum (TOP) counter value, and what type of waveform generation to be used, see
+    /// Table 18-8. Modes of operation supported by the Timer/Counter unit are: Normal mode (counter), Clear Timer
+    /// on Compare Match (CTC) mode, and two types of Pulse Width Modulation (PWM) modes (see ”Modes of
+    /// Operation” on page 155).
+    ///
+    /// Table 18-8. Waveform Generation Mode Bit Description
+    ///```
+    ///-----------------------------------------------------------------------------------------------------
+    ///|  Mode  | WGM22 | WGM21 | WGM20 | Mode of Operation  |  TOP  | Update of OCRx at | TOV Flag Set on |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    0   |   0   |   0   |   0   | Normal             | 0xFF  | Immediate         | MAX             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    1   |   0   |   0   |   1   | PWM, Phase Correct | 0xFF  | TOP               | BOTTOM          |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    2   |   0   |   1   |   0   | CTC                | OCRA  | Immediate         | MAX             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    3   |   0   |   1   |   1   | Fast PWM           | 0xFF  | BOTTOM            | MAX             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    4   |   1   |   0   |   0   | Reserved           |   -   |         -         |        -        |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    5   |   1   |   0   |   1   | PWM, Phase Correct | OCRA  | TOP               | BOTTOM          |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    6   |   1   |   1   |   0   | Reserved           |   -   |         -         |        -        |
+    ///-----------------------------------------------------------------------------------------------------
+    ///|    7   |   1   |   1   |   1   | Fast PWM           | OCRA  | BOTTOM            | TOP             |
+    ///-----------------------------------------------------------------------------------------------------
+    ///```
+    ///Notes: 1. MAX= 0xFF
+    ///       2. BOTTOM= 0x00
+    ///
+    @inlinable
+    @inline(__always)
+    public static var waveformGenerationMode: Timer16Bit.WaveformGenerationMode {
+		get {
+            let mode = ((controlRegisterB & 0b00011000) >> 1) | (controlRegisterA & 0b00000011)
+            return Timer16Bit.WaveformGenerationMode(rawValue: mode) ?? .normal
+        }
+        set {
+            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(0))
+            controlRegisterB |= ((newValue.rawValue & 0b00001100) << UInt8(1))
+        }
+    }
+
+	/// ```
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |  Mode  | CS12  | CS11  | CS10  | Description                                                     |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    0   |   0   |   0   |   0   | No Clock Source (Stopped)                                       |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    1   |   0   |   0   |   1   | Running, No Prescaling                                          |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    2   |   0   |   1   |   0   | Running, CLK/8                                                  |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    3   |   0   |   1   |   1   | Running, CLK/64                                                 |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    4   |   1   |   0   |   0   | Running, CLK/256                                                |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    5   |   1   |   0   |   1   | Running, CLK/1024                                               |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    6   |   1   |   1   |   0   | External clock source. Clock on falling edge.                   |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// |    7   |   1   |   1   |   1   | External clock source. Clock on rising edge.                    |
+    /// |--------|-------|-------|-------|-----------------------------------------------------------------|
+    /// ```
+    public enum Prescaling: UInt8 {
+        case stopped = 0
+        case runningWithoutPrescaling = 1
+        case running8 = 2
+        case running64 = 3
+        case running256 = 4
+        case running1024 = 5
+        case runningExternalFallingEdge = 6
+        case runningExternalRisingEdge = 7
     }
     
     @inlinable
     @inline(__always)
-    public static var prescaler: HasExternalClockPrescaling { // HALGEN: Has InternalClockOnlyPrescaling, whilst Timer1 is HasExternalClockPrescaling
+    public static var prescaler: Prescaling {
         get {
             let mode = timerCounterControlRegisterA & 0b00000111
-            return HasExternalClockPrescaling.init(rawValue: mode) ?? .noClockSource
+            return .init(rawValue: mode) ?? .stopped
         }
         set {
             timerCounterControlRegisterB |= newValue.rawValue & 0b00000111
@@ -300,19 +504,19 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     }
     
     
-    /// 16.11.3 TCCR1C – Timer/Counter1 Control Register C
+	/// TCCR1C – Timer/Counter1 Control Register C
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0x82)       | FOC1A | FOC1B |   -   |   -   |   -   |   -   |   -   |   -   |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |  R/W  |  R/W  |   R   |   R   |   R   |   R   |   R   |   R   |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x82)       | FOC1A | FOC1B |   -   |   -   |   -   |   -   |   -   |   -   |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
-    public static var timerCounterControlRegisterC: UInt8 { // HALGEN: 16-bit for 8-bit register
+    public static var controlRegisterC: UInt8 { // HALGEN: 16-bit for 8-bit register
         get {
             _volatileRegisterReadUInt8(0x82)
         }
@@ -321,38 +525,50 @@ public struct Timer1: Timer16Bit, HasExternalClock {
         }
     }
     
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
-    // HALGEN: Incomplete comment
-    /// FOC1A – 
+    /// FOC1A –  
+    ///
+    /// The FOC2A bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
+    /// when operating in PWM mode. When writing a logical one to the FOC2A bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OC2A output is changed according to its COM2A1:0 bits setting.
+    /// Note that the FOC2A bit is implemented as a strobe. Therefore it is the value present in the COM2A1:0 bits that
+    /// determines the effect of the forced compare.
+    /// A FOC2A strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2A as TOP.
+    /// The FOC2A bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareA: Bool {
         get {
-            let flag = (timerCounterControlRegisterC & 0b10000000) >> UInt8(7)
+            let flag = (controlRegisterC & 0b10000000) >> UInt8(7)
             return flag == 1
         }
         set {
-            timerCounterControlRegisterC |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
+            controlRegisterC |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
         }
     }
-    
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
-    // HALGEN: Incomplete comment
-    /// FOC1B – 
+
+    /// FOC1B –  
+    ///
+    /// The FOC2B bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
+    /// when operating in PWM mode. When writing a logical one to the FOC2B bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OC2B output is changed according to its COM2B1:0 bits setting.
+    /// Note that the FOC2B bit is implemented as a strobe. Therefore it is the value present in the COM2B1:0 bits that
+    /// determines the effect of the forced compare.
+    /// A FOC2B strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2B as TOP.
+    /// The FOC2B bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareB: Bool {
         get {
-            let flag = (timerCounterControlRegisterC & 0b01000000) >> UInt8(6)
+            let flag = (controlRegisterC & 0b01000000) >> UInt8(6)
             return flag == 1
         }
         set {
-            timerCounterControlRegisterC |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
+            controlRegisterC |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
         }
     }
-    
-    
-    /// 16.11.4 TCNT1H and TCNT1L – Timer/Counter1
+    /// TCNT1 – Timer/Counter1  Bytes
     ///```
     ///-------------------------------------------------------------------------------
     /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -365,22 +581,18 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    // WARNING: This is not fully tested and understood.
-    // TODO: Figure out what the TCNT1 is used for. I think this is just the actual timer counter that is incrimented each tick of the timer.
     @inlinable
     @inline(__always)
-    public static var timerCounter: UInt16 { // HALGEN: Renamed `timerCounter` (was `timerCounterNumber`)
+    public static var count: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x84) // TODO: Check if we need to read from 0x84 or 0x85 to get the correct value
+            _volatileRegisterReadUInt16(0x84)
         }
         set {
-            _volatileRegisterWriteUInt16(0x84, newValue) // TODO: Check if we need to write to 0x84 or 0x85 to set the correct value
+            _volatileRegisterWriteUInt16(0x84, newValue)
         }
     }
-    
-    
-    
-    /// 16.11.5 OCR1AH and OCR1AL – Output Compare Register A
+
+    /// OCR1A – Timer/Counter1 Output Compare Register  Bytes
     ///```
     ///-------------------------------------------------------------------------------
     /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -393,21 +605,18 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    // TODO: I believe OCR1A always needs to be larger than OCR1B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareRegisterA: UInt16 { // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
+    public static var outputCompareRegisterA: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x88) // TODO: Check if we need to read from 0x88 or 0x89 to get the correct value
+            _volatileRegisterReadUInt16(0x88)
         }
         set {
-            _volatileRegisterWriteUInt16(0x88, newValue) // TODO: Check if we need to write to 0x88 or 0x89 to set the correct value
+            _volatileRegisterWriteUInt16(0x88, newValue)
         }
     }
-    
-    
-    
-    /// 16.11.6 OCR1BH and OCR1BL – Output Compare Register B
+
+    /// OCR1B – Timer/Counter1 Output Compare Register  Bytes
     ///```
     ///-------------------------------------------------------------------------------
     /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -420,20 +629,18 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///-------------------------------------------------------------------------------
     ///```
-    // TODO: I believe OCR1A always needs to be larger than OCR1B. Should we have a safety for this?
     @inlinable
     @inline(__always)
-    public static var timerCounterOutputCompareRegisterB: UInt16 { // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
+    public static var outputCompareRegisterB: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x8A) // TODO: Check if we need to read from 0x8A or 0x8B to get the correct value
+            _volatileRegisterReadUInt16(0x8A)
         }
         set {
-            _volatileRegisterWriteUInt16(0x8A, newValue) // TODO: Check if we need to write to 0x8A or 0x8B to set the correct value
+            _volatileRegisterWriteUInt16(0x8A, newValue)
         }
     }
-    
-    
-    /// 16.11.7 ICR1H and ICR1L – Input Capture Register 1
+
+    /// ICR1 – Timer/Counter1 Input Capture Register  Bytes
     ///```
     ///-------------------------------------------------------------------------------
     /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -448,12 +655,12 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     ///```
     @inlinable
     @inline(__always)
-    public static var timerCounterInputCaptureRegisterBytes: UInt16 { // HALGEN: Renamed `timerCounterInputCaptureRegisterBytes` (was `inputCaptureRegister`)
+    public static var inputCaptureRegisterBytes: UInt16 { // HALGEN: Renamed `timerCounterInputCaptureRegisterBytes` (was `inputCaptureRegister`)
         get {
-            _volatileRegisterReadUInt16(0x86) // TODO: Check if we need to read from 0x86 or 0x87 to get the correct value
+            _volatileRegisterReadUInt16(0x86)
         }
         set {
-            _volatileRegisterWriteUInt16(0x86, newValue) // TODO: Check if we need to write to 0x86 or 0x87 to set the correct value
+            _volatileRegisterWriteUInt16(0x86, newValue)
         }
     }
     
@@ -471,7 +678,7 @@ public struct Timer1: Timer16Bit, HasExternalClock {
     ///```
     @inlinable
     @inline(__always)
-    public static var generalTimerCounterControlRegister: UInt8 { // HALGEN: 16-bit for 8-bit register
+    public static var generalControlRegister: UInt8 { // TODO: HALGEN: 8-bit register
         get {
             _volatileRegisterReadUInt8(0x43)
         }
@@ -479,78 +686,37 @@ public struct Timer1: Timer16Bit, HasExternalClock {
             _volatileRegisterWriteUInt8(0x43, newValue)
         }
     }
-    
-    /// TSM – Timer/Counter Synchronization Mode
+
+    /// TSM – Timer/Counter Synchronization Mode 
+    ///
+    /// Writing the TSM bit to one activates the Timer/Counter Synchronization mode. In this mode, the value that is
+    /// written to the PSRASY and PSRSYNC bits is kept, hence keeping the corresponding prescaler reset signals
+    /// asserted. This ensures that the corresponding Timer/Counters are halted and can be configured to the same
+    /// value without the risk of one of them advancing during configuration. When the TSM bit is written to zero, the
+    /// PSRASY and PSRSYNC bits are cleared by hardware, and the Timer/Counters start counting simultaneously.
+    ///
     @inlinable
     @inline(__always)
     public static var timerSynchronizationMode: Timer.TimerSynchronizationMode {
         get {
-            let mode = (generalTimerCounterControlRegister & 0b10000000) >> UInt8(7)
+            let mode = (generalControlRegister & 0b10000000) >> UInt8(7)
             return Timer.TimerSynchronizationMode.init(rawValue: mode) ?? .disabled
         }
         set {
-            generalTimerCounterControlRegister |= (newValue.rawValue) & 0b00000001 << UInt8(7) // HALGEN: Missing `)`
-                                                                                               // (newValue.rawValue
-                                                                                               //                   ^
-                                                                                               //                   here
+            generalControlRegister |= (newValue.rawValue & 0b00000001) << UInt8(7)
         }
     }
-    
-    /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0
+
+    /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0 
     @inlinable
     @inline(__always)
     public static var prescalerResetTimerCounter: Bool {
         get {
-            let flag = (generalTimerCounterControlRegister & 0b00000001) >> UInt8(0)
+            let flag = (UInt8(number) & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            generalTimerCounterControlRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
-        }
-    }
-    
-    
-    // TODO: Figure out what FOC2A and FOC2B are for.
-    
-    // NOTE: There are many uses for PWM, some as simple as holding the same pulse width and only changing periodically for hobby servo control or LED brightness,
-    // while more advanced uses can use the timer interupt to dynamically change the pulse width to output complex wave forms.
-    
-    /// See ATMega328p Datasheet Table 18-8.
-    /// Table 18-8. Waveform Generation Mode Bit Description
-    ///```
-    ///---------------------------------------------------------------------------------------------------
-    ///  Mode  | WGM22 | WGM21 | WGM20 | Mode of Operation  |  TOP  | Update of OCRx at | TOV Flag Set on |
-    ///---------------------------------------------------------------------------------------------------
-    ///    0   |   0   |   0   |   0   | Normal             | 0xFF  | Immediate         | MAX             |
-    ///---------------------------------------------------------------------------------------------------
-    ///    1   |   0   |   0   |   1   | PWM, Phase Correct | 0xFF  | TOP               | BOTTOM          |
-    ///---------------------------------------------------------------------------------------------------
-    ///    2   |   0   |   1   |   0   | CTC                | OCRA  | Immediate         | MAX             |
-    ///---------------------------------------------------------------------------------------------------
-    ///    3   |   0   |   1   |   1   | Fast PWM           | 0xFF  | BOTTOM            | MAX             |
-    ///---------------------------------------------------------------------------------------------------
-    ///    4   |   1   |   0   |   0   | Reserved           |   -   |         -         |        -        |
-    ///---------------------------------------------------------------------------------------------------
-    ///    5   |   1   |   0   |   1   | PWM, Phase Correct | OCRA  | TOP               | BOTTOM          |
-    ///---------------------------------------------------------------------------------------------------
-    ///    6   |   1   |   1   |   0   | Reserved           |   -   |         -         |        -        |
-    ///---------------------------------------------------------------------------------------------------
-    ///    7   |   1   |   1   |   1   | Fast PWM           | OCRA  | BOTTOM            | TOP             |
-    ///---------------------------------------------------------------------------------------------------
-    ///```
-    ///Notes: 1. MAX= 0xFF
-    ///       2. BOTTOM= 0x00
-    ///
-    @inlinable
-    @inline(__always)
-    public static var waveformGenerationMode: Timer16Bit.WaveformGenerationMode {
-        get {
-            let mode = ((timerCounterControlRegisterB & 0b00001000) >> 1) | (timerCounterControlRegisterA & 0b00000011)
-            return Timer16Bit.WaveformGenerationMode.init(rawValue: mode) ?? .normal
-        }
-        set {
-            timerCounterControlRegisterA |= (newValue.rawValue & 0b00000011)
-            timerCounterControlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
+            number |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
 }

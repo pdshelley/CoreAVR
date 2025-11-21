@@ -12,7 +12,7 @@
 public typealias timer2 = Timer2
 
 // NOTE: PRTIM2 needs to be written to zero to enable Timer/Counter2 module. See Datasheet section 18.2
-public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
+public struct Timer2: Timer8Bit, AsyncTimer {
     
     /// TIMSK2 – Timer/Counter Interrupt Mask register
     ///```
@@ -435,7 +435,7 @@ public struct Timer2: Timer8Bit, AsyncTimer, InternalClockOnly {
             return Timer8Bit.WaveformGenerationMode(rawValue: mode) ?? .normal
         }
         set {
-            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(0))
+            controlRegisterA |= ((newValue.rawValue & 0b00000011) << UInt8(0)) // TODO: HALGEN: Missing brace
             controlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
         }
     }
