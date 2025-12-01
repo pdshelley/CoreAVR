@@ -5,7 +5,7 @@ files:
 - Sources/CoreAVR/DigitalValue.swift
 - Sources/CoreAVR/CoreAVR.swift
 - Sources/CoreAVR/Utilities.swift
-- Sources/CoreAVR/module/AnalogeDigitalConverter.swift
+- Sources/CoreAVR/module/AnalogToDigitalConverter.swift
 - Sources/CoreAVR/module/CPUCore.swift
 - Sources/CoreAVR/module/GPIO.swift
 - Sources/CoreAVR/module/Interrupts.swift
