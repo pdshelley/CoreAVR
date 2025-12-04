@@ -435,7 +435,7 @@ public struct Timer2: Timer8Bit, AsyncTimer {
             return Timer8Bit.WaveformGenerationMode(rawValue: mode) ?? .normal
         }
         set {
-            controlRegisterA |= ((newValue.rawValue & 0b00000011) << UInt8(0)) // TODO: HALGEN: Missing brace
+            controlRegisterA |= ((newValue.rawValue & 0b00000011) << UInt8(0))
             controlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
         }
     }
@@ -463,17 +463,17 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     /// ```
     public enum Prescaling: UInt8 {
         case stopped = 0
-        case runningNone = 1
-        case runningEight = 2
-        case runningThirtyTwo = 3
-        case runningSixtyFour = 4
-        case runningOneTwentyEight = 5
-        case runningTwoFiftySix = 6
-        case runningTenTwentyFour = 7
+        case runningWithoutPrescaling = 1
+        case running8 = 2
+        case running32 = 3
+        case running64 = 4
+        case running128 = 5
+        case running256 = 6
+        case running1024 = 7
     }
     
     /// CS2 – Clock Select bits
-    /// The three Clock Select bits select the clock source to be used by the Timer/Counter, see Table 18-9 on page 165.
+    /// The three Clock Select bits select the clock source to be used by the Timer/Counter.
     @inlinable
     @inline(__always)
     public static var prescaler: Prescaling {
@@ -501,7 +501,7 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     ///```
     @inlinable
     @inline(__always)
-    public static var number: UInt8 {
+    public static var count: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xB2)
         }

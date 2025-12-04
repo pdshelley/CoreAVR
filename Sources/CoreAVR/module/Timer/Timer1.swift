@@ -11,22 +11,22 @@
 
 public typealias timer1 = Timer1
 
-public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
+public struct Timer1: Timer16Bit {
     /// TIMSK1 – Timer/Counter Interrupt Mask Register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0x6F)       |   -   |   -   | ICIE1 |   -   |   -   |OCIE1B |OCIE1A | TOIE1 |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |   R   |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x6F)       |   -   |   -   | ICIE1 |   -   |   -   |OCIE1B |OCIE1A | TOIE1 |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |   R   |   R   |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
     @inlinable
     @inline(__always)
-    public static var interruptMaskRegister: UInt8 { // HALGEN: 16-bit in 8-bit address // HALGEN: Renamed `timerCounterInterruptMaskRegister` (was `timerInterruptMaskRegister`)
+    public static var interruptMaskRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x6F)
         }
@@ -35,9 +35,11 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// ICIE1 – Timer/Counter1 Input Capture Interrupt Enable
+    ///
+    /// When this bit is written to one, and the I-flag in the Status Register is set (interrupts globally enabled), the
+    /// Timer/Counter1 Input Capture interrupt is enabled. The corresponding Interrupt Vector (see “Interrupts” is executed
+    /// when the ICFn Flag, located in TIFRn, is set.
     @inlinable
     @inline(__always)
     public static var inputCaptureInterruptEnable: Bool {
@@ -50,8 +52,6 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCIE1B – Timer/Counter1 Output CompareB Match Interrupt Enable
     @inlinable
     @inline(__always)
@@ -65,8 +65,6 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCIE1A – Timer/Counter1 Output CompareA Match Interrupt Enable
     @inlinable
     @inline(__always)
@@ -80,8 +78,6 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TOIE1 – Timer/Counter1 Overflow Interrupt Enable
     @inlinable
     @inline(__always)
@@ -96,19 +92,19 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     }
     /// TIFR1 – Timer/Counter Interrupt Flag register
     ///```
-    ///-------------------------------------------------------------------------------
-    /// Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    ///-------------------------------------------------------------------------------
-    /// (0x36)       |   -   |   -   |  ICF1 |   -   |   -   | OCF1B | OCF1A | TOV1  |
-    ///-------------------------------------------------------------------------------
-    /// Read/Write   |   R   |   R   |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///--------------------------------------------------------------------------------
+    ///| Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    ///--------------------------------------------------------------------------------
+    ///| (0x36)       |   -   |   -   |  ICF1 |   -   |   -   | OCF1B | OCF1A | TOV1  |
+    ///--------------------------------------------------------------------------------
+    ///| Read/Write   |   R   |   R   |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
     @inlinable
     @inline(__always)
-    public static var interruptFlagRegister: UInt8 { // HALGEN: 16-bit in 8-bit address // HALGEN: Renamed `timerCounterInterruptFlagRegister` (was `timerInterruptFlagRegister`)
+    public static var interruptFlagRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x36)
         }
@@ -117,12 +113,15 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// ICF1 – Input Capture Flag 1
+    ///
+    /// This flag is set when a capture event occurs on the ICPn pin. When the Input Capture Register (ICRn) is set by
+    /// the WGM to be used as the TOP value, the ICFn Flag is set when the counter reaches the TOP value.
+    /// ICFn is automatically cleared when the Input Capture Interrupt Vector is executed. Alternatively, ICFn can be
+    /// cleared by writing a logic one to its bit location.
     @inlinable
     @inline(__always)
-    public static var inputCaptureFlag1: Bool {
+    public static var inputCaptureFlag: Bool {
         get {
             let flag = (interruptFlagRegister & 0b00100000) >> UInt8(5)
             return flag == 1
@@ -132,8 +131,6 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCF1B – Output Compare Flag 1B
     @inlinable
     @inline(__always)
@@ -147,8 +144,6 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// OCF1A – Output Compare Flag 1A
     @inlinable
     @inline(__always)
@@ -162,8 +157,6 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// TOV1 – Timer/Counter1 Overflow Flag
     @inlinable
     @inline(__always)
@@ -191,7 +184,7 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///```
     @inlinable
     @inline(__always)
-    public static var controlRegisterA: UInt8 { // HALGEN: 16-bit for 8-bit register
+    public static var controlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x80)
         }
@@ -270,7 +263,7 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///
     @inlinable
     @inline(__always)
-    public static var compareOutputModeA: Timer.CompareOutputMode { // HALGEN: Renamed `compareOutputModeA` (was `CompareOutputModeA`)
+    public static var compareOutputModeA: Timer.CompareOutputMode {
         get {
             let mode = (controlRegisterA & 0b11000000) >> UInt8(6)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -350,7 +343,7 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///
     @inlinable
     @inline(__always)
-    public static var compareOutputModeB: Timer.CompareOutputMode { // HALGEN: Renamed `compareOutputModeB` (was `CompareOutputModeB`)
+    public static var compareOutputModeB: Timer.CompareOutputMode {
         get {
             let mode = (controlRegisterA & 0b00110000) >> UInt8(4)
             return Timer.CompareOutputMode.init(rawValue: mode) ?? .normal
@@ -367,14 +360,14 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///--------------------------------------------------------------------------------
     ///| (0x81)       | ICNC1 | ICES1 |   -   | WGM11 | WGM10 | CS12  | CS11  | CS10  |
     ///--------------------------------------------------------------------------------
-    /// Read/Write    |  R/W  |  R/W  |   R   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
-    ///-------------------------------------------------------------------------------
-    /// InitialValue  |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    ///-------------------------------------------------------------------------------
+    ///| Read/Write   |  R/W  |  R/W  |   R   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///--------------------------------------------------------------------------------
+    ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    ///--------------------------------------------------------------------------------
     ///```
     @inlinable
     @inline(__always)
-    public static var controlRegisterB: UInt8 { // HALGEN: 16-bit for 8-bit register
+    public static var controlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x81)
         }
@@ -383,12 +376,15 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// ICNC1 – Input Capture 1 Noise Canceler
+    ///
+    /// Setting this bit (to true) activates the Input Capture Noise Canceler. When the noise canceler is activated, the
+    /// input from the Input Capture pin (ICPn) is filtered. The filter function requires four successive equal valued
+    /// samples of the ICPn pin for changing its output. The Input Capture is therefore delayed by four Oscillator cycles
+    /// when the noise canceler is enabled.
     @inlinable
     @inline(__always)
-    public static var inputCapture1NoiseCanceler: Bool {
+    public static var inputCaptureNoiseCanceler: Bool {
         get {
             let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
             return flag == 1
@@ -398,12 +394,19 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
     
-    // HALGEN: Property name and return type missing.
-    // HALGEN: Return type implementation missing (*some* enum -> Bool)
     /// ICES1 – Input Capture 1 Edge Select
+    ///
+    /// This bit selects which edge on the Input Capture pin (ICPn) that is used to trigger a capture event. When the
+    /// ICESn bit is written to zero, a falling (negative) edge is used as trigger, and when the ICESn bit is written to one,
+    /// a rising (positive) edge will trigger the capture.
+    /// When a capture is triggered according to the ICESn setting, the counter value is copied into the Input Capture
+    /// Register (ICRn). The event will also set the Input Capture Flag (ICFn), and this can be used to cause an Input
+    /// Capture Interrupt, if this interrupt is enabled.
+    /// When the ICRn is used as TOP value (see description of the WGM bits located in the TCCRnA and the
+    /// TCCRnB Register), the ICPn is disconnected and consequently the Input Capture function is disabled.
     @inlinable
     @inline(__always)
-    public static var inputCapture1EdgeSelect: Bool {
+    public static var inputCaptureEdgeSelect: Bool {
         get {
             let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
             return flag == 1
@@ -443,18 +446,18 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///|    7   |   1   |   1   |   1   | Fast PWM           | OCRA  | BOTTOM            | TOP             |
     ///-----------------------------------------------------------------------------------------------------
     ///```
-    ///Notes: 1. MAX= 0xFF
-    ///       2. BOTTOM= 0x00
+    /// Notes: 1. MAX= 0xFF
+    ///      2. BOTTOM= 0x00
     ///
     @inlinable
     @inline(__always)
     public static var waveformGenerationMode: Timer16Bit.WaveformGenerationMode {
-		get {
+        get {
             let mode = ((controlRegisterB & 0b00011000) >> 1) | (controlRegisterA & 0b00000011)
             return Timer16Bit.WaveformGenerationMode(rawValue: mode) ?? .normal
         }
         set {
-            controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(0))
+            controlRegisterA |= ((newValue.rawValue & 0b00000011) << UInt8(0))
             controlRegisterB |= ((newValue.rawValue & 0b00001100) << UInt8(1))
         }
     }
@@ -491,15 +494,17 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         case runningExternalRisingEdge = 7
     }
     
+    /// CS1 – Prescaler source of Timer/Counter 1
+    /// The three Clock Select bits select the clock source to be used by the Timer/Counter.
     @inlinable
     @inline(__always)
     public static var prescaler: Prescaling {
         get {
-            let mode = timerCounterControlRegisterA & 0b00000111
-            return .init(rawValue: mode) ?? .stopped
+            let mode = (controlRegisterB & 0b00000111) >> UInt8(0)
+            return Prescaling.init(rawValue: mode) ?? .stopped
         }
         set {
-            timerCounterControlRegisterB |= newValue.rawValue & 0b00000111
+            controlRegisterB |= (newValue.rawValue & 0b00000111) << UInt8(0)
         }
     }
     
@@ -516,7 +521,9 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
     ///```
-    public static var controlRegisterC: UInt8 { // HALGEN: 16-bit for 8-bit register
+    @inlinable
+    @inline(__always)
+    public static var controlRegisterC: UInt8 {
         get {
             _volatileRegisterReadUInt8(0x82)
         }
@@ -655,7 +662,7 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
     ///```
     @inlinable
     @inline(__always)
-    public static var inputCaptureRegisterBytes: UInt16 { // HALGEN: Renamed `timerCounterInputCaptureRegisterBytes` (was `inputCaptureRegister`)
+    public static var inputCaptureRegisterBytes: UInt16 {
         get {
             _volatileRegisterReadUInt16(0x86)
         }
@@ -707,17 +714,20 @@ public struct Timer1: Timer16Bit { // TODO: HALGEN: Removed `HasExternalClock`
         }
     }
 
-    /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0 
+    /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0
+    ///
+    /// When this bit is one, Timer/Counter1 and Timer/Counter0 prescaler will be Reset. This bit is normally cleared
+    /// immediately by hardware, except if the TSM bit is set. Note that Timer/Counter1 and Timer/Counter0 share the
+    /// same prescaler and a reset of this prescaler will affect both timers.
     @inlinable
     @inline(__always)
-    public static var prescalerResetTimerCounter: Bool {
+    public static var prescalerResetSync: Bool {
         get {
-            let flag = (UInt8(number) & 0b00000001) >> UInt8(0)
+            let flag = (generalControlRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            number |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+            generalControlRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
 }
-

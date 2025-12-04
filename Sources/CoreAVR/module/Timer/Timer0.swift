@@ -3,7 +3,7 @@
 // Timer0.swift
 // CoreAVR
 //
-// Created by Swift AVR Generator on 11/19/2025.
+// Created by Swift AVR Generator on 12/04/2025.
 // Copyright © 2025 Paul Shelley. All rights reserved.
 //
 //===----------------------------------------------------------------------===//
@@ -11,7 +11,7 @@
 
 public typealias timer0 = Timer0
 
-public struct Timer0: Timer8Bit { // TODO: HALGEN: Removed `HasExternalClock` protocol
+public struct Timer0: Timer8Bit {
     /// OCR0B – Timer/Counter0 Output Compare Register
     ///```
     ///--------------------------------------------------------------------------------
@@ -407,7 +407,7 @@ public struct Timer0: Timer8Bit { // TODO: HALGEN: Removed `HasExternalClock` pr
             return Timer8Bit.WaveformGenerationMode(rawValue: mode) ?? .normal
         }
         set {
-            controlRegisterA |= ((newValue.rawValue & 0b00000011) << UInt8(0)) // TODO: HALGEN: Missing brace
+            controlRegisterA |= ((newValue.rawValue & 0b00000011) << UInt8(0))
             controlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
         }
     }
@@ -568,17 +568,20 @@ public struct Timer0: Timer8Bit { // TODO: HALGEN: Removed `HasExternalClock` pr
             generalControlRegister |= (newValue.rawValue & 0b00000001) << UInt8(7)
         }
     }
-    // TODO: HALGEN: Missing name, return type, and implementation
-//    /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0
-//    @inlinable
-//    @inline(__always)
-//    public static var :  {
-//        get {
-//            let mode = (generalControlRegister & 0b00000001) >> UInt8(0)
-//            return .init(rawValue: mode) ??
-//        }
-//        set {
-//            generalControlRegister |= (newValue.rawValue & 0b00000001) << UInt8(0)
-//        }
-//    }
+    /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0
+    ///
+    /// When this bit is one, Timer/Counter1 and Timer/Counter0 prescaler will be Reset. This bit is normally cleared
+    /// immediately by hardware, except if the TSM bit is set. Note that Timer/Counter1 and Timer/Counter0 share the
+    /// same prescaler and a reset of this prescaler will affect both timers.
+    @inlinable
+    @inline(__always)
+    public static var prescalerResetSync: Bool {
+        get {
+            let flag = (generalControlRegister & 0b00000001) >> UInt8(0)
+            return flag == 1
+        }
+        set {
+            generalControlRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
+        }
+    }
 }
