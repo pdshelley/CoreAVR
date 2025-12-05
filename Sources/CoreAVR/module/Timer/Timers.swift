@@ -157,7 +157,7 @@ public protocol Timer8Bit: Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|--------
     /// ```
-    static var number: UInt8 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
+    static var count: UInt8 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
     
     /// 11.9.4 OCR0A – Output Compare Register A
     /// ```
@@ -208,7 +208,7 @@ public protocol Timer10Bit: Timer {
     
     static var deadTimeValue: UInt8 { get set }
     
-    typealias WaveformGenerationMode = WaveformGenerationMode10Bit // TODO: 10-bit Waveform Generation Mode
+    //typealias WaveformGenerationMode = WaveformGenerationMode10Bit // TODO: 10-bit Waveform Generation Mode
 }
 
 public protocol Timer16Bit: Timer {
@@ -217,7 +217,7 @@ public protocol Timer16Bit: Timer {
     static var controlRegisterC: UInt8 { get set }
     
     // Note: These 3 properties change type from UInt8 to UInt16 depending on if the timer is an 8 Bit timer or 16 Bit Timer.
-    static var number: UInt16 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
+    static var count: UInt16 { get set } // HALGEN: Renamed  `timerCounter` (was `timerCounterNumber`)
     static var outputCompareRegisterA: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterA` (was `outputCompareRegisterA`)
     static var outputCompareRegisterB: UInt16 { get set } // HALGEN: Renamed `timerCounterOutputCompareRegisterB` (was `outputCompareRegisterB`)
     
