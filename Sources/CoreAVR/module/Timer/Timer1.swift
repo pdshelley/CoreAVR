@@ -592,10 +592,11 @@ public struct Timer1: Timer16Bit {
     @inline(__always)
     public static var count: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x84)
+            atomic { _volatileRegisterReadUInt16(0x84) }
+            
         }
         set {
-            _volatileRegisterWriteUInt16(0x84, newValue)
+            atomic { _volatileRegisterWriteUInt16(0x84, newValue) }
         }
     }
 
@@ -616,10 +617,10 @@ public struct Timer1: Timer16Bit {
     @inline(__always)
     public static var outputCompareRegisterA: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x88)
+            atomic { _volatileRegisterReadUInt16(0x88) }
         }
         set {
-            _volatileRegisterWriteUInt16(0x88, newValue)
+            atomic { _volatileRegisterWriteUInt16(0x88, newValue) }
         }
     }
 
@@ -640,10 +641,10 @@ public struct Timer1: Timer16Bit {
     @inline(__always)
     public static var outputCompareRegisterB: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x8A)
+            atomic { _volatileRegisterReadUInt16(0x8A) }
         }
         set {
-            _volatileRegisterWriteUInt16(0x8A, newValue)
+            atomic { _volatileRegisterWriteUInt16(0x8A, newValue) }
         }
     }
 
@@ -664,10 +665,10 @@ public struct Timer1: Timer16Bit {
     @inline(__always)
     public static var inputCaptureRegisterBytes: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x86)
+            atomic { _volatileRegisterReadUInt16(0x86) }
         }
         set {
-            _volatileRegisterWriteUInt16(0x86, newValue)
+            atomic { _volatileRegisterWriteUInt16(0x86, newValue) }
         }
     }
     
