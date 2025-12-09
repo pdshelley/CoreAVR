@@ -19,7 +19,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x48)       |                             OCR0B                             |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |                              R/W                              |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x47)       |                             OCR0A                             |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |                              R/W                              |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x46)       |                             TCNT0                             |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |                              R/W                              |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x45)       | FOC0A | FOC0B |   -   |   -   | WGM02 | CS02  | CS01  | CS00  |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |   W   |   W   |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -102,14 +102,14 @@ public struct Timer0: Timer8Bit {
     }
     /// FOC0A – Force Output Compare A 
     ///
-    /// The FOC2A bit is only active when the WGM bits specify a non-PWM mode.
-    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
-    /// when operating in PWM mode. When writing a logical one to the FOC2A bit, an immediate Compare Match is
-    /// forced on the Waveform Generation unit. The OC2A output is changed according to its COM2A1:0 bits setting.
-    /// Note that the FOC2A bit is implemented as a strobe. Therefore it is the value present in the COM2A1:0 bits that
+    /// The FOCnA bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCRnB is written
+    /// when operating in PWM mode. When writing a logical one to the FOCnA bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OCnA output is changed according to its COMnA bits setting.
+    /// Note that the FOCnA bit is implemented as a strobe. Therefore it is the value present in the COMnA bits that
     /// determines the effect of the forced compare.
-    /// A FOC2A strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2A as TOP.
-    /// The FOC2A bit is always read as zero.
+    /// A FOCnA strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCRnA as TOP.
+    /// The FOCnA bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareA: Bool {
@@ -123,14 +123,14 @@ public struct Timer0: Timer8Bit {
     }
     /// FOC0B – Force Output Compare B 
     ///
-    /// The FOC2B bit is only active when the WGM bits specify a non-PWM mode.
-    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
-    /// when operating in PWM mode. When writing a logical one to the FOC2B bit, an immediate Compare Match is
-    /// forced on the Waveform Generation unit. The OC2B output is changed according to its COM2B1:0 bits setting.
-    /// Note that the FOC2B bit is implemented as a strobe. Therefore it is the value present in the COM2B1:0 bits that
+    /// The FOCnB bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCRnB is written
+    /// when operating in PWM mode. When writing a logical one to the FOCnB bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OCnB output is changed according to its COMnB bits setting.
+    /// Note that the FOCnB bit is implemented as a strobe. Therefore it is the value present in the COMnB bits that
     /// determines the effect of the forced compare.
-    /// A FOC2B strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2B as TOP.
-    /// The FOC2B bit is always read as zero.
+    /// A FOCnB strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCRnB as TOP.
+    /// The FOCnB bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareB: Bool {
@@ -193,7 +193,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x44)       |COM0A1 |COM0A0 |COM0B1 |COM0B0 |   -   |   -   | WGM01 | WGM00 |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -418,7 +418,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x6E)       |   -   |   -   |   -   |   -   |   -   |OCIE0B |OCIE0A | TOIE0 |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -476,7 +476,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x35)       |   -   |   -   |   -   |   -   |   -   | OCF0B | OCF0A | TOV0  |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |   R   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -534,7 +534,7 @@ public struct Timer0: Timer8Bit {
     ///--------------------------------------------------------------------------------
     ///| (0x43)       |  TSM  |   -   |   -   |   -   |   -   |   -   |   -   |PSRSYNC|
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |   ?   |
+    ///| Read/Write   |  R/W  |   R   |   R   |   R   |   R   |   R   |   R   |  R/W  |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------

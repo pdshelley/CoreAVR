@@ -333,7 +333,7 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     ///--------------------------------------------------------------------------------
     ///| (0xB1)       | FOC2A | FOC2B |   -   |   -   | WGM22 | CS22  | CS21  | CS20  |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |  R/W  |  R/W  |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///| Read/Write   |   W   |   W   |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -351,14 +351,14 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     
     /// FOC2A – Force Output Compare A
     ///
-    /// The FOC2A bit is only active when the WGM bits specify a non-PWM mode.
-    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
-    /// when operating in PWM mode. When writing a logical one to the FOC2A bit, an immediate Compare Match is
-    /// forced on the Waveform Generation unit. The OC2A output is changed according to its COM2A1:0 bits setting.
-    /// Note that the FOC2A bit is implemented as a strobe. Therefore it is the value present in the COM2A1:0 bits that
+    /// The FOCnA bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCRnB is written
+    /// when operating in PWM mode. When writing a logical one to the FOCnA bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OCnA output is changed according to its COMnA bits setting.
+    /// Note that the FOCnA bit is implemented as a strobe. Therefore it is the value present in the COMnA bits that
     /// determines the effect of the forced compare.
-    /// A FOC2A strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2A as TOP.
-    /// The FOC2A bit is always read as zero. 
+    /// A FOCnA strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCRnA as TOP.
+    /// The FOCnA bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareA: Bool {
@@ -373,14 +373,14 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     
     /// FOC2B – Force Output Compare B
     ///
-    /// The FOC2B bit is only active when the WGM bits specify a non-PWM mode.
-    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCR2B is written
-    /// when operating in PWM mode. When writing a logical one to the FOC2B bit, an immediate Compare Match is
-    /// forced on the Waveform Generation unit. The OC2B output is changed according to its COM2B1:0 bits setting.
-    /// Note that the FOC2B bit is implemented as a strobe. Therefore it is the value present in the COM2B1:0 bits that
+    /// The FOCnB bit is only active when the WGM bits specify a non-PWM mode.
+    /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCRnB is written
+    /// when operating in PWM mode. When writing a logical one to the FOCnB bit, an immediate Compare Match is
+    /// forced on the Waveform Generation unit. The OCnB output is changed according to its COMnB bits setting.
+    /// Note that the FOCnB bit is implemented as a strobe. Therefore it is the value present in the COMnB bits that
     /// determines the effect of the forced compare.
-    /// A FOC2B strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCR2B as TOP.
-    /// The FOC2B bit is always read as zero.
+    /// A FOCnB strobe will not generate any interrupt, nor will it clear the timer in CTC mode using OCRnB as TOP.
+    /// The FOCnB bit is always read as zero.
     @inlinable
     @inline(__always)
     public static var forceOutputCompareB: Bool {
@@ -494,7 +494,7 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     ///--------------------------------------------------------------------------------
     ///| (0xB2)       |                             TCNT2                             |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///| Read/Write   |                              R/W                              |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -518,7 +518,7 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     ///--------------------------------------------------------------------------------
     ///| (0xB4)       |                             OCR2B                             |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///| Read/Write   |                              R/W                              |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -543,7 +543,7 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     ///--------------------------------------------------------------------------------
     ///| (0xB3)       |                             OCR2A                             |
     ///--------------------------------------------------------------------------------
-    ///| Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    ///| Read/Write   |                              R/W                              |
     ///--------------------------------------------------------------------------------
     ///| InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     ///--------------------------------------------------------------------------------
@@ -720,6 +720,12 @@ public struct Timer2: Timer8Bit, AsyncTimer {
     }
     
     /// PSRASY – Prescaler Reset Timer/Counter2
+    ///
+    /// When this bit is one, the Timer/Counter2 prescaler will be reset. This bit is normally cleared immediately by
+    /// hardware. If the bit is written when Timer/Counter2 is operating in asynchronous mode, the bit will remain one
+    /// until the prescaler has been reset. The bit will not be cleared by hardware if the TSM bit is set. Refer to the
+    /// description of the ”Bit 7 – TSM: Timer/Counter Synchronization Mode” for a description of the
+    /// Timer/Counter Synchronization mode.
     @inlinable
     @inline(__always)
     public static var prescalerReset: Bool {
