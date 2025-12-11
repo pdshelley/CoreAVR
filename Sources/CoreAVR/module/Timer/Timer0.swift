@@ -34,6 +34,7 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x48, newValue)
         }
     }
+    
     /// OCR0A – Timer/Counter0 Output Compare Register
     ///```
     ///--------------------------------------------------------------------------------
@@ -56,6 +57,7 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x47, newValue)
         }
     }
+    
     /// TCNT0 – Timer/Counter0
     ///```
     ///--------------------------------------------------------------------------------
@@ -78,6 +80,7 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x46, newValue)
         }
     }
+    
     /// TCCR0B – Timer/Counter Control Register B
     ///```
     ///--------------------------------------------------------------------------------
@@ -100,7 +103,8 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x45, newValue)
         }
     }
-    /// FOC0A – Force Output Compare A 
+    
+    /// FOC0A – Force Output Compare A
     ///
     /// The FOCnA bit is only active when the WGM bits specify a non-PWM mode.
     /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCRnB is written
@@ -113,15 +117,12 @@ public struct Timer0: Timer8Bit {
     @inlinable
     @inline(__always)
     public static var forceOutputCompareA: Bool {
-        get {
-            let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
-            return flag == 1
-        }
         set {
             controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
         }
     }
-    /// FOC0B – Force Output Compare B 
+    
+    /// FOC0B – Force Output Compare B
     ///
     /// The FOCnB bit is only active when the WGM bits specify a non-PWM mode.
     /// However, for ensuring compatibility with future devices, this bit must be set to zero when TCCRnB is written
@@ -134,14 +135,11 @@ public struct Timer0: Timer8Bit {
     @inlinable
     @inline(__always)
     public static var forceOutputCompareB: Bool {
-        get {
-            let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
-            return flag == 1
-        }
         set {
             controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
         }
     }
+    
     /// ```
     /// |--------|-------|-------|-------|-----------------------------------------------------------------|
     /// |  Mode  | CS02  | CS01  | CS00  | Description                                                     |
@@ -173,7 +171,8 @@ public struct Timer0: Timer8Bit {
         case runningExternalFallingEdge = 6
         case runningExternalRisingEdge = 7
     }
-    /// CS0 – Clock Select 
+    
+    /// CS0 – Clock Select
     /// The three Clock Select bits select the clock source to be used by the Timer/Counter.
     @inlinable
     @inline(__always)
@@ -186,6 +185,7 @@ public struct Timer0: Timer8Bit {
             controlRegisterB |= (newValue.rawValue & 0b00000111) << UInt8(0)
         }
     }
+    
     /// TCCR0A – Timer/Counter  Control Register A
     ///```
     ///--------------------------------------------------------------------------------
@@ -208,7 +208,8 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x44, newValue)
         }
     }
-    /// COM0A – Compare Output Mode, Phase Correct PWM Mode 
+    
+    /// COM0A – Compare Output Mode, Phase Correct PWM Mode
     ///
     /// These bits control the Output Compare pin (OC2A) behavior. If one or both of the COM2A1:0 bits are set, the
     /// OC2A output overrides the normal port functionality of the I/O pin it is connected to. However, note that the Data
@@ -287,7 +288,8 @@ public struct Timer0: Timer8Bit {
             controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(6)
         }
     }
-    /// COM0B – Compare Output Mode, Fast PWm 
+    
+    /// COM0B – Compare Output Mode, Fast PWm
     /// See ATMega328p Datasheet Table 18-5, Table 18-6, and Table 18-7.
     ///
     /// These bits control the Output Compare pin (OC2B) behavior. If one or both of the COM2B1:0 bits are set, the
@@ -366,7 +368,8 @@ public struct Timer0: Timer8Bit {
             controlRegisterA |= (newValue.rawValue & 0b00000011) << UInt8(4)
         }
     }
-    /// WGM02 –  
+    
+    /// WGM02 –
     ///
     /// Combined with the WGM22 bit found in the TCCR2B Register, these bits control the counting sequence of the
     /// counter, the source for maximum (TOP) counter value, and what type of waveform generation to be used, see
@@ -411,6 +414,7 @@ public struct Timer0: Timer8Bit {
             controlRegisterB |= ((newValue.rawValue & 0b00000100) << UInt8(1))
         }
     }
+    
     /// TIMSK0 – Timer/Counter0 Interrupt Mask Register
     ///```
     ///--------------------------------------------------------------------------------
@@ -433,7 +437,8 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x6E, newValue)
         }
     }
-    /// OCIE0B – Timer/Counter0 Output Compare Match B Interrupt Enable 
+    
+    /// OCIE0B – Timer/Counter0 Output Compare Match B Interrupt Enable
     @inlinable
     @inline(__always)
     public static var outputCompareMatchBInterruptEnable: Bool {
@@ -445,7 +450,8 @@ public struct Timer0: Timer8Bit {
             interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
-    /// OCIE0A – Timer/Counter0 Output Compare Match A Interrupt Enable 
+    
+    /// OCIE0A – Timer/Counter0 Output Compare Match A Interrupt Enable
     @inlinable
     @inline(__always)
     public static var outputCompareMatchAInterruptEnable: Bool {
@@ -457,7 +463,8 @@ public struct Timer0: Timer8Bit {
             interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
-    /// TOIE0 – Timer/Counter0 Overflow Interrupt Enable 
+    
+    /// TOIE0 – Timer/Counter0 Overflow Interrupt Enable
     @inlinable
     @inline(__always)
     public static var overflowInterruptEnable: Bool {
@@ -469,6 +476,7 @@ public struct Timer0: Timer8Bit {
             interruptMaskRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
+    
     /// TIFR0 – Timer/Counter0 Interrupt Flag register
     ///```
     ///--------------------------------------------------------------------------------
@@ -491,7 +499,8 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x35, newValue)
         }
     }
-    /// OCF0B – Timer/Counter0 Output Compare Flag 0B 
+    
+    /// OCF0B – Timer/Counter0 Output Compare Flag 0B
     @inlinable
     @inline(__always)
     public static var outputCompareFlagB: Bool {
@@ -503,7 +512,8 @@ public struct Timer0: Timer8Bit {
             interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(2)
         }
     }
-    /// OCF0A – Timer/Counter0 Output Compare Flag 0A 
+    
+    /// OCF0A – Timer/Counter0 Output Compare Flag 0A
     @inlinable
     @inline(__always)
     public static var outputCompareFlagA: Bool {
@@ -515,7 +525,8 @@ public struct Timer0: Timer8Bit {
             interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(1)
         }
     }
-    /// TOV0 – Timer/Counter0 Overflow Flag 
+    
+    /// TOV0 – Timer/Counter0 Overflow Flag
     @inlinable
     @inline(__always)
     public static var overflowFlag: Bool {
@@ -527,6 +538,7 @@ public struct Timer0: Timer8Bit {
             interruptFlagRegister |= (newValue ? 1 : 0) & 0b00000001 << UInt8(0)
         }
     }
+    
     /// GTCCR – General Timer/Counter Control Register
     ///```
     ///--------------------------------------------------------------------------------
@@ -549,7 +561,8 @@ public struct Timer0: Timer8Bit {
             _volatileRegisterWriteUInt8(0x43, newValue)
         }
     }
-    /// TSM – Timer/Counter Synchronization Mode 
+    
+    /// TSM – Timer/Counter Synchronization Mode
     ///
     /// Writing the TSM bit to one activates the Timer/Counter Synchronization mode. In this mode, the value that is
     /// written to the PSRASY and PSRSYNC bits is kept, hence keeping the corresponding prescaler reset signals
@@ -568,6 +581,7 @@ public struct Timer0: Timer8Bit {
             generalControlRegister |= (newValue.rawValue & 0b00000001) << UInt8(7)
         }
     }
+    
     /// PSRSYNC – Prescaler Reset Timer/Counter1 and Timer/Counter0
     ///
     /// When this bit is one, Timer/Counter1 and Timer/Counter0 prescaler will be Reset. This bit is normally cleared
