@@ -32,6 +32,24 @@ public func noOpperation() { // TODO: Figure out why this is not inlining in the
     _noOpperation()
 }
 
+/// Derived from: avr-libc/include/util/atomic.h - ATOMIC_BLOCK
+///
+/// Creates a block of code that is guaranteed to be executed atomically.
+/// Upon entering the block the Global Interrupt Status flag in SREG is disabled, and re-enabled upon exiting the block from any exit path.
+@inlinable
+@inline(__always)
+public func atomic<T>(block: () -> T) -> T {
+    if !cpuCore.globalInterruptEnable {
+        return block()
+    }
+    
+    Interrupts.disableInterrupts()
+    let result = block()
+    Interrupts.enableInterrupts()
+    
+    return result
+}
+
 //public func noInterrupts() {
 //    cli()
 //    }

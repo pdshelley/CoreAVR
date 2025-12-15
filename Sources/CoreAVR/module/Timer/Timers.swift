@@ -42,7 +42,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0    |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|--------|
     /// ```
-    static var timerCounterControlRegisterA: UInt8 { get set }
+    static var controlRegisterA: UInt8 { get set }
     
     /// Timer/Counter Controll Register B
     /// AKA TCCR0B See ATtiny13A Datasheet Section 11.9.2.
@@ -57,7 +57,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     ///```
-    static var timerCounterControlRegisterB: UInt8 { get set }
+    static var controlRegisterB: UInt8 { get set }
     
     /// 11.9.6 TIMSK0 – Timer/Counter2 Interrupt Mask Register
     /// Note: the positions of OCIE0B, OCIE0A, and TOIE0 are different than the 328P.
@@ -72,7 +72,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     /// ```
-    static var timerInterruptMaskRegister: UInt8 { get set }
+    static var interruptMaskRegister: UInt8 { get set }
     
     /// 11.9.7 TIFR0 – Timer/Counter2 Interrupt Flag Register
     /// Note: the positions of OCF0B, OCF0A, and TOV0 are different than the 328P.
@@ -87,7 +87,7 @@ public protocol Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|-------|
     /// ```
-    static var timerInterruptFlagRegister: UInt8 { get set }
+    static var interruptFlagRegister: UInt8 { get set }
     
     typealias CompareOutputMode = CompareOutputModeOption
     
@@ -157,7 +157,7 @@ public protocol Timer8Bit: Timer {
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// |--------------|-------|-------|-------|-------|-------|-------|-------|--------
     /// ```
-    static var timerCounterNumber: UInt8 { get set }
+    static var count: UInt8 { get set }
     
     /// 11.9.4 OCR0A – Output Compare Register A
     /// ```
@@ -194,13 +194,30 @@ public protocol Timer8Bit: Timer {
     typealias WaveformGenerationMode = WaveformGenerationMode8Bit
 }
 
+public protocol Timer10Bit: Timer {
+    static var controlRegisterC: UInt8 { get set }
+    static var controlRegisterD: UInt8 { get set }
+    static var controlRegisterE: UInt8 { get set }
+    
+    static var count: UInt16 { get set }
+    
+    static var outputCompareRegisterA: UInt8 { get set }
+    static var outputCompareRegisterB: UInt8 { get set }
+    static var outputCompareRegisterC: UInt8 { get set }
+    static var outputCompareRegisterD: UInt8 { get set }
+    
+    static var deadTimeValue: UInt8 { get set }
+    
+    //typealias WaveformGenerationMode = WaveformGenerationMode10Bit // TODO: 10-bit Waveform Generation Mode
+}
+
 public protocol Timer16Bit: Timer {
     
     // TODO: 16 Bit timers have an extra control register C. Wave Form Generation has more modes, other settings might also be more granular.
-    static var timerCounterControlRegisterC: UInt8 { get set }
+    static var controlRegisterC: UInt8 { get set }
     
     // Note: These 3 properties change type from UInt8 to UInt16 depending on if the timer is an 8 Bit timer or 16 Bit Timer.
-    static var timerCounterNumber: UInt16 { get set }
+    static var count: UInt16 { get set }
     static var outputCompareRegisterA: UInt16 { get set }
     static var outputCompareRegisterB: UInt16 { get set }
     
@@ -265,105 +282,10 @@ public enum WaveformGenerationMode16Bit: UInt8 {
     case fastPWMOnOutputCompairRegister = 15
 }
 
-public protocol HasExternalClock {
-    static var prescaler: HasExternalClockPrescaling { get set }
-}
-
-/// See ATtiny13A Datasheet Table 11-9.
-///
-/// Table 11-9. Clock Select Bit Description
-/// ```
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |  Mode  | CS02  | CS01  | CS00  | Description                                                     |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    0   |   0   |   0   |   0   | No clock source (Timer/Counter stopped)                         |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    1   |   0   |   0   |   1   | clk (No prescaling)                                             |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    2   |   0   |   1   |   0   | clk /8 (From prescaler)                                         |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    3   |   0   |   1   |   1   | clk /64 (From prescaler)                                        |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    4   |   1   |   0   |   0   | clkI/O/256 (From prescaler)                                     |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    5   |   1   |   0   |   1   | clkI/O/1024 (From prescaler)                                    |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    6   |   1   |   1   |   0   | External clock source on T0 pin. Clock on falling edge.         |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    7   |   1   |   1   |   1   | External clock source on T0 pin. Clock on rising edge.          |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// ```
-/// If external pin modes are used for the Timer/Counter0, transitions on the T0 pin will clock the counter even if the pin is configured as an output. This feature allows software control of the counting.
-///
-public enum HasExternalClockPrescaling: UInt8 {
-    case noClockSource = 0 // No Clock Source - counter is off
-    case none = 1 // clkT2S - No Prescaler
-    case eight = 2 // clkT2S/8
-    case thirtyTwo = 3 // clkT2S/32
-    case sixtyFour = 4 // clkT2S/64
-    case oneTwentyEight = 5 // clkT2S/128
-    case twoFiftySix = 6 // clkT2S/256
-    case tenTwentyFour = 7 // clkT2S/1024
-}
-
-public protocol InternalClockOnly {
-    static var prescaler: InternalClockOnlyPrescaling { get set }
-}
-
-// Note: This chart is from the Atmega 328p Timer2 which is an 8 bit timer with an internal clock. TODO: Figure out the pattern.
-/// ```
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |  Mode  | CS22  | CS21  | CS20  | Description                                                     |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    0   |   0   |   0   |   0   | No clock source (Timer/Counter stopped)                         |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    1   |   0   |   0   |   1   | clk T2S/(No prescaling)                                         |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    2   |   0   |   1   |   0   | clk T2S/8 (From prescaler)                                      |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    3   |   0   |   1   |   1   | clk T2S/32 (From prescaler)                                     |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    4   |   1   |   0   |   0   | clkI T2S/64 (From prescaler)                                    |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    5   |   1   |   0   |   1   | clkI T2S/128 (From prescaler)                                   |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    6   |   1   |   1   |   0   | clkI T2S/256 (From prescaler)                                   |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// |    7   |   1   |   1   |   1   | clkI T2S/1024 (From prescaler)                                  |
-/// |--------|-------|-------|-------|-----------------------------------------------------------------|
-/// ```
-public enum InternalClockOnlyPrescaling: UInt8 {
-    case noClockSource = 0
-    case none = 1
-    case eight = 2
-    case thirtyTwo = 3 // clkT2S/32
-    case sixtyFour = 4 // clkT2S/64
-    case oneTwentyEight = 5 // clkT2S/128
-    case twoFiftySix = 6 // clkT2S/256
-    case tenTwentyFour = 7 // clkT2S/1024
-}
-
-// Note: This is an older version of the Internal Prescalor. It was incorrect for the Atmega 328p Timer2 which is an 8 bit timer with an internal clock.
-// I don't think this was a mistake but an inconsistancy in timers or we don't have the pattern figured out yet.
-//enum InternalClockOnlyPrescaling: UInt8 {
-//    case noClockSource = 0
-//    case none = 1
-//    case eight = 2
-//    case sixtyFour = 3
-//    case twoFiftySix = 4
-//    case tenTwentyFour = 5
-//    case externalClockOnFallingEdge = 6
-//    case externalClockOnRisingEdge = 7
-//}
-
-
-
-
-
 // TODO: Verify that this assumption is correct.
 public protocol AsyncTimer {
     // These are only used on the Async timer2?
     static var asynchronousStatusRegister:   UInt8 { get set }
-    static var generalTimerCounterControlRegister:  UInt8 { get set }
+    static var generalControlRegister:  UInt8 { get set }
 }
 
