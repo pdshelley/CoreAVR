@@ -117,6 +117,10 @@ public struct Timer0: Timer8Bit {
     @inlinable
     @inline(__always)
     public static var forceOutputCompareA: Bool {
+        get {
+            let flag = (controlRegisterB & 0b10000000) >> UInt8(7)
+            return flag == 1
+        }
         set {
             controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(7)
         }
@@ -135,6 +139,10 @@ public struct Timer0: Timer8Bit {
     @inlinable
     @inline(__always)
     public static var forceOutputCompareB: Bool {
+        get {
+            let flag = (controlRegisterB & 0b01000000) >> UInt8(6)
+            return flag == 1
+        }
         set {
             controlRegisterB |= (newValue ? 1 : 0) & 0b00000001 << UInt8(6)
         }

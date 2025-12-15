@@ -6,3 +6,7 @@ build/
 /.project
 /.swiftpm
 *.xcworkspacedata
+/libCoreAVR.a
+/CoreAVR.swiftsourceinfo
+/CoreAVR.swiftmodule
+/CoreAVR.swiftdoc
