@@ -104,6 +104,26 @@ public enum SPI {
         case f32 = 6
         case f64_2 = 7
     }
+    
+    /// ```
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |  Mode  | CPOL  | CPHA  | Description                                                          |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    0   |   0   |   0   | Data sampled on rising edge and shifted out on the falling edge.     |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    1   |   0   |   0   | Data sampled on the falling edge and shifted out on the rising edge. |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    2   |   0   |   1   | Data sampled on the falling edge and shifted out on the rising edge. |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    3   |   0   |   1   | Data sampled on the rising edge and shifted out on the falling edge  |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// ```
+    public enum Mode: UInt8 {
+        case zero = 0
+        case one = 1
+        case two = 2
+        case three = 3
+    }
 }
 
 public protocol SPIPort {
@@ -257,6 +277,42 @@ public struct SPI0: SPIPort {
         }
         set {
             controlRegister = (controlRegister & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
+        }
+    }
+    
+    /// SPI Mode
+    /// Not in the Datasheet but a standard convention in SPI to define both the Clock Phase and Polarity in a single value. This is a
+    /// convienience method to set both the clockPolarity and clockPhase at the same time. 
+    ///
+    /// In SPI, the Master can select the clock polarity and clock phase. The CPOL bit sets the polarity of the clock signal during the
+    /// idle state. The idle state is defined as the period when CS is high and transitioning to low at the start of the transmission
+    /// and when CS is low and transitioning to high at the end of the transmission. The CPHA bit selects the clock phase.
+    /// Depending on the CPHA bit, the rising or falling clock edge is used to sample and/or shift the data. The main must select
+    /// the clock polarity and clock phase, as per the requirement of the subnode. Depending on the CPOL and CPHA bit selection,
+    /// four SPI modes are available.
+    ///
+    /// ```
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |  Mode  | CPOL  | CPHA  | Description                                                          |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    0   |   0   |   0   | Data sampled on rising edge and shifted out on the falling edge.     |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    1   |   0   |   0   | Data sampled on the falling edge and shifted out on the rising edge. |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    2   |   0   |   1   | Data sampled on the falling edge and shifted out on the rising edge. |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// |    3   |   0   |   1   | Data sampled on the rising edge and shifted out on the falling edge  |
+    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// ```
+    @inlinable
+    @inline(__always)
+    public static var mode: SPI.Mode { // CPHA
+        get {
+            let mode = (controlRegister & 0b00001100) >> 2
+            return SPI.Mode.init(rawValue: mode) ?? .sample
+        }
+        set {
+            controlRegister = (controlRegister & ~0b00001100) | ((newValue.rawValue << 2) & 0b00001100)
         }
     }
     
@@ -469,21 +525,21 @@ public struct SPI0: SPIPort {
 //        }
 //    }
     
+    
+    // TODO: This sets up SPI as a Master. It can also be configured as a Slave. We need to be able to choose.
+    // TODO: SPI supports different "modes" (1-4) this is in effect the settings for CPOL (ClockPolarity) and CPHA (ClockPhase). We need to support this. See https://www.ti.com/content/dam/videos/external-videos/en-us/6/3816841626001/6163521589001.mp4/subassets/basics-of-spi-serial-communications-presentation.pdf
+    //
     @inlinable
     @inline(__always)
-    public static func setup() { // TODO: Make a way to create an object that represents a SPI Slave, then the send commands will be preformed on this object. This is important as diffreent SPI devices on the same bus might need different setting as well as they will always have different Slave Select pins.
-        // Set ss to Output // TODO: What is a good way to have the SS pin passed in? 
-        GPIO.pb2.setDataDirection(.output)
-        // Save SREG state // AVR Status Register // Is this really needed?
+    public static func setup() { // setup(as _role: .master, and _mode: .zero)
+        // Save SREG state // AVR Status Register // Is this really needed? // Is this saving the interrupt state?
         let savedStatus = cpuCore.statusRegister
+        
         // Turn off interrupts // Is this really needed for my example as I am not using interrupts
+        // TODO: I'm not sure why I was turning off interupts. I imagine that the state should be saved, turned off, settings changed, then turned back to the saved state.
         cpuCore.globalInterruptEnable = false
-        // Set SS to High
-        GPIO.pb2.setValue(.high)
-        // Set SS to Output // Redundent if the first is in place.
-        //GPIO.pb2.setDataDirection(.output) // This is not required.
 
-        // Set MSTR on SPCR // Master/Slave Select on the SPI Control Register
+        // Set MSTR on SPCR // Master/Slave Select on the SPI Control Register, this puts SPI in Master mode as it can be either a Master or Slave.
         masterSlaveSelect = true // TODO: Change API Style for better clarity?
         // Set SPE on SPCR
         enable = true
@@ -500,7 +556,7 @@ public struct SPI0: SPIPort {
         // Set SCK to Output
         GPIO.pb5.setDataDirection(.output) // SCK
         // Set MISO to Input
-        GPIO.pb4.setDataDirection(.output) // MISO
+        GPIO.pb4.setDataDirection(.output) // MISO // TODO: I think this should be an input when acting as a Master?
         // Set MOSI to Output
         GPIO.pb3.setDataDirection(.output) // MOSI
 
@@ -508,7 +564,7 @@ public struct SPI0: SPIPort {
         //GPIO.PORTB.dataDirection = 44 // 0b00101100
 
 
-        // Restore state of SREG // Going to try skipping for now, see above.
+        // Restore state of SREG // Going to try skipping for now, see above. // Is this setting the interupts back to their saved state?
         cpuCore.statusRegister = savedStatus
         // Finished the "Begin" Function
     }
@@ -518,7 +574,6 @@ public struct SPI0: SPIPort {
 // These objects will be saved and managed by the end application but will wrap up all the basic functions needed in a simple object with default settings.
 // Any setting should be able to be over written.
 // There should be a way to include custom encoding and decoding of data to and from the slave device.
-// Should this SPI Slave be egnostic to weather it's a slave or master? Could you have a situation where you are both the slave to one master but then have slaves of your own on the same bus? Or maybe a device can run simultaniously in both modes so that it can push and pull and not only send data when asked? 
 //public protocol SPISlave {
 //    var port: SPIPort { get set }
 //    func send() { }
