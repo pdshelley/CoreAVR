@@ -74,14 +74,51 @@
 ///                               REQUEST     DATA BUS
 /// ```
 public enum SPI {
+    /// Clock Polarity
+    ///
+    /// When this bit is written to one, SCK is high when idle. When CPOL is written to zero, SCK is low when idle.
+    /// Refer to Figure 19-3 and Figure 19-4 for an example. The CPOL functionality is summarized below:
+    ///
+    /// ```
+    /// ----------------------------------------
+    /// | CPOL  | Leading Edge | Trailing Edge |
+    /// ----------------------------------------
+    /// | 0     | Rising       | Falling       |
+    /// ----------------------------------------
+    /// | 1     | Falling      | Rising        |
+    /// ----------------------------------------
+    /// ```
     public enum ClockPolarity: UInt8 {
-        case rising = 0  // Leading rising, trailing falling.
-        case falling = 1 // Leading falling, trailing rising.
+        case rising = 0
+        case falling = 1
     }
     
+    /// Clock Phase
+    ///
+    /// The settings of the Clock Phase bit (CPHA) determine if data is sampled on the leading (first) or trailing (last)
+    /// edge of SCK. Refer to Figure 19-3 and Figure 19-4 for an example. The CPOL functionality is summarized below:
+    ///
+    /// ```
+    /// ----------------------------------------
+    /// | CPHA  | Leading Edge | Trailing Edge |
+    /// ----------------------------------------
+    /// | 0     | Sample       | Setup         |
+    /// ----------------------------------------
+    /// | 1     | Setup        | Sample        |
+    /// ----------------------------------------
+    /// ```
     public enum ClockPhase: UInt8 {
-        case sample = 0  // Leading sample, trailing setup.
-        case setup = 1   // Leading setup, trailing sample.
+        case sample = 0
+        case setup = 1
+    }
+    
+    /// SPI  DataOrder
+    ///
+    /// When the DORD bit is written to one, the LSB (least significant bit) of the data word is transmitted first.
+    /// When the DORD bit is written to zero, the MSB (most significant bit) of the data word is transmitted first.
+    public enum DataOrder: UInt8 {
+        case leastSignificantBitFirst = 0
+        case mostSignificantBitFirst = 1
     }
     
     // Below data from testing on an Arduino Uno R3
@@ -106,17 +143,17 @@ public enum SPI {
     }
     
     /// ```
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |  Mode  | CPOL  | CPHA  | Description                                                          |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    0   |   0   |   0   | Data sampled on rising edge and shifted out on the falling edge.     |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    1   |   0   |   0   | Data sampled on the falling edge and shifted out on the rising edge. |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    2   |   0   |   1   | Data sampled on the falling edge and shifted out on the rising edge. |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    3   |   0   |   1   | Data sampled on the rising edge and shifted out on the falling edge  |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// ```
     public enum Mode: UInt8 {
         case zero = 0
@@ -170,7 +207,7 @@ public struct SPI0: SPIPort {
     /// the Global Interrupt Enable bit in SREG is set.
     @inlinable
     @inline(__always)
-    public static var interruptEnable: Bool { //SPIE
+    public static var interruptEnable: Bool {
         get {
             return !((controlRegister & 0b10000000) == 0)
         }
@@ -184,9 +221,10 @@ public struct SPI0: SPIPort {
     /// SPE is bit 6 on SPCR.
     ///
     /// When the SPE bit is written to one, the SPI is enabled. This bit must be set to enable any SPI operations.
+    // TODO: Is this the SS pin? If so how do you manage sending to more than one device on the bus as there are more than one SS pins?
     @inlinable
     @inline(__always)
-    public static var enable: Bool { //SPE
+    public static var enable: Bool {
         get {
             return !((controlRegister & 0b01000000) == 0)
         }
@@ -199,16 +237,17 @@ public struct SPI0: SPIPort {
     /// See ATMega328p Datasheet Section 19.5.1.
     /// DORD is bit 5 on SPCR.
     ///
-    /// When the DORD bit is written to one, the LSB of the data word is transmitted first.
-    /// When the DORD bit is written to zero, the MSB of the data word is transmitted first.
+    /// When the DORD bit is written to one, the LSB (least significant bit) of the data word is transmitted first.
+    /// When the DORD bit is written to zero, the MSB (most significant bit) of the data word is transmitted first.
     @inlinable
     @inline(__always)
-    public static var dataOrder: Bool { // DORD
+    public static var dataOrder: SPI.DataOrder {
         get {
-            return !((controlRegister & 0b00100000) == 0)
+            let mode = (controlRegister & 0b00100000) >> 5
+            return SPI.DataOrder.init(rawValue: mode) ?? .leastSignificantBitFirst // TODO: Check the default state of the AVR chip. (probably 0)
         }
         set {
-            controlRegister = (controlRegister & ~0b00100000) | ((newValue ? 1 : 0) << 5 & 0b00100000)
+            controlRegister = (controlRegister & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
         }
     }
     
@@ -221,7 +260,7 @@ public struct SPI0: SPIPort {
     /// will become set. The user will then have to set MSTR to re-enable SPI Master mode.
     @inlinable
     @inline(__always)
-    public static var masterSlaveSelect: Bool { // MSTR
+    public static var masterSlaveSelect: Bool {
         get {
             return !((controlRegister & 0b00010000) == 0)
         }
@@ -238,14 +277,17 @@ public struct SPI0: SPIPort {
     /// Refer to Figure 19-3 and Figure 19-4 for an example. The CPOL functionality is summarized below:
     ///
     /// ```
-    ///| CPOL  | Leading Edge | Trailing Edge |
-    ///|-------|--------------|---------------|
-    ///| 0     | Rising       | Falling       |
-    ///| 1     | Falling      | Rising        |
+    /// ----------------------------------------
+    /// | CPOL  | Leading Edge | Trailing Edge |
+    /// ----------------------------------------
+    /// | 0     | Rising       | Falling       |
+    /// ----------------------------------------
+    /// | 1     | Falling      | Rising        |
+    /// ----------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var clockPolarity: SPI.ClockPolarity { // CPOL
+    public static var clockPolarity: SPI.ClockPolarity {
         get {
             let mode = (controlRegister & 0b00001000) >> 3
             return SPI.ClockPolarity.init(rawValue: mode) ?? .rising
@@ -263,14 +305,17 @@ public struct SPI0: SPIPort {
     /// edge of SCK. Refer to Figure 19-3 and Figure 19-4 for an example. The CPOL functionality is summarized below:
     ///
     /// ```
-    ///| CPHA  | Leading Edge | Trailing Edge |
-    ///|-------|--------------|---------------|
-    ///| 0     | Sample       | Setup         |
-    ///| 1     | Setup        | Sample        |
+    /// ----------------------------------------
+    /// | CPHA  | Leading Edge | Trailing Edge |
+    /// ----------------------------------------
+    /// | 0     | Sample       | Setup         |
+    /// ----------------------------------------
+    /// | 1     | Setup        | Sample        |
+    /// ----------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var clockPhase: SPI.ClockPhase { // CPHA
+    public static var clockPhase: SPI.ClockPhase {
         get {
             let mode = (controlRegister & 0b00000100) >> 2
             return SPI.ClockPhase.init(rawValue: mode) ?? .sample
@@ -280,36 +325,33 @@ public struct SPI0: SPIPort {
         }
     }
     
-    /// SPI Mode
-    /// Not in the Datasheet but a standard convention in SPI to define both the Clock Phase and Polarity in a single value. This is a
-    /// convienience method to set both the clockPolarity and clockPhase at the same time. 
+    /// Data Modes
     ///
-    /// In SPI, the Master can select the clock polarity and clock phase. The CPOL bit sets the polarity of the clock signal during the
-    /// idle state. The idle state is defined as the period when CS is high and transitioning to low at the start of the transmission
-    /// and when CS is low and transitioning to high at the end of the transmission. The CPHA bit selects the clock phase.
-    /// Depending on the CPHA bit, the rising or falling clock edge is used to sample and/or shift the data. The main must select
-    /// the clock polarity and clock phase, as per the requirement of the subnode. Depending on the CPOL and CPHA bit selection,
-    /// four SPI modes are available.
+    /// There are four combinations of SCK phase and polarity with respect to serial data, which are determined by
+    /// control bits CPHA and CPOL. The SPI data transfer formats are shown in Figure 19-3 and Figure 19-4 on page
+    /// 175. Data bits are shifted out and latched in on opposite edges of the SCK signal, ensuring sufficient time for
+    /// data signals to stabilize. This is clearly seen by summarizing Table 19-3 on page 176 and Table 19-4 on page
+    /// 176, as done in Table 19-2.
     ///
     /// ```
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |  Mode  | CPOL  | CPHA  | Description                                                          |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    0   |   0   |   0   | Data sampled on rising edge and shifted out on the falling edge.     |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    1   |   0   |   0   | Data sampled on the falling edge and shifted out on the rising edge. |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    2   |   0   |   1   | Data sampled on the falling edge and shifted out on the rising edge. |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// |    3   |   0   |   1   | Data sampled on the rising edge and shifted out on the falling edge  |
-    /// |--------|-------|-------|----------------------------------------------------------------------|
+    /// -------------------------------------------------------------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var mode: SPI.Mode { // CPHA
+    public static var mode: SPI.Mode {
         get {
             let mode = (controlRegister & 0b00001100) >> 2
-            return SPI.Mode.init(rawValue: mode) ?? .sample
+            return SPI.Mode.init(rawValue: mode) ?? .zero
         }
         set {
             controlRegister = (controlRegister & ~0b00001100) | ((newValue.rawValue << 2) & 0b00001100)
@@ -324,20 +366,30 @@ public struct SPI0: SPIPort {
     /// SCK and the Oscillator Clock frequency f_osc is shown in the following table:
     ///
     /// ```
-    ///| SPI2X | SPR1  | SPR0  | SCK Frequency       |
-    ///|-------|-------|-------|---------------------|
-    ///| 0     | 0     | 0     | f_osc/4             |
-    ///| 0     | 0     | 1     | f_osc/16            |
-    ///| 0     | 1     | 0     | f_osc/64            |
-    ///| 0     | 1     | 1     | f_osc/128           |
-    ///| 1     | 0     | 0     | f_osc/2             |
-    ///| 1     | 0     | 1     | f_osc/8             |
-    ///| 1     | 1     | 0     | f_osc/32            |
-    ///| 1     | 1     | 1     | f_osc/64            |
+    /// -----------------------------------------------
+    /// | SPI2X | SPR1  | SPR0  | SCK Frequency       |
+    /// -----------------------------------------------
+    /// | 0     | 0     | 0     | f_osc/4             |
+    /// -----------------------------------------------
+    /// | 0     | 0     | 1     | f_osc/16            |
+    /// -----------------------------------------------
+    /// | 0     | 1     | 0     | f_osc/64            |
+    /// -----------------------------------------------
+    /// | 0     | 1     | 1     | f_osc/128           |
+    /// -----------------------------------------------
+    /// | 1     | 0     | 0     | f_osc/2             |
+    /// -----------------------------------------------
+    /// | 1     | 0     | 1     | f_osc/8             |
+    /// -----------------------------------------------
+    /// | 1     | 1     | 0     | f_osc/32            |
+    /// -----------------------------------------------
+    /// | 1     | 1     | 1     | f_osc/64            |
+    /// -----------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var clockRateSelect: SPI.ClockRateSelect { // SPI2X, SPR[1:0]
+    // TODO: Double check how the clock rate is set.
+    public static var clockRateSelect: SPI.ClockRateSelect {
         get {
             let mode = (controlRegister & 0b00000011) | ((statusRegister & 0b00000001) << 2)
             return SPI.ClockRateSelect.init(rawValue: mode) ?? .f4
@@ -383,7 +435,7 @@ public struct SPI0: SPIPort {
     /// then accessing the SPI Data Register (SPDR).
     @inlinable
     @inline(__always)
-    public static var interruptFlag: Bool { // SPIF
+    public static var interruptFlag: Bool {
         get {
             return !((statusRegister & 0b10000000) == 0)
         }
@@ -401,7 +453,7 @@ public struct SPI0: SPIPort {
     /// by first reading the SPI Status Register with WCOL set, and then accessing the SPI Data Register.
     @inlinable
     @inline(__always)
-    public static var writeCollisionFlag: Bool { // WCOL
+    public static var writeCollisionFlag: Bool {
         get {
             return !((statusRegister & 0b01000000) == 0)
         }
@@ -423,7 +475,7 @@ public struct SPI0: SPIPort {
     
     @inlinable
     @inline(__always)
-    public static var doubleSPISpeedBit: Bool { //SPI2X
+    public static var doubleSPISpeedBit: Bool {
         get {
             return !((statusRegister & 0b00000001) == 0)
         }
