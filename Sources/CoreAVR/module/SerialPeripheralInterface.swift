@@ -117,8 +117,8 @@ public enum SPI {
     /// When the DORD bit is written to one, the LSB (least significant bit) of the data word is transmitted first.
     /// When the DORD bit is written to zero, the MSB (most significant bit) of the data word is transmitted first.
     public enum DataOrder: UInt8 {
-        case leastSignificantBitFirst = 0
-        case mostSignificantBitFirst = 1
+        case mostSignificantBitFirst = 0
+        case leastSignificantBitFirst = 1
     }
     
     // Below data from testing on an Arduino Uno R3
