@@ -1,5 +1,6 @@
 module CoreAVR {
     header "CoreAVR.h"
+    header "Sources/CoreAVR/module/SPI/SPI.h"
     export *
     link "CoreAVR"
 }

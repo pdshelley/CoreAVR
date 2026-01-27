@@ -437,10 +437,7 @@ public struct SPI0: SPIPort {
     @inline(__always)
     public static var interruptFlag: Bool {
         get {
-            return !((statusRegister & 0b10000000) == 0)
-        }
-        set {
-            statusRegister = (statusRegister & ~0b10000000) | ((newValue ? 1 : 0) << 7 & 0b10000000)
+            return (statusRegister & 0b10000000) != 0 // !((statusRegister & 0b10000000) == 0)
         }
     }
     
@@ -456,9 +453,6 @@ public struct SPI0: SPIPort {
     public static var writeCollisionFlag: Bool {
         get {
             return !((statusRegister & 0b01000000) == 0)
-        }
-        set {
-            statusRegister = (statusRegister & ~0b01000000) | ((newValue ? 1 : 0) << 6 & 0b01000000)
         }
     }
     
@@ -507,19 +501,32 @@ public struct SPI0: SPIPort {
         }
     }
     
+    // TODO: This only sends at F_ocs/2.
     @inlinable @inline(__always)
-    @discardableResult public static func transmit(_ buffer: UnsafeMutableBufferPointer<UInt8>) -> UnsafeMutableBufferPointer<UInt8> {
-        let recievedBuffer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: buffer.count)
-        
-        for index in 0..<buffer.count {
-            dataRegister = buffer[index]
-            noOpperation() // If two bytes in a row are identical then the second one does not get sent without this No Opp here. // This is also not inlining as I would expect in the asm.
-            while !interruptFlag { } // Needed even with out using interrupts to send more than one byte.
-            noOpperation()
-            recievedBuffer![index] = dataRegister
-        }
-        return recievedBuffer!
+    public static func transmit(_ buffer: UnsafeMutableBufferPointer<UInt8>) {
+        _fastSPITransmitDIV2(UnsafeRawPointer(buffer.baseAddress), UInt(buffer.count))
     }
+    
+    // TODO: This only sends at F_ocs/2.
+    @inlinable @inline(__always)
+    public static func transmit(txBuffer: UnsafeMutableBufferPointer<UInt8>, rxBuffer: UnsafeMutableBufferPointer<UInt8>) {
+        _fastSpiTransmitReceiveDIV2(UnsafeRawPointer(txBuffer.baseAddress), UnsafeMutableRawPointer(rxBuffer.baseAddress), UInt(txBuffer.count))
+    }
+    
+    // Very slow Swift only transmit. Useful for understanding how SPI transmit works? 
+//    @inlinable @inline(__always)
+//    @discardableResult public static func transmit(_ buffer: UnsafeMutableBufferPointer<UInt8>) -> UnsafeMutableBufferPointer<UInt8> {
+//        let recievedBuffer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: buffer.count)
+//        
+//        for index in 0..<buffer.count {
+//            dataRegister = buffer[index]
+////            noOpperation() // If two bytes in a row are identical then the second one does not get sent without this No Opp here. // This is also not inlining as I would expect in the asm.
+//            while interruptFlag == false { } // Needed even with out using interrupts to send more than one byte.
+////            noOpperation()
+//            recievedBuffer![index] = dataRegister
+//        }
+//        return recievedBuffer!
+//    }
     
     /// The lowest level of writing out data to hardware SPI.
     /// - Parameter byte: A single bite of data to be sent.
@@ -545,14 +552,16 @@ public struct SPI0: SPIPort {
 //      return SPDR;
 //    }
     
-    // TODO: This won't respect sending byte order for the least significant bit first. Fix.
+    // TODO: Bit order is set in hardware with DataOrder. However this will send the LS Bit first but the MS Byte will always be sent first regardless of DataOrder.
+    // Should we have an independant way to change the Byte order? Should this always follow the bit order?
     @inlinable @inline(__always) public static func write16(_ byte: UInt16) -> UInt16 {
         let highByte = write(UInt8((byte & 0b11111111_00000000) >> 8)) // Write High Byte
         let lowByte = write(UInt8(byte & 0b11111111)) // Write Low Byte
         return (UInt16(highByte) << 8) | UInt16(lowByte) // Data returned from the slave
     }
     
-    // TODO: This won't respect sending byte order for the least significant bit first. Fix.
+    // TODO: Bit order is set in hardware with DataOrder. However this will send the LS Bit first but the MS Byte will always be sent first regardless of DataOrder.
+    // Should we have an independant way to change the Byte order? Should this always follow the bit order?
     @inlinable @inline(__always) public static func write32(_ byte: UInt32) -> UInt32 {
         let byte1 = write(UInt8((byte & 0b11111111_00000000_00000000_00000000) >> 24))
         let byte2 = write(UInt8((byte & 0b00000000_11111111_00000000_00000000) >> 16))
@@ -584,14 +593,13 @@ public struct SPI0: SPIPort {
     @inlinable
     @inline(__always)
     public static func setup() { // setup(as _role: .master, and _mode: .zero)
-        // Save SREG state // AVR Status Register // Is this really needed? // Is this saving the interrupt state?
+        // Save AVR Status Register (SREG) state so it can be restored later.
         let savedStatus = cpuCore.statusRegister
         
-        // Turn off interrupts // Is this really needed for my example as I am not using interrupts
-        // TODO: I'm not sure why I was turning off interupts. I imagine that the state should be saved, turned off, settings changed, then turned back to the saved state.
+        // Turn off interrupts. If an interupt triggered mid update then things would get messed up.
         cpuCore.globalInterruptEnable = false
 
-        // Set MSTR on SPCR // Master/Slave Select on the SPI Control Register, this puts SPI in Master mode as it can be either a Master or Slave.
+        // Set Master/Slave Select (MSTR) on the SPI Control Register (SPCR). This puts SPI in Master mode as it can be either a Master or Slave.
         masterSlaveSelect = true // TODO: Change API Style for better clarity?
         // Set SPE on SPCR
         enable = true
@@ -608,13 +616,12 @@ public struct SPI0: SPIPort {
         // Set SCK to Output
         GPIO.pb5.setDataDirection(.output) // SCK
         // Set MISO to Input
-        GPIO.pb4.setDataDirection(.output) // MISO // TODO: I think this should be an input when acting as a Master?
+        GPIO.pb4.setDataDirection(.input) // MISO // TODO: Test, it was .output but I believe that is wrong. 
         // Set MOSI to Output
         GPIO.pb3.setDataDirection(.output) // MOSI
 
-        // Set SCK and MOSI to Output at the same time. // Note: These CAN be set individually.
-        //GPIO.PORTB.dataDirection = 44 // 0b00101100
-
+        // TODO: Set SCK and MOSI to Output at the same time? // Note: These CAN be set individually.
+        //GPIO.PORTB.dataDirection = 44 // 0b00101100 // Should use a mask properly so other bits are not flipped.
 
         // Restore state of SREG // Going to try skipping for now, see above. // Is this setting the interupts back to their saved state?
         cpuCore.statusRegister = savedStatus
@@ -631,7 +638,9 @@ public struct SPI0: SPIPort {
 //    func send() { }
 //}
 
-
+extension SPI0 {
+    
+}
 
 extension SPIPort where PortDataType == UInt8 {
 
@@ -664,3 +673,5 @@ extension SPIPort where PortDataType == UInt8 {
 //        }
 //    }
 }
+
+

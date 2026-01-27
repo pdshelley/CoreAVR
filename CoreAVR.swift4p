@@ -10,7 +10,8 @@ files:
 - Sources/CoreAVR/module/GPIO.swift
 - Sources/CoreAVR/module/Interrupts.swift
 - Sources/CoreAVR/module/PowerManagement.swift
-- Sources/CoreAVR/module/SerialPeripheralInterface.swift
+- Sources/CoreAVR/module/SPI/SPI.h
+- Sources/CoreAVR/module/SPI/SerialPeripheralInterface.swift
 - Sources/CoreAVR/module/Timer/Timer0.swift
 - Sources/CoreAVR/module/Timer/Timer1.swift
 - Sources/CoreAVR/module/Timer/Timer2.swift
