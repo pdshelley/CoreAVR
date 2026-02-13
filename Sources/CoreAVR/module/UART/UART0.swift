@@ -204,7 +204,7 @@ public struct UART0: UARTPort {
     /// will be corrupted if the baud rate is changed. Writing UBRRnL will trigger an immediate update of the baud rate prescaler.
     @inlinable
     @inline(__always)
-    static var baudRateRegister: UInt16 {
+    public static var baudRateRegister: UInt16 {
         get {
             return (UInt16(baudRateRegisterH) << 8) | UInt16(baudRateRegisterL)
         }
@@ -443,7 +443,7 @@ public struct UART0: UARTPort {
     /// The lowest level of writing out data to hardware UART. This function makes sure that the Data Register is empty before sending out more data, this is important for proper opperation
     /// See Section 20.6.1
     /// - Parameter byte: A single bite of data to be sent.
-    static func writeByte(_ byte: PortDataType) {
+    public static func writeByte(_ byte: PortDataType) {
         while !dataRegisterEmpty { }
         dataRegister = byte
     }

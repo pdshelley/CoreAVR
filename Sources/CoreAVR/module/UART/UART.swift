@@ -90,6 +90,7 @@ public protocol UARTPort {
     // from ever accidentally being used as an existential type
     associatedtype PortDataType: BinaryInteger
     
+    // Registers
     static var dataRegister: PortDataType { get set }
     static var baudRateRegisterH: UInt8 { get set }
     static var baudRateRegisterL: UInt8 { get set }
@@ -97,4 +98,7 @@ public protocol UARTPort {
     static var controlRegisterA: UInt8 { get set }
     static var controlRegisterB: UInt8 { get set }
     static var controlRegisterC: UInt8 { get set }
+    
+    // Communication
+    static func writeByte(_ byte: PortDataType)
 }
