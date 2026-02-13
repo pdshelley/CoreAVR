@@ -83,18 +83,18 @@ public enum UART {
         case off = 0
         case on = 1
     }
-
 }
 
 public protocol UARTPort {
     // this will probably(?) always be UInt8, but is useful for preventing the protocol
     // from ever accidentally being used as an existential type
     associatedtype PortDataType: BinaryInteger
-
-    static var USARTIODataRegister: PortDataType { get set }
-    static var USARTBaudRateRegisterH: UInt8 { get set }
-    static var USARTBaudRateRegisterL: UInt8 { get set }
-    static var USARTControlAndStatusRegisterC: UInt8 { get set }
-    static var USARTControlAndStatusRegisterB: UInt8 { get set }
-    static var USARTControlAndStatusRegisterA: UInt8 { get set }
+    
+    static var dataRegister: PortDataType { get set }
+    static var baudRateRegisterH: UInt8 { get set }
+    static var baudRateRegisterL: UInt8 { get set }
+    static var baudRateRegister: UInt16 { get set }
+    static var controlRegisterA: UInt8 { get set }
+    static var controlRegisterB: UInt8 { get set }
+    static var controlRegisterC: UInt8 { get set }
 }

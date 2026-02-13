@@ -42,7 +42,7 @@ public struct UART0: UARTPort {
     ///
     @inlinable
     @inline(__always)
-    public static var USARTIODataRegister:   UInt8 {
+    public static var dataRegister: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC6)
         }
@@ -67,7 +67,7 @@ public struct UART0: UARTPort {
     /// ```
     @inlinable
     @inline(__always)
-    public static var USARTControlAndStatusRegisterA: UInt8 {
+    public static var controlRegisterA: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC0)
         }
@@ -91,7 +91,7 @@ public struct UART0: UARTPort {
     /// ```
     @inlinable
     @inline(__always)
-    public static var USARTControlAndStatusRegisterB: UInt8 {
+    public static var controlRegisterB: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC1)
         }
@@ -115,7 +115,7 @@ public struct UART0: UARTPort {
     /// ```
     @inlinable
     @inline(__always)
-    public static var USARTControlAndStatusRegisterC: UInt8 {
+    public static var controlRegisterC: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC2)
         }
@@ -146,7 +146,7 @@ public struct UART0: UARTPort {
     ///
     @inlinable
     @inline(__always)
-    public static var USARTBaudRateRegisterH: UInt8 {
+    public static var baudRateRegisterH: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC5)
         }
@@ -174,7 +174,7 @@ public struct UART0: UARTPort {
     ///
     @inlinable
     @inline(__always)
-    public static var USARTBaudRateRegisterL: UInt8 {
+    public static var baudRateRegisterL: UInt8 {
         get {
             _volatileRegisterReadUInt8(0xC4)
         }
@@ -182,99 +182,7 @@ public struct UART0: UARTPort {
             _volatileRegisterWriteUInt8(0xC4, newValue)
         }
     }
-}
-
-
-/// UART implementation for ATmega48A/PA/88A/PA/168A/PA/328/P
-// Note: Some of this will probably need to be moved into the protocol and struct as this might be specific to just this family of chips.
-public extension UARTPort {
-    // TODO: is there a better order for these properties?
-
-    /// Parity Mode
-    /// See ATMega328p Datasheet Section 20.11.4.
-    /// UPMn0 and UPMn1 are bits 4 & 5 on UCSRnC.
-    ///
-    ///These bits enable and set type of parity generation and check. If enabled, the Transmitter will automatically generate and send the
-    /// parity of the transmitted data bits within each frame. The Receiver will generate a parity value for the incoming data and compare
-    /// it to the UPMn setting. If a mismatch is detected, the UPEn Flag in UCSRnA will be set.
-    ///
-    /// ```
-    ///| UPMn1 | UPMn0 | Parity Mode          |
-    ///|-------|-------|----------------------|
-    ///| 0     | 0     | Disabled             |
-    ///| 0     | 1     | Reserved             |
-    ///| 1     | 0     | Enabled, Even Parity |
-    ///| 1     | 1     | Enabled, Odd Parity  |
-    /// ```
-    @inlinable
-    @inline(__always)
-    static var parityMode: UART.ParityMode {
-        get {
-            let mode = (USARTControlAndStatusRegisterC & 0b00110000) >> 4
-            return UART.ParityMode.init(rawValue: mode) ?? .disabled
-        }
-        set {
-            USARTControlAndStatusRegisterC = (USARTControlAndStatusRegisterC & ~0b00110000) | ((newValue.rawValue << 4) & 0b00110000)
-        }
-    }
-
-    /// See ATMega328p Datasheet Section 20.11.4.
-    /// USBSn is bit 3 on UCSRnC.
-    @inlinable
-    @inline(__always)
-    static var numberOfStopBits: UART.NumberOfStopBits {
-        get {
-            let mode = (USARTControlAndStatusRegisterC & 0b00001000) >> 3
-            return UART.NumberOfStopBits.init(rawValue: mode) ?? .one
-        }
-        set {
-            USARTControlAndStatusRegisterC = (USARTControlAndStatusRegisterC & ~0b00001000) | ((newValue.rawValue << 3) & 0b00001000)
-        }
-    }
-
-    /// See ATMega328p Datasheet Section 20.11.3 and Section 20.11.4.
-    /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
-    @inlinable
-    @inline(__always)
-    static var numberOfDataBits: UART.NumberOfDataBits {
-        get {
-            let mode = ((USARTControlAndStatusRegisterB & 0b00000100) >> 2) | ((USARTControlAndStatusRegisterC & 0b00000110) >> 1)
-            return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
-        }
-        set {
-            USARTControlAndStatusRegisterC = (USARTControlAndStatusRegisterC & ~0b00000110) | ((newValue.rawValue & 0b00000011) << UInt8(1))
-            USARTControlAndStatusRegisterB = (USARTControlAndStatusRegisterB & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
-        }
-    }
-
-    /// See ATMega328p Datasheet Section 20.11.4.
-    /// UCPOLn is bit 0 on UCSRnC.
-    @inlinable
-    @inline(__always)
-    static var clockPolarity: UART.ClockPolarity {
-        get {
-            let mode = USARTControlAndStatusRegisterC & 0b00000001
-            return UART.ClockPolarity.init(rawValue: mode) ?? .rising
-        }
-        set {
-            USARTControlAndStatusRegisterC = (USARTControlAndStatusRegisterC & ~0b00000001) | (newValue.rawValue & 0b00000001)
-        }
-    }
-
-    /// See ATMega328p Datasheet Section 20.
-    /// U2Xn is bit 1 on UCSRnA.
-    @inlinable
-    @inline(__always)
-    static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
-        get {
-            let mode = (USARTControlAndStatusRegisterA & 0b00000010) >> 1
-            return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
-        }
-        set {
-            USARTControlAndStatusRegisterA = (USARTControlAndStatusRegisterA & 0b00000010) | ((newValue.rawValue << 1) & 0b00000010)
-        }
-    }
-
+    
     /// UBBRn – USART Baud Rate Register
     /// ```
     /// --------------------------------------------------------------------------------
@@ -298,11 +206,98 @@ public extension UARTPort {
     @inline(__always)
     static var baudRateRegister: UInt16 {
         get {
-            return (UInt16(USARTBaudRateRegisterH) << 8) | UInt16(USARTBaudRateRegisterL)
+            return (UInt16(baudRateRegisterH) << 8) | UInt16(baudRateRegisterL)
         }
         set {
-            USARTBaudRateRegisterH = UInt8((newValue & 0b11111111_00000000) >> 8)
-            USARTBaudRateRegisterL = UInt8(newValue & 0b11111111)
+            baudRateRegisterH = UInt8((newValue & 0b11111111_00000000) >> 8)
+            baudRateRegisterL = UInt8(newValue & 0b11111111)
+        }
+    }
+    
+    // TODO: is there a better order for these properties?
+
+    /// Parity Mode
+    /// See ATMega328p Datasheet Section 20.11.4.
+    /// UPMn0 and UPMn1 are bits 4 & 5 on UCSRnC.
+    ///
+    ///These bits enable and set type of parity generation and check. If enabled, the Transmitter will automatically generate and send the
+    /// parity of the transmitted data bits within each frame. The Receiver will generate a parity value for the incoming data and compare
+    /// it to the UPMn setting. If a mismatch is detected, the UPEn Flag in UCSRnA will be set.
+    ///
+    /// ```
+    ///| UPMn1 | UPMn0 | Parity Mode          |
+    ///|-------|-------|----------------------|
+    ///| 0     | 0     | Disabled             |
+    ///| 0     | 1     | Reserved             |
+    ///| 1     | 0     | Enabled, Even Parity |
+    ///| 1     | 1     | Enabled, Odd Parity  |
+    /// ```
+    @inlinable
+    @inline(__always)
+    static var parityMode: UART.ParityMode {
+        get {
+            let mode = (controlRegisterC & 0b00110000) >> 4
+            return UART.ParityMode.init(rawValue: mode) ?? .disabled
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b00110000) | ((newValue.rawValue << 4) & 0b00110000)
+        }
+    }
+
+    /// See ATMega328p Datasheet Section 20.11.4.
+    /// USBSn is bit 3 on UCSRnC.
+    @inlinable
+    @inline(__always)
+    static var numberOfStopBits: UART.NumberOfStopBits {
+        get {
+            let mode = (controlRegisterC & 0b00001000) >> 3
+            return UART.NumberOfStopBits.init(rawValue: mode) ?? .one
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b00001000) | ((newValue.rawValue << 3) & 0b00001000)
+        }
+    }
+
+    /// See ATMega328p Datasheet Section 20.11.3 and Section 20.11.4.
+    /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
+    @inlinable
+    @inline(__always)
+    static var numberOfDataBits: UART.NumberOfDataBits {
+        get {
+            let mode = ((controlRegisterB & 0b00000100) >> 2) | ((controlRegisterC & 0b00000110) >> 1)
+            return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b00000110) | ((newValue.rawValue & 0b00000011) << UInt8(1))
+            controlRegisterB = (controlRegisterB & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
+        }
+    }
+
+    /// See ATMega328p Datasheet Section 20.11.4.
+    /// UCPOLn is bit 0 on UCSRnC.
+    @inlinable
+    @inline(__always)
+    static var clockPolarity: UART.ClockPolarity {
+        get {
+            let mode = controlRegisterC & 0b00000001
+            return UART.ClockPolarity.init(rawValue: mode) ?? .rising
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b00000001) | (newValue.rawValue & 0b00000001)
+        }
+    }
+
+    /// See ATMega328p Datasheet Section 20.
+    /// U2Xn is bit 1 on UCSRnA.
+    @inlinable
+    @inline(__always)
+    static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
+        get {
+            let mode = (controlRegisterA & 0b00000010) >> 1
+            return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterA = (controlRegisterA & 0b00000010) | ((newValue.rawValue << 1) & 0b00000010)
         }
     }
 
@@ -325,11 +320,11 @@ public extension UARTPort {
     @inline(__always)
     static var receiverEnable: UART.ReceiverEnable {
         get {
-            let mode = (USARTControlAndStatusRegisterB & 0b00010000) >> 4
+            let mode = (controlRegisterB & 0b00010000) >> 4
             return UART.ReceiverEnable.init(rawValue: mode) ?? .off
         }
         set {
-            USARTControlAndStatusRegisterB = (USARTControlAndStatusRegisterB & ~0b00010000) | ((newValue.rawValue << 4) & 0b00010000)
+            controlRegisterB = (controlRegisterB & ~0b00010000) | ((newValue.rawValue << 4) & 0b00010000)
         }
     }
 
@@ -338,11 +333,11 @@ public extension UARTPort {
     @inline(__always)
     static var transmitterEnable: UART.TransmitterEnable {
         get {
-            let mode = (USARTControlAndStatusRegisterB & 0b00001000) >> 3
+            let mode = (controlRegisterB & 0b00001000) >> 3
             return UART.TransmitterEnable.init(rawValue: mode) ?? .off
         }
         set {
-            USARTControlAndStatusRegisterB = (USARTControlAndStatusRegisterB & ~0b00001000) | ((newValue.rawValue << 3) & 0b000001000)
+            controlRegisterB = (controlRegisterB & ~0b00001000) | ((newValue.rawValue << 3) & 0b000001000)
         }
     }
 
@@ -351,11 +346,11 @@ public extension UARTPort {
     @inline(__always)
     static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
         get {
-            let mode = (USARTControlAndStatusRegisterB & 0b00100000) >> 5
+            let mode = (controlRegisterB & 0b00100000) >> 5
             return UART.DRECompleteInterruptEnable.init(rawValue: mode) ?? .off
         }
         set {
-            USARTControlAndStatusRegisterB = (USARTControlAndStatusRegisterB & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
+            controlRegisterB = (controlRegisterB & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
         }
     }
 
@@ -364,11 +359,11 @@ public extension UARTPort {
     @inline(__always)
     static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
         get {
-            let mode = (USARTControlAndStatusRegisterB & 0b01000000) >> 6
+            let mode = (controlRegisterB & 0b01000000) >> 6
             return UART.TXCompleteInterruptEnable.init(rawValue: mode) ?? .off
         }
         set {
-            USARTControlAndStatusRegisterB = (USARTControlAndStatusRegisterB & ~0b01000000) | ((newValue.rawValue << 6) & 0b01000000)
+            controlRegisterB = (controlRegisterB & ~0b01000000) | ((newValue.rawValue << 6) & 0b01000000)
         }
     }
 
@@ -377,11 +372,11 @@ public extension UARTPort {
     @inline(__always)
     static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
         get {
-            let mode = (USARTControlAndStatusRegisterB & 0b10000000) >> 7
+            let mode = (controlRegisterB & 0b10000000) >> 7
             return UART.RXCompleteInterruptEnable.init(rawValue: mode) ?? .off
         }
         set {
-            USARTControlAndStatusRegisterB = (USARTControlAndStatusRegisterB & ~0b10000000) | ((newValue.rawValue << 7) & 0b10000000)
+            controlRegisterB = (controlRegisterB & ~0b10000000) | ((newValue.rawValue << 7) & 0b10000000)
         }
     }
 
@@ -390,7 +385,7 @@ public extension UARTPort {
     @inline(never)
     static var parityError: Bool {
         get {
-            return !((USARTControlAndStatusRegisterA & 0b00000100) == 0)
+            return !((controlRegisterA & 0b00000100) == 0)
         }
     }
 
@@ -399,7 +394,7 @@ public extension UARTPort {
     @inline(never)
     static var dataOverrun: Bool {
         get {
-            return !((USARTControlAndStatusRegisterA & 0b00001000) == 0)
+            return !((controlRegisterA & 0b00001000) == 0)
         }
     }
 
@@ -408,7 +403,7 @@ public extension UARTPort {
     @inline(never)
     static var frameError: Bool {
         get {
-            return !((USARTControlAndStatusRegisterA & 0b00010000) == 0)
+            return !((controlRegisterA & 0b00010000) == 0)
         }
     }
 
@@ -418,7 +413,7 @@ public extension UARTPort {
     // (note that if/when we move to pure swift register access HAL, this optimiser bug will probably go away)
     static var dataRegisterEmpty: Bool {
         get {
-            return !((USARTControlAndStatusRegisterA & 0b00100000) == 0)
+            return !((controlRegisterA & 0b00100000) == 0)
         }
     }
 
@@ -427,10 +422,10 @@ public extension UARTPort {
     @inline(never) // TODO: as above
     static var txComplete: Bool {
         get {
-            return !((USARTControlAndStatusRegisterA & 0b01000000) == 0)
+            return !((controlRegisterA & 0b01000000) == 0)
         }
         set {
-            USARTControlAndStatusRegisterA |= UInt8(newValue.hashValue) & 0b01000000
+            controlRegisterA |= UInt8(newValue.hashValue) & 0b01000000
         }
     }
 
@@ -439,7 +434,7 @@ public extension UARTPort {
     @inline(never) // TODO: as above
     static var rxDataAvailable: Bool {
         get {
-            return !((USARTControlAndStatusRegisterA & 0b10000000) == 0)
+            return !((controlRegisterA & 0b10000000) == 0)
         }
     }
     
@@ -450,7 +445,7 @@ public extension UARTPort {
     /// - Parameter byte: A single bite of data to be sent.
     static func writeByte(_ byte: PortDataType) {
         while !dataRegisterEmpty { }
-        USARTIODataRegister = byte
+        dataRegister = byte
     }
 
     // See Section 20.6.1
@@ -458,7 +453,7 @@ public extension UARTPort {
     @inline(__always)
     static func read() -> PortDataType { // TODO: Needs Testing
         while !rxDataAvailable { }
-        return USARTIODataRegister
+        return dataRegister
     }
 
     @inlinable
