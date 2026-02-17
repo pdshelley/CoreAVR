@@ -234,7 +234,7 @@ public struct UART0: UARTPort {
     /// ```
     @inlinable
     @inline(__always)
-    static var parityMode: UART.ParityMode {
+    public static var parityMode: UART.ParityMode {
         get {
             let mode = (controlRegisterC & 0b00110000) >> 4
             return UART.ParityMode.init(rawValue: mode) ?? .disabled
@@ -248,7 +248,7 @@ public struct UART0: UARTPort {
     /// USBSn is bit 3 on UCSRnC.
     @inlinable
     @inline(__always)
-    static var numberOfStopBits: UART.NumberOfStopBits {
+    public static var numberOfStopBits: UART.NumberOfStopBits {
         get {
             let mode = (controlRegisterC & 0b00001000) >> 3
             return UART.NumberOfStopBits.init(rawValue: mode) ?? .one
@@ -262,7 +262,7 @@ public struct UART0: UARTPort {
     /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
     @inlinable
     @inline(__always)
-    static var numberOfDataBits: UART.NumberOfDataBits {
+    public static var numberOfDataBits: UART.NumberOfDataBits {
         get {
             let mode = ((controlRegisterB & 0b00000100) >> 2) | ((controlRegisterC & 0b00000110) >> 1)
             return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
@@ -277,7 +277,7 @@ public struct UART0: UARTPort {
     /// UCPOLn is bit 0 on UCSRnC.
     @inlinable
     @inline(__always)
-    static var clockPolarity: UART.ClockPolarity {
+    public static var clockPolarity: UART.ClockPolarity {
         get {
             let mode = controlRegisterC & 0b00000001
             return UART.ClockPolarity.init(rawValue: mode) ?? .rising
@@ -291,7 +291,7 @@ public struct UART0: UARTPort {
     /// U2Xn is bit 1 on UCSRnA.
     @inlinable
     @inline(__always)
-    static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
+    public static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
         get {
             let mode = (controlRegisterA & 0b00000010) >> 1
             return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
@@ -306,7 +306,7 @@ public struct UART0: UARTPort {
     /// and then do the calculation to convert this to the setting needed for UBRRn.
     @inlinable
     @inline(__always)
-    static var baudRate: UInt32 {
+    public static var baudRate: UInt32 {
         get {
             return UInt32(cpuFrequency)/(UInt32(16*(baudRateRegister+1)))
         }
@@ -318,7 +318,7 @@ public struct UART0: UARTPort {
     /// Receiver Enable
     @inlinable
     @inline(__always)
-    static var receiverEnable: UART.ReceiverEnable {
+    public static var receiverEnable: UART.ReceiverEnable {
         get {
             let mode = (controlRegisterB & 0b00010000) >> 4
             return UART.ReceiverEnable.init(rawValue: mode) ?? .off
@@ -331,7 +331,7 @@ public struct UART0: UARTPort {
     /// Transmitter Enable
     @inlinable
     @inline(__always)
-    static var transmitterEnable: UART.TransmitterEnable {
+    public static var transmitterEnable: UART.TransmitterEnable {
         get {
             let mode = (controlRegisterB & 0b00001000) >> 3
             return UART.TransmitterEnable.init(rawValue: mode) ?? .off
@@ -344,7 +344,7 @@ public struct UART0: UARTPort {
     /// Data Register Empty Interrupt Enable - Set UCSRB
     @inlinable
     @inline(__always)
-    static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
+    public static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
         get {
             let mode = (controlRegisterB & 0b00100000) >> 5
             return UART.DRECompleteInterruptEnable.init(rawValue: mode) ?? .off
@@ -357,7 +357,7 @@ public struct UART0: UARTPort {
     /// TX Complete Interrupt Enable - Set UCSRB
     @inlinable
     @inline(__always)
-    static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
+    public static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
         get {
             let mode = (controlRegisterB & 0b01000000) >> 6
             return UART.TXCompleteInterruptEnable.init(rawValue: mode) ?? .off
@@ -370,7 +370,7 @@ public struct UART0: UARTPort {
     /// Set UCSRB
     @inlinable
     @inline(__always)
-    static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
+    public static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
         get {
             let mode = (controlRegisterB & 0b10000000) >> 7
             return UART.RXCompleteInterruptEnable.init(rawValue: mode) ?? .off
@@ -383,7 +383,7 @@ public struct UART0: UARTPort {
     /// UPEn is Bit 2 on UCSRnA. See Section 20.11.2.
     @inlinable
     @inline(never)
-    static var parityError: Bool {
+    public static var parityError: Bool {
         get {
             return !((controlRegisterA & 0b00000100) == 0)
         }
@@ -392,7 +392,7 @@ public struct UART0: UARTPort {
     /// UDROn is Bit 3 on UCSRnA. See Section 20.11.2.
     @inlinable
     @inline(never)
-    static var dataOverrun: Bool {
+    public static var dataOverrun: Bool {
         get {
             return !((controlRegisterA & 0b00001000) == 0)
         }
@@ -401,7 +401,7 @@ public struct UART0: UARTPort {
     /// UFEn is Bit 4 on UCSRnA. See Section 20.11.2.
     @inlinable
     @inline(never)
-    static var frameError: Bool {
+    public static var frameError: Bool {
         get {
             return !((controlRegisterA & 0b00010000) == 0)
         }
@@ -411,7 +411,7 @@ public struct UART0: UARTPort {
     @inlinable
     @inline(never) // TODO: There is a swift bug where inlined flags like these are optimised to always 'false', using 'never' fixes the problem (for now).
     // (note that if/when we move to pure swift register access HAL, this optimiser bug will probably go away)
-    static var dataRegisterEmpty: Bool {
+    public static var dataRegisterEmpty: Bool {
         get {
             return !((controlRegisterA & 0b00100000) == 0)
         }
@@ -420,7 +420,7 @@ public struct UART0: UARTPort {
     /// UTXCn is Bit 6 on UCSRnA. See Section 20.11.2.
     @inlinable
     @inline(never) // TODO: as above
-    static var txComplete: Bool {
+    public static var txComplete: Bool {
         get {
             return !((controlRegisterA & 0b01000000) == 0)
         }
@@ -432,7 +432,7 @@ public struct UART0: UARTPort {
     /// URXCn is Bit 7 on UCSRnA. See Section 20.11.2.
     @inlinable
     @inline(never) // TODO: as above
-    static var rxDataAvailable: Bool {
+    public static var rxDataAvailable: Bool {
         get {
             return !((controlRegisterA & 0b10000000) == 0)
         }
@@ -451,14 +451,14 @@ public struct UART0: UARTPort {
     // See Section 20.6.1
     @inlinable
     @inline(__always)
-    static func read() -> PortDataType { // TODO: Needs Testing
+    public static func read() -> PortDataType { // TODO: Needs Testing
         while !rxDataAvailable { }
         return dataRegister
     }
 
     @inlinable
     @inline(__always)
-    static func available() -> Bool {
+    public static func available() -> Bool {
         rxDataAvailable
     }
 }
