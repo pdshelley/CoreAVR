@@ -99,24 +99,32 @@ public protocol UARTPort {
     static var baudRateRegisterH: UInt8 { get set }
     static var baudRateRegister: UInt16 { get set }
     
-    static var parityMode: UART.ParityMode { get set }
-    static var numberOfStopBits: UART.NumberOfStopBits { get set }
-    static var numberOfDataBits: UART.NumberOfDataBits { get set }
-    static var clockPolarity: UART.ClockPolarity { get set }
+    // Properties
+    static var rxDataAvailable: Bool { get }
+    static var txComplete: Bool { get set }
+    
+    static var dataRegisterEmpty: Bool { get }
+    static var frameError: Bool { get }
+    static var dataOverrun: Bool { get }
+    static var parityError: Bool { get }
+    
     static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode { get set }
+    // TODO: MPCMu
+    
+    static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable { get set }
+    static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable { get set }
+    static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable { get set }
+    
     static var receiverEnable: UART.ReceiverEnable { get set }
     static var transmitterEnable: UART.TransmitterEnable { get set }
-    static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable { get set }
-    static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable { get set }
-    static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable { get set }
     
-    static var parityError: Bool { get }
-    static var dataOverrun: Bool { get }
-    static var frameError: Bool { get }
-    static var dataRegisterEmpty: Bool { get }
-    static var rxDataAvailable: Bool { get }
-    
-    static var txComplete: Bool { get set }
+    static var numberOfDataBits: UART.NumberOfDataBits { get set }
+    // TODO: RXB8u
+    // TODO: TXB8u
+    // TODO: UMSELu
+    static var parityMode: UART.ParityMode { get set }
+    static var numberOfStopBits: UART.NumberOfStopBits { get set }
+    static var clockPolarity: UART.ClockPolarity { get set }
 }
 
 public extension UARTPort {

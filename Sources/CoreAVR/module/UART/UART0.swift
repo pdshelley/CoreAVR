@@ -213,7 +213,165 @@ public struct UART0: UARTPort {
         }
     }
     
-    // TODO: is there a better order for these properties?
+    /// URXCn is Bit 7 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never) // TODO: as above
+    public static var rxDataAvailable: Bool {
+        get {
+            return !((controlRegisterA & 0b10000000) == 0)
+        }
+    }
+    
+    /// UTXCn is Bit 6 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never) // TODO: as above
+    public static var txComplete: Bool {
+        get {
+            return !((controlRegisterA & 0b01000000) == 0)
+        }
+        set {
+            controlRegisterA |= UInt8(newValue.hashValue) & 0b01000000
+        }
+    }
+    
+    /// UDREn is Bit 5 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never) // TODO: There is a swift bug where inlined flags like these are optimised to always 'false', using 'never' fixes the problem (for now).
+    // (note that if/when we move to pure swift register access HAL, this optimiser bug will probably go away)
+    public static var dataRegisterEmpty: Bool {
+        get {
+            return !((controlRegisterA & 0b00100000) == 0)
+        }
+    }
+    
+    /// UFEn is Bit 4 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never)
+    public static var frameError: Bool {
+        get {
+            return !((controlRegisterA & 0b00010000) == 0)
+        }
+    }
+    
+    /// UDROn is Bit 3 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never)
+    public static var dataOverrun: Bool {
+        get {
+            return !((controlRegisterA & 0b00001000) == 0)
+        }
+    }
+    
+    /// UPEn is Bit 2 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never)
+    public static var parityError: Bool {
+        get {
+            return !((controlRegisterA & 0b00000100) == 0)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.
+    /// U2Xn is bit 1 on UCSRnA.
+    @inlinable
+    @inline(__always)
+    public static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
+        get {
+            let mode = (controlRegisterA & 0b00000010) >> 1
+            return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterA = (controlRegisterA & 0b00000010) | ((newValue.rawValue << 1) & 0b00000010)
+        }
+    }
+    
+    // TODO: MPCM0
+    
+    /// Set UCSRB
+    @inlinable
+    @inline(__always)
+    public static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
+        get {
+            let mode = (controlRegisterB & 0b10000000) >> 7
+            return UART.RXCompleteInterruptEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b10000000) | ((newValue.rawValue << 7) & 0b10000000)
+        }
+    }
+    
+    /// TX Complete Interrupt Enable - Set UCSRB
+    @inlinable
+    @inline(__always)
+    public static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
+        get {
+            let mode = (controlRegisterB & 0b01000000) >> 6
+            return UART.TXCompleteInterruptEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b01000000) | ((newValue.rawValue << 6) & 0b01000000)
+        }
+    }
+    
+    /// Data Register Empty Interrupt Enable - Set UCSRB
+    @inlinable
+    @inline(__always)
+    public static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
+        get {
+            let mode = (controlRegisterB & 0b00100000) >> 5
+            return UART.DRECompleteInterruptEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
+        }
+    }
+    
+    /// Receiver Enable
+    @inlinable
+    @inline(__always)
+    public static var receiverEnable: UART.ReceiverEnable {
+        get {
+            let mode = (controlRegisterB & 0b00010000) >> 4
+            return UART.ReceiverEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00010000) | ((newValue.rawValue << 4) & 0b00010000)
+        }
+    }
+
+    /// Transmitter Enable
+    @inlinable
+    @inline(__always)
+    public static var transmitterEnable: UART.TransmitterEnable {
+        get {
+            let mode = (controlRegisterB & 0b00001000) >> 3
+            return UART.TransmitterEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00001000) | ((newValue.rawValue << 3) & 0b000001000)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.11.3 and Section 20.11.4.
+    /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
+    @inlinable
+    @inline(__always)
+    public static var numberOfDataBits: UART.NumberOfDataBits {
+        get {
+            let mode = ((controlRegisterB & 0b00000100) >> 2) | ((controlRegisterC & 0b00000110) >> 1)
+            return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b00000110) | ((newValue.rawValue & 0b00000011) << UInt8(1))
+            controlRegisterB = (controlRegisterB & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
+        }
+    }
+    
+    // TODO: RXB80
+    
+    // TODO: TXB80
+    
+    // TODO: UMSEL0
 
     /// Parity Mode
     /// See ATMega328p Datasheet Section 20.11.4.
@@ -257,21 +415,6 @@ public struct UART0: UARTPort {
         }
     }
 
-    /// See ATMega328p Datasheet Section 20.11.3 and Section 20.11.4.
-    /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
-    @inlinable
-    @inline(__always)
-    public static var numberOfDataBits: UART.NumberOfDataBits {
-        get {
-            let mode = ((controlRegisterB & 0b00000100) >> 2) | ((controlRegisterC & 0b00000110) >> 1)
-            return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
-        }
-        set {
-            controlRegisterC = (controlRegisterC & ~0b00000110) | ((newValue.rawValue & 0b00000011) << UInt8(1))
-            controlRegisterB = (controlRegisterB & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
-        }
-    }
-
     /// See ATMega328p Datasheet Section 20.11.4.
     /// UCPOLn is bit 0 on UCSRnC.
     @inlinable
@@ -283,143 +426,6 @@ public struct UART0: UARTPort {
         }
         set {
             controlRegisterC = (controlRegisterC & ~0b00000001) | (newValue.rawValue & 0b00000001)
-        }
-    }
-
-    /// See ATMega328p Datasheet Section 20.
-    /// U2Xn is bit 1 on UCSRnA.
-    @inlinable
-    @inline(__always)
-    public static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
-        get {
-            let mode = (controlRegisterA & 0b00000010) >> 1
-            return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterA = (controlRegisterA & 0b00000010) | ((newValue.rawValue << 1) & 0b00000010)
-        }
-    }
-
-    /// Receiver Enable
-    @inlinable
-    @inline(__always)
-    public static var receiverEnable: UART.ReceiverEnable {
-        get {
-            let mode = (controlRegisterB & 0b00010000) >> 4
-            return UART.ReceiverEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b00010000) | ((newValue.rawValue << 4) & 0b00010000)
-        }
-    }
-
-    /// Transmitter Enable
-    @inlinable
-    @inline(__always)
-    public static var transmitterEnable: UART.TransmitterEnable {
-        get {
-            let mode = (controlRegisterB & 0b00001000) >> 3
-            return UART.TransmitterEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b00001000) | ((newValue.rawValue << 3) & 0b000001000)
-        }
-    }
-
-    /// Data Register Empty Interrupt Enable - Set UCSRB
-    @inlinable
-    @inline(__always)
-    public static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
-        get {
-            let mode = (controlRegisterB & 0b00100000) >> 5
-            return UART.DRECompleteInterruptEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
-        }
-    }
-
-    /// TX Complete Interrupt Enable - Set UCSRB
-    @inlinable
-    @inline(__always)
-    public static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
-        get {
-            let mode = (controlRegisterB & 0b01000000) >> 6
-            return UART.TXCompleteInterruptEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b01000000) | ((newValue.rawValue << 6) & 0b01000000)
-        }
-    }
-
-    /// Set UCSRB
-    @inlinable
-    @inline(__always)
-    public static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
-        get {
-            let mode = (controlRegisterB & 0b10000000) >> 7
-            return UART.RXCompleteInterruptEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b10000000) | ((newValue.rawValue << 7) & 0b10000000)
-        }
-    }
-
-    /// UPEn is Bit 2 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never)
-    public static var parityError: Bool {
-        get {
-            return !((controlRegisterA & 0b00000100) == 0)
-        }
-    }
-
-    /// UDROn is Bit 3 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never)
-    public static var dataOverrun: Bool {
-        get {
-            return !((controlRegisterA & 0b00001000) == 0)
-        }
-    }
-
-    /// UFEn is Bit 4 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never)
-    public static var frameError: Bool {
-        get {
-            return !((controlRegisterA & 0b00010000) == 0)
-        }
-    }
-
-    /// UDREn is Bit 5 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never) // TODO: There is a swift bug where inlined flags like these are optimised to always 'false', using 'never' fixes the problem (for now).
-    // (note that if/when we move to pure swift register access HAL, this optimiser bug will probably go away)
-    public static var dataRegisterEmpty: Bool {
-        get {
-            return !((controlRegisterA & 0b00100000) == 0)
-        }
-    }
-
-    /// UTXCn is Bit 6 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never) // TODO: as above
-    public static var txComplete: Bool {
-        get {
-            return !((controlRegisterA & 0b01000000) == 0)
-        }
-        set {
-            controlRegisterA |= UInt8(newValue.hashValue) & 0b01000000
-        }
-    }
-
-    /// URXCn is Bit 7 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never) // TODO: as above
-    public static var rxDataAvailable: Bool {
-        get {
-            return !((controlRegisterA & 0b10000000) == 0)
         }
     }
 }
