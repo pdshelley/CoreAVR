@@ -83,6 +83,14 @@ public enum UART {
         case off = 0
         case on = 1
     }
+    
+    /// See ATMega328p Datasheet Section 20.11.4 Table 20-8.
+    public enum ModeSelect: UInt8 {
+        case asynchronous = 0
+        case synchronous = 1
+        // 2 is reserved
+        case masterSPI
+    }
 }
 
 public protocol UARTPort {
@@ -119,9 +127,9 @@ public protocol UARTPort {
     static var transmitterEnable: UART.TransmitterEnable { get set }
     
     static var numberOfDataBits: UART.NumberOfDataBits { get set }
-    // TODO: RXB8u
-    // TODO: TXB8u
-    // TODO: UMSELu
+    static var receiveData8thBit: Bool { get }
+    static var transmitData8thBit: Bool { get set }
+    static var modeSelect: UART.ModeSelect { get set }
     static var parityMode: UART.ParityMode { get set }
     static var numberOfStopBits: UART.NumberOfStopBits { get set }
     static var clockPolarity: UART.ClockPolarity { get set }

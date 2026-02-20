@@ -367,11 +367,42 @@ public struct UART0: UARTPort {
         }
     }
     
-    // TODO: RXB80
+    /// See ATMega328p Datasheet Section 20.11.3
+    /// RXB8n is bit 1 on UCSRnB
+    @inlinable
+    @inline(__always)
+    public static var receiveData8thBit: Bool {
+        get {
+            return ((controlRegisterB & 0b00000010) >> 1) == 1
+        }
+    }
     
-    // TODO: TXB80
+    /// See ATMega328p Datasheet Section 20.11.3
+    /// TXB8n is bit 0 on UCSRnB
+    @inlinable
+    @inline(__always)
+    public static var transmitData8thBit: Bool {
+        get {
+            return ((controlRegisterB & 0b00000001)) == 1
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00000001) | (newValue ? 1 : 0)
+        }
+    }
     
-    // TODO: UMSEL0
+    /// See ATMega328p Datasheet Section 20.11.4
+    /// UMSELn are bit 7 and 6 on UCSRnC
+    @inlinable
+    @inline(__always)
+    public static var modeSelect: UART.ModeSelect {
+        get {
+            let mode = (controlRegisterC & 0b11000000) >> 6
+            return UART.ModeSelect.init(rawValue: mode) ?? .asynchronous
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b11000000) | ((newValue.rawValue << 6) & 0b11000000)
+        }
+    }
 
     /// Parity Mode
     /// See ATMega328p Datasheet Section 20.11.4.
