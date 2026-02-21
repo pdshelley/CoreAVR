@@ -195,7 +195,7 @@ public struct SPI0: SPIPort {
             return _volatileRegisterReadUInt8(0x4C)
         }
         set {
-            _rawPointerWrite(address:0x4C, value: newValue)
+            _volatileRegisterWriteUInt8(0x4C, newValue)
         }
     }
     
@@ -251,7 +251,7 @@ public struct SPI0: SPIPort {
         }
     }
     
-    /// SPI  DataOrder
+    /// SPI  Master Slave Select
     /// See ATMega328p Datasheet Section 19.5.1.
     /// MSTR is bit 4 on SPCR.
     ///
@@ -419,7 +419,7 @@ public struct SPI0: SPIPort {
             return _volatileRegisterReadUInt8(0x4D)
         }
         set {
-            _rawPointerWrite(address:0x4D, value: newValue)
+            _volatileRegisterWriteUInt8(0x4D, newValue)
         }
     }
     
@@ -497,7 +497,7 @@ public struct SPI0: SPIPort {
             return _volatileRegisterReadUInt8(0x4E)
         }
         set {
-            _rawPointerWrite(address:0x4E, value: newValue)
+            _volatileRegisterWriteUInt8(0x4E, newValue)
         }
     }
     
