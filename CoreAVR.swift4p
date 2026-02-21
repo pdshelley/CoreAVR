@@ -7,6 +7,7 @@ files:
 - Sources/CoreAVR/Utilities.swift
 - Sources/CoreAVR/module/AnalogToDigitalConverter.swift
 - Sources/CoreAVR/module/CPUCore.swift
+- Sources/CoreAVR/module/EEPROM.swift
 - Sources/CoreAVR/module/GPIO.swift
 - Sources/CoreAVR/module/Interrupts.swift
 - Sources/CoreAVR/module/PowerManagement.swift
