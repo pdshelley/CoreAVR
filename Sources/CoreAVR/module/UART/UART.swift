@@ -117,7 +117,7 @@ public protocol UARTPort {
     static var parityError: Bool { get }
     
     static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode { get set }
-    // TODO: MPCMu
+    static var multiProcessorCommunication: Bool { get set }
     
     static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable { get set }
     static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable { get set }

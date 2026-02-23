@@ -285,7 +285,18 @@ public struct UART0: UARTPort {
         }
     }
     
-    // TODO: MPCM0
+    /// See ATMega328p Datasheet Section 20.
+    /// MPCMn is bit 0 on UCSRnA.
+    @inlinable
+    @inline(__always)
+    public static var multiProcessorCommunication: Bool {
+        get {
+            return (controlRegisterA & 0b00000001) == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b00000001) | (newValue ? 1 : 0)
+        }
+    }
     
     /// Set UCSRB
     @inlinable
