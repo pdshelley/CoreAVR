@@ -7,6 +7,7 @@ files:
 - Sources/CoreAVR/Utilities.swift
 - Sources/CoreAVR/module/AnalogToDigitalConverter.swift
 - Sources/CoreAVR/module/CPUCore.swift
+- Sources/CoreAVR/module/EEPROM.swift
 - Sources/CoreAVR/module/GPIO.swift
 - Sources/CoreAVR/module/Interrupts.swift
 - Sources/CoreAVR/module/PowerManagement.swift
@@ -17,7 +18,8 @@ files:
 - Sources/CoreAVR/module/Timer/Timer2.swift
 - Sources/CoreAVR/module/Timer/Timers.swift
 - Sources/CoreAVR/module/TwoWireInterface.swift
-- Sources/CoreAVR/module/UART.swift
+- Sources/CoreAVR/module/UART/UART.swift
+- Sources/CoreAVR/module/UART/UART0.swift
 settings:
   BUILD_DIR: build
   INCLUDE_PRINTF_FLT: 'no'
