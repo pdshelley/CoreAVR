@@ -123,37 +123,6 @@ public struct UART0: UARTPort {
             _volatileRegisterWriteUInt8(0xC2, newValue)
         }
     }
-    
-
-    /// 20.11.5 UBRRnH – USART Baud Rate Register
-    /// ```
-    /// --------------------------------------------------------------------------------
-    /// | Bit          |  15   |  14   |  13   |  12   |  11   |  10   |   9   |   8   |
-    /// --------------------------------------------------------------------------------
-    /// |              |   -   |   -   |   -   |   -   |            UBRRn              |
-    /// --------------------------------------------------------------------------------
-    /// | Read/Write   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
-    /// --------------------------------------------------------------------------------
-    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    /// --------------------------------------------------------------------------------
-    ///```
-    /// Bits 15 through 12 are reserved for future use. For compatibility with future devices, these bit must be written to zero
-    /// when UBRRnH is written.
-    ///
-    /// This is a 12-bit register which contains the USART baud rate. The UBRRnH contains the four most significant bits, and the
-    /// UBRRnL contains the eight least significant bits of the USART baud rate. Ongoing transmissions by the Transmitter and Receiver
-    /// will be corrupted if the baud rate is changed. Writing UBRRnL will trigger an immediate update of the baud rate prescaler.
-    ///
-    @inlinable
-    @inline(__always)
-    public static var baudRateRegisterH: UInt8 {
-        get {
-            _volatileRegisterReadUInt8(0xC5)
-        }
-        set {
-            _volatileRegisterWriteUInt8(0xC5, newValue)
-        }
-    }
 
 
     /// 20.11.5 UBRRnL – USART Baud Rate Register
@@ -180,6 +149,36 @@ public struct UART0: UARTPort {
         }
         set {
             _volatileRegisterWriteUInt8(0xC4, newValue)
+        }
+    }
+
+ /// 20.11.5 UBRRnH – USART Baud Rate Register
+    /// ```
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |  15   |  14   |  13   |  12   |  11   |  10   |   9   |   8   |
+    /// --------------------------------------------------------------------------------
+    /// |              |   -   |   -   |   -   |   -   |            UBRRn              |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |   R   |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
+    ///```
+    /// Bits 15 through 12 are reserved for future use. For compatibility with future devices, these bit must be written to zero
+    /// when UBRRnH is written.
+    ///
+    /// This is a 12-bit register which contains the USART baud rate. The UBRRnH contains the four most significant bits, and the
+    /// UBRRnL contains the eight least significant bits of the USART baud rate. Ongoing transmissions by the Transmitter and Receiver
+    /// will be corrupted if the baud rate is changed. Writing UBRRnL will trigger an immediate update of the baud rate prescaler.
+    ///
+    @inlinable
+    @inline(__always)
+    public static var baudRateRegisterH: UInt8 {
+        get {
+            _volatileRegisterReadUInt8(0xC5)
+        }
+        set {
+            _volatileRegisterWriteUInt8(0xC5, newValue)
         }
     }
     
@@ -214,7 +213,207 @@ public struct UART0: UARTPort {
         }
     }
     
-    // TODO: is there a better order for these properties?
+    /// URXCn is Bit 7 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never) // TODO: as above
+    public static var rxDataAvailable: Bool {
+        get {
+            return !((controlRegisterA & 0b10000000) == 0)
+        }
+    }
+    
+    /// UTXCn is Bit 6 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never) // TODO: as above
+    public static var txComplete: Bool {
+        get {
+            return !((controlRegisterA & 0b01000000) == 0)
+        }
+        set {
+            controlRegisterA |= UInt8(newValue.hashValue) & 0b01000000
+        }
+    }
+    
+    /// UDREn is Bit 5 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never) // TODO: There is a swift bug where inlined flags like these are optimised to always 'false', using 'never' fixes the problem (for now).
+    // (note that if/when we move to pure swift register access HAL, this optimiser bug will probably go away)
+    public static var dataRegisterEmpty: Bool {
+        get {
+            return !((controlRegisterA & 0b00100000) == 0)
+        }
+    }
+    
+    /// UFEn is Bit 4 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never)
+    public static var frameError: Bool {
+        get {
+            return !((controlRegisterA & 0b00010000) == 0)
+        }
+    }
+    
+    /// UDROn is Bit 3 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never)
+    public static var dataOverrun: Bool {
+        get {
+            return !((controlRegisterA & 0b00001000) == 0)
+        }
+    }
+    
+    /// UPEn is Bit 2 on UCSRnA. See Section 20.11.2.
+    @inlinable
+    @inline(never)
+    public static var parityError: Bool {
+        get {
+            return !((controlRegisterA & 0b00000100) == 0)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.
+    /// U2Xn is bit 1 on UCSRnA.
+    @inlinable
+    @inline(__always)
+    public static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
+        get {
+            let mode = (controlRegisterA & 0b00000010) >> 1
+            return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterA = (controlRegisterA & 0b00000010) | ((newValue.rawValue << 1) & 0b00000010)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.
+    /// MPCMn is bit 0 on UCSRnA.
+    @inlinable
+    @inline(__always)
+    public static var multiProcessorCommunication: Bool {
+        get {
+            return (controlRegisterA & 0b00000001) == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b00000001) | (newValue ? 1 : 0)
+        }
+    }
+    
+    /// Set UCSRB
+    @inlinable
+    @inline(__always)
+    public static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
+        get {
+            let mode = (controlRegisterB & 0b10000000) >> 7
+            return UART.RXCompleteInterruptEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b10000000) | ((newValue.rawValue << 7) & 0b10000000)
+        }
+    }
+    
+    /// TX Complete Interrupt Enable - Set UCSRB
+    @inlinable
+    @inline(__always)
+    public static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
+        get {
+            let mode = (controlRegisterB & 0b01000000) >> 6
+            return UART.TXCompleteInterruptEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b01000000) | ((newValue.rawValue << 6) & 0b01000000)
+        }
+    }
+    
+    /// Data Register Empty Interrupt Enable - Set UCSRB
+    @inlinable
+    @inline(__always)
+    public static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
+        get {
+            let mode = (controlRegisterB & 0b00100000) >> 5
+            return UART.DRECompleteInterruptEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
+        }
+    }
+    
+    /// Receiver Enable
+    @inlinable
+    @inline(__always)
+    public static var receiverEnable: UART.ReceiverEnable {
+        get {
+            let mode = (controlRegisterB & 0b00010000) >> 4
+            return UART.ReceiverEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00010000) | ((newValue.rawValue << 4) & 0b00010000)
+        }
+    }
+
+    /// Transmitter Enable
+    @inlinable
+    @inline(__always)
+    public static var transmitterEnable: UART.TransmitterEnable {
+        get {
+            let mode = (controlRegisterB & 0b00001000) >> 3
+            return UART.TransmitterEnable.init(rawValue: mode) ?? .off
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00001000) | ((newValue.rawValue << 3) & 0b000001000)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.11.3 and Section 20.11.4.
+    /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
+    @inlinable
+    @inline(__always)
+    public static var numberOfDataBits: UART.NumberOfDataBits {
+        get {
+            let mode = ((controlRegisterB & 0b00000100) >> 2) | ((controlRegisterC & 0b00000110) >> 1)
+            return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b00000110) | ((newValue.rawValue & 0b00000011) << UInt8(1))
+            controlRegisterB = (controlRegisterB & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.11.3
+    /// RXB8n is bit 1 on UCSRnB
+    @inlinable
+    @inline(__always)
+    public static var receiveData8thBit: Bool {
+        get {
+            return ((controlRegisterB & 0b00000010) >> 1) == 1
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.11.3
+    /// TXB8n is bit 0 on UCSRnB
+    @inlinable
+    @inline(__always)
+    public static var transmitData8thBit: Bool {
+        get {
+            return ((controlRegisterB & 0b00000001)) == 1
+        }
+        set {
+            controlRegisterB = (controlRegisterB & ~0b00000001) | (newValue ? 1 : 0)
+        }
+    }
+    
+    /// See ATMega328p Datasheet Section 20.11.4
+    /// UMSELn are bit 7 and 6 on UCSRnC
+    @inlinable
+    @inline(__always)
+    public static var modeSelect: UART.ModeSelect {
+        get {
+            let mode = (controlRegisterC & 0b11000000) >> 6
+            return UART.ModeSelect.init(rawValue: mode) ?? .asynchronous
+        }
+        set {
+            controlRegisterC = (controlRegisterC & ~0b11000000) | ((newValue.rawValue << 6) & 0b11000000)
+        }
+    }
 
     /// Parity Mode
     /// See ATMega328p Datasheet Section 20.11.4.
@@ -258,21 +457,6 @@ public struct UART0: UARTPort {
         }
     }
 
-    /// See ATMega328p Datasheet Section 20.11.3 and Section 20.11.4.
-    /// UCSZn0 and UCSZn1 are bits 1 and 2 on UCSRnC while UCSZn2 is bit 2 on UCSRnB
-    @inlinable
-    @inline(__always)
-    public static var numberOfDataBits: UART.NumberOfDataBits {
-        get {
-            let mode = ((controlRegisterB & 0b00000100) >> 2) | ((controlRegisterC & 0b00000110) >> 1)
-            return UART.NumberOfDataBits.init(rawValue: mode) ?? .eight
-        }
-        set {
-            controlRegisterC = (controlRegisterC & ~0b00000110) | ((newValue.rawValue & 0b00000011) << UInt8(1))
-            controlRegisterB = (controlRegisterB & ~0b00000100) | ((newValue.rawValue << 2) & 0b00000100)
-        }
-    }
-
     /// See ATMega328p Datasheet Section 20.11.4.
     /// UCPOLn is bit 0 on UCSRnC.
     @inlinable
@@ -284,280 +468,6 @@ public struct UART0: UARTPort {
         }
         set {
             controlRegisterC = (controlRegisterC & ~0b00000001) | (newValue.rawValue & 0b00000001)
-        }
-    }
-
-    /// See ATMega328p Datasheet Section 20.
-    /// U2Xn is bit 1 on UCSRnA.
-    @inlinable
-    @inline(__always)
-    public static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode {
-        get {
-            let mode = (controlRegisterA & 0b00000010) >> 1
-            return UART.AsynchronousDoubleSpeedMode.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterA = (controlRegisterA & 0b00000010) | ((newValue.rawValue << 1) & 0b00000010)
-        }
-    }
-
-    /// Note: Needs to be updated to account for U2Xn or the Opperating Mode of the UART. See ATMega328p Datasheet Table 20-1.
-    /// This is a convienience wraper on the "baudRateRegister" or "UBRRn" to allow setting a "normal" baud rate
-    /// and then do the calculation to convert this to the setting needed for UBRRn.
-    @inlinable
-    @inline(__always)
-    public static var baudRate: UInt32 {
-        get {
-            return UInt32(cpuFrequency)/(UInt32(16*(baudRateRegister+1)))
-        }
-        set {
-            baudRateRegister = UInt16((UInt32(cpuFrequency)/(16*newValue)) - 1)
-        }
-    }
-
-    /// Receiver Enable
-    @inlinable
-    @inline(__always)
-    public static var receiverEnable: UART.ReceiverEnable {
-        get {
-            let mode = (controlRegisterB & 0b00010000) >> 4
-            return UART.ReceiverEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b00010000) | ((newValue.rawValue << 4) & 0b00010000)
-        }
-    }
-
-    /// Transmitter Enable
-    @inlinable
-    @inline(__always)
-    public static var transmitterEnable: UART.TransmitterEnable {
-        get {
-            let mode = (controlRegisterB & 0b00001000) >> 3
-            return UART.TransmitterEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b00001000) | ((newValue.rawValue << 3) & 0b000001000)
-        }
-    }
-
-    /// Data Register Empty Interrupt Enable - Set UCSRB
-    @inlinable
-    @inline(__always)
-    public static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable {
-        get {
-            let mode = (controlRegisterB & 0b00100000) >> 5
-            return UART.DRECompleteInterruptEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b00100000) | ((newValue.rawValue << 5) & 0b00100000)
-        }
-    }
-
-    /// TX Complete Interrupt Enable - Set UCSRB
-    @inlinable
-    @inline(__always)
-    public static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable {
-        get {
-            let mode = (controlRegisterB & 0b01000000) >> 6
-            return UART.TXCompleteInterruptEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b01000000) | ((newValue.rawValue << 6) & 0b01000000)
-        }
-    }
-
-    /// Set UCSRB
-    @inlinable
-    @inline(__always)
-    public static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable {
-        get {
-            let mode = (controlRegisterB & 0b10000000) >> 7
-            return UART.RXCompleteInterruptEnable.init(rawValue: mode) ?? .off
-        }
-        set {
-            controlRegisterB = (controlRegisterB & ~0b10000000) | ((newValue.rawValue << 7) & 0b10000000)
-        }
-    }
-
-    /// UPEn is Bit 2 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never)
-    public static var parityError: Bool {
-        get {
-            return !((controlRegisterA & 0b00000100) == 0)
-        }
-    }
-
-    /// UDROn is Bit 3 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never)
-    public static var dataOverrun: Bool {
-        get {
-            return !((controlRegisterA & 0b00001000) == 0)
-        }
-    }
-
-    /// UFEn is Bit 4 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never)
-    public static var frameError: Bool {
-        get {
-            return !((controlRegisterA & 0b00010000) == 0)
-        }
-    }
-
-    /// UDREn is Bit 5 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never) // TODO: There is a swift bug where inlined flags like these are optimised to always 'false', using 'never' fixes the problem (for now).
-    // (note that if/when we move to pure swift register access HAL, this optimiser bug will probably go away)
-    public static var dataRegisterEmpty: Bool {
-        get {
-            return !((controlRegisterA & 0b00100000) == 0)
-        }
-    }
-
-    /// UTXCn is Bit 6 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never) // TODO: as above
-    public static var txComplete: Bool {
-        get {
-            return !((controlRegisterA & 0b01000000) == 0)
-        }
-        set {
-            controlRegisterA |= UInt8(newValue.hashValue) & 0b01000000
-        }
-    }
-
-    /// URXCn is Bit 7 on UCSRnA. See Section 20.11.2.
-    @inlinable
-    @inline(never) // TODO: as above
-    public static var rxDataAvailable: Bool {
-        get {
-            return !((controlRegisterA & 0b10000000) == 0)
-        }
-    }
-    
-    @inlinable
-    @inline(__always)
-    /// The lowest level of writing out data to hardware UART. This function makes sure that the Data Register is empty before sending out more data, this is important for proper opperation
-    /// See Section 20.6.1
-    /// - Parameter byte: A single bite of data to be sent.
-    public static func writeByte(_ byte: PortDataType) {
-        while !dataRegisterEmpty { }
-        dataRegister = byte
-    }
-
-    // See Section 20.6.1
-    @inlinable
-    @inline(__always)
-    public static func read() -> PortDataType { // TODO: Needs Testing
-        while !rxDataAvailable { }
-        return dataRegister
-    }
-
-    @inlinable
-    @inline(__always)
-    public static func available() -> Bool {
-        rxDataAvailable
-    }
-}
-
-public extension UARTPort where PortDataType == UInt8 {
-    // See Section 20.6.1
-    @inlinable
-    @inline(__always)
-    static func write(_ data: StaticString) {
-        for character in data {
-            writeByte(character)
-        }
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func write(_ int: Int8) {
-        var integer = int
-
-        if integer < 0 {
-            write("-")
-            integer.negate()
-            write(UInt8(integer))
-        } else {
-            write(UInt8(integer))
-        }
-    }
-
-    @inlinable
-    @inline(__always)
-    static func write(_ int: Int16) {
-        var integer = int
-
-        if integer < 0 {
-            write("-")
-            integer.negate()
-            write(UInt16(integer))
-        } else {
-            write(UInt16(integer))
-        }
-    }
-
-    @inlinable
-    @inline(__always)
-    static func write(_ int: UInt8, withLeadingZeros: Bool = false) {
-        var remainingInteger = int
-        var currentDivisor: UInt8 = 100
-        var shouldPrintZero = withLeadingZeros
-        
-        while currentDivisor > 0 {
-            let currentInt = remainingInteger / currentDivisor
-            
-            if currentInt > 0 || shouldPrintZero || currentDivisor == 1 {
-                writeByte(currentInt + 48)
-                shouldPrintZero = true
-            }
-            
-            remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
-            currentDivisor /= 10 // Update the divisor
-        }
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func write(_ int: UInt16, withLeadingZeros: Bool = false) {
-        var remainingInteger = int
-        var currentDivisor: UInt16 = 10000
-        var shouldPrintZero = withLeadingZeros
-        
-        while currentDivisor > 0 {
-            let currentInt = remainingInteger / currentDivisor
-            
-            if currentInt > 0 || shouldPrintZero || currentDivisor == 1  {
-                writeByte(UInt8(currentInt + 48))
-                shouldPrintZero = true
-            }
-            
-            remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
-            currentDivisor /= 10 // Update the divisor
-        }
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func write(_ int: UInt32, withLeadingZeros: Bool = false) {
-        var remainingInteger = int
-        var currentDivisor: UInt32 = 1000000000
-        var shouldPrintZero = withLeadingZeros
-        
-        while currentDivisor > 0 {
-            let currentInt = remainingInteger / currentDivisor
-            
-            if currentInt > 0 || shouldPrintZero || currentDivisor == 1  {
-                writeByte(UInt8(currentInt + 48))
-                shouldPrintZero = true
-            }
-            
-            remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
-            currentDivisor /= 10 // Update the divisor
         }
     }
 }
