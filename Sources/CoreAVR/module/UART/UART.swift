@@ -1,20 +1,14 @@
 //===----------------------------------------------------------------------===//
 //
 // UART.swift
-// Swift For Arduino
+// CoreAVR
 //
-// Created by Paul Shelley on 12/30/2022.
-// Copyright © 2022 Paul Shelley. All rights reserved.
+// Created by Swift AVR Generator on 03/23/2026.
+// Copyright © 2026 Paul Shelley. All rights reserved.
 //
-//===----------------------------------------------------------------------===//
-//===----------------------------------------------------------------------===//
-// UART Serial Communications
 //===----------------------------------------------------------------------===//
 
 
-// Note: The ATmega48A, ATmegaPA, ATmega88A, ATmegaPA, ATmega168A, ATmegaPA, ATmega328, and ATmega328P, are all pin compatible and have
-// the same hardware features and the only differences are in memory space.
-// The 328PB that has an additional UART, SPI, and I2C making a total of 2 each and comes in different package sizes.
 
 
 public enum UART {
@@ -41,7 +35,7 @@ public enum UART {
     }
 
     /// See ATMega328p Datasheet Table 20-12.
-    // This is relitive to the Transmitted Data Changed (Output of TxDn Pin)
+    // This is relative to the Transmitted Data Changed (Output of TxDn Pin)
     // Received Data Sampled will be opposite of Transmitted Data Changed, Ex: Rising for TX is Falling for RX.
     public enum ClockPolarity: UInt8 {
         case rising = 0
@@ -83,7 +77,7 @@ public enum UART {
         case off = 0
         case on = 1
     }
-    
+
     /// See ATMega328p Datasheet Section 20.11.4 Table 20-8.
     public enum ModeSelect: UInt8 {
         case asynchronous = 0
@@ -97,7 +91,7 @@ public protocol UARTPort {
     // this will probably(?) always be UInt8, but is useful for preventing the protocol
     // from ever accidentally being used as an existential type
     associatedtype PortDataType: BinaryInteger
-    
+
     // Registers
     static var dataRegister: PortDataType { get set }
     static var controlRegisterA: UInt8 { get set }
@@ -106,26 +100,26 @@ public protocol UARTPort {
     static var baudRateRegisterL: UInt8 { get set }
     static var baudRateRegisterH: UInt8 { get set }
     static var baudRateRegister: UInt16 { get set }
-    
+
     // Properties
     static var rxDataAvailable: Bool { get }
     static var txComplete: Bool { get set }
-    
+
     static var dataRegisterEmpty: Bool { get }
     static var frameError: Bool { get }
     static var dataOverrun: Bool { get }
     static var parityError: Bool { get }
-    
+
     static var asynchronousDoubleSpeedMode: UART.AsynchronousDoubleSpeedMode { get set }
     static var multiProcessorCommunication: Bool { get set }
-    
+
     static var rxCompleteInterruptEnable: UART.RXCompleteInterruptEnable { get set }
     static var txCompleteInterruptEnable: UART.TXCompleteInterruptEnable { get set }
     static var dataRegisterEmptyInterruptEnable: UART.DRECompleteInterruptEnable { get set }
-    
+
     static var receiverEnable: UART.ReceiverEnable { get set }
     static var transmitterEnable: UART.TransmitterEnable { get set }
-    
+
     static var numberOfDataBits: UART.NumberOfDataBits { get set }
     static var receiveData8thBit: Bool { get }
     static var transmitData8thBit: Bool { get set }
@@ -137,16 +131,16 @@ public protocol UARTPort {
 
 public extension UARTPort {
     /// Note: Needs to be updated to account for U2Xn or the Opperating Mode of the UART. See ATMega328p Datasheet Table 20-1.
-    /// This is a convienience wraper on the "baudRateRegister" or "UBRRn" to allow setting a "normal" baud rate
+    /// This is a convenience wrapper on the "baudRateRegister" or "UBRRn" to allow setting a "normal" baud rate
     /// and then do the calculation to convert this to the setting needed for UBRRn.
     @inlinable
     @inline(__always)
     static var baudRate: UInt32 {
         get {
-            return UInt32(cpuFrequency)/(UInt32(16*(baudRateRegister+1)))
+            return UInt32(cpuFrequency) / (UInt32(16 * (baudRateRegister + 1)))
         }
         set {
-            baudRateRegister = UInt16((UInt32(cpuFrequency)/(16*newValue)) - 1)
+            baudRateRegister = UInt16((UInt32(cpuFrequency) / (16 * newValue)) - 1)
         }
     }
 }
@@ -156,9 +150,10 @@ public extension UARTPort {
     @inline(__always)
     /// The lowest level of writing out data to hardware UART. This function makes sure that the Data Register is empty before sending out more data, this is important for proper opperation
     /// See Section 20.6.1
-    /// - Parameter byte: A single bite of data to be sent.
+    /// - Parameter byte: A single byte of data to be sent.
     static func writeByte(_ byte: PortDataType) {
-        while !dataRegisterEmpty { }
+        while !dataRegisterEmpty {
+        }
         dataRegister = byte
     }
 
@@ -166,7 +161,8 @@ public extension UARTPort {
     @inlinable
     @inline(__always)
     static func read() -> PortDataType { // TODO: Needs Testing
-        while !rxDataAvailable { }
+        while !rxDataAvailable {
+        }
         return dataRegister
     }
 
@@ -186,7 +182,7 @@ public extension UARTPort where PortDataType == UInt8 {
             writeByte(character)
         }
     }
-    
+
     @inlinable
     @inline(__always)
     static func write(_ int: Int8) {
@@ -221,55 +217,55 @@ public extension UARTPort where PortDataType == UInt8 {
         var remainingInteger = int
         var currentDivisor: UInt8 = 100
         var shouldPrintZero = withLeadingZeros
-        
+
         while currentDivisor > 0 {
             let currentInt = remainingInteger / currentDivisor
-            
+
             if currentInt > 0 || shouldPrintZero || currentDivisor == 1 {
                 writeByte(currentInt + 48)
                 shouldPrintZero = true
             }
-            
+
             remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
             currentDivisor /= 10 // Update the divisor
         }
     }
-    
+
     @inlinable
     @inline(__always)
     static func write(_ int: UInt16, withLeadingZeros: Bool = false) {
         var remainingInteger = int
         var currentDivisor: UInt16 = 10000
         var shouldPrintZero = withLeadingZeros
-        
+
         while currentDivisor > 0 {
             let currentInt = remainingInteger / currentDivisor
-            
+
             if currentInt > 0 || shouldPrintZero || currentDivisor == 1  {
                 writeByte(UInt8(currentInt + 48))
                 shouldPrintZero = true
             }
-            
+
             remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
             currentDivisor /= 10 // Update the divisor
         }
     }
-    
+
     @inlinable
     @inline(__always)
     static func write(_ int: UInt32, withLeadingZeros: Bool = false) {
         var remainingInteger = int
         var currentDivisor: UInt32 = 1000000000
         var shouldPrintZero = withLeadingZeros
-        
+
         while currentDivisor > 0 {
             let currentInt = remainingInteger / currentDivisor
-            
+
             if currentInt > 0 || shouldPrintZero || currentDivisor == 1  {
                 writeByte(UInt8(currentInt + 48))
                 shouldPrintZero = true
             }
-            
+
             remainingInteger -= (currentInt * currentDivisor) // Save the remaining numbers to print
             currentDivisor /= 10 // Update the divisor
         }
