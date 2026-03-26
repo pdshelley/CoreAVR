@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  AnalogToDigitalConverter.swift
-//  CoreAVR
+// AnalogToDigitalConverter.swift
+// CoreAVR
 //
-//  Created by Brent Van den Abbeel on 2025-12-01.
+// Created by Swift AVR Generator on 03/23/2026.
+// Copyright © 2026 Paul Shelley. All rights reserved.
 //
+//===----------------------------------------------------------------------===//
+
+
+
 
 public enum VoltageReference: UInt8 {
     /// AREF, Internal Vref turned off
@@ -66,13 +72,12 @@ public struct AnalogToDigitalConverter {
     public typealias VoltageReferenceSelection = VoltageReference
     public typealias AnalogChannelSelection = AnalogChannel
     public typealias AnalogPrescalerSelection = AnalogPrescaler
-    
-    /// ADMUX - ADC Multiplexer Selection Register
+    /// ADMUX – The ADC multiplexer Selection Register
     /// ```
     /// --------------------------------------------------------------------------------
     /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     /// --------------------------------------------------------------------------------
-    /// | (0x7C)       | REFS1 | REFS0 | ADLAR |   -   |  MUX3 |  MUX2 |  MUX1 |  MUX0 |
+    /// | (0x7C)       | REFS1 | REFS0 | ADLAR |   -   | MUX3  | MUX2  | MUX1  | MUX0  |
     /// --------------------------------------------------------------------------------
     /// | Read/Write   |  R/W  |  R/W  |  R/W  |   R   |  R/W  |  R/W  |  R/W  |  R/W  |
     /// --------------------------------------------------------------------------------
@@ -89,35 +94,21 @@ public struct AnalogToDigitalConverter {
             _volatileRegisterWriteUInt8(0x7C, newValue)
         }
     }
-    
-    /// REFS[1:0] - Reference Selection Bits
-    /// 
-    /// These bits select the voltage reference for the ADC, as shown in the table below.
-    /// If these bits are changed during a conversion, the change will not go in effect until this conversion is completed (ADIF in ADCSRA is set).
-    /// The internal voltage reference options may not be used if an external reference voltage is being applied to the AREF pin.
-    ///
-    /// ```
-    /// | REFS1 | REFS0 | Voltage Reference Selection                                         |
-    /// |-------|-------|---------------------------------------------------------------------|
-    /// |   0   |   0   | AREF, Internal Vref turned off                                      |
-    /// |   0   |   1   | AVcc with external capacitor at AREF pin                            |
-    /// |   1   |   0   | Reserved                                                            |
-    /// |   1   |   1   | Internal 1.1V Voltage Reference with external capacitor at AREF pin |
-    /// ```
+
+    /// REFS - Reference Selection Bits
     @inlinable
     @inline(__always)
     public static var reference: VoltageReferenceSelection {
         get {
             let mode = (multiplexerSelectionRegister & 0b11000000) >> UInt8(6)
-            return .init(rawValue: mode) ?? .internalTurnedOff
+            return VoltageReferenceSelection.init(rawValue: mode) ?? .internalTurnedOff
         }
         set {
-            multiplexerSelectionRegister |= (newValue.rawValue & 0b00000011) << UInt8(6)
+            multiplexerSelectionRegister = (multiplexerSelectionRegister & ~0b11000000) | ((newValue.rawValue & 0b00000011) << UInt8(6))
         }
     }
-    
-    /// ADLAR - ADC Left Adjust Result
-    ///
+
+    /// ADLAR - Left Adjust Result
     /// The ADLAR bit affects the presentation of the ADC conversion result in the ADC Data Register.
     /// Write one to ADLAR to left adjust the result.
     /// Otherwise, the result is right adjusted.
@@ -130,12 +121,11 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            multiplexerSelectionRegister |= (newValue ? 1 : 0) << UInt8(5)
+            multiplexerSelectionRegister = (multiplexerSelectionRegister & ~0b00100000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(5))
         }
     }
-    
-    /// MUX[3:0] - Analog Channel Selection Bits
-    ///
+
+    /// MUX - Analog Channel Selection Bits
     /// The value of these bits select which analog inputs are connected to the ADC. See the table below for details. If these bits are changed during a conversion, the change will not go in effect until this conversion is complete (ADIF in ADCSRA is set).
     ///
     /// ```
@@ -157,162 +147,65 @@ public struct AnalogToDigitalConverter {
     /// |   1   |   1   |   0   |   1   | Reserved           |
     /// |   1   |   1   |   1   |   0   | 1.1V (Vbg)         |
     /// |   1   |   1   |   1   |   1   | 0V (GND)           |
-    /// 
     /// ```
     @inlinable
     @inline(__always)
     public static var channel: AnalogChannelSelection {
         get {
-            let mode = (multiplexerSelectionRegister & 0b00001111)
-            return .init(rawValue: mode) ?? .adc0
+            let mode = (multiplexerSelectionRegister & 0b00001111) >> UInt8(0)
+            return AnalogChannelSelection.init(rawValue: mode) ?? .adc0
         }
         set {
-            multiplexerSelectionRegister |= (newValue.rawValue & 0b00001111)
+            multiplexerSelectionRegister = (multiplexerSelectionRegister & ~0b00001111) | (newValue.rawValue & 0b00001111)
         }
     }
-    
-    /// ADCSRA - ADC Control and Status Register A
+
+    /// ADCL - ADC Data Register (low bits)
     /// ```
     /// --------------------------------------------------------------------------------
     /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     /// --------------------------------------------------------------------------------
-    /// | (0x7A)       | ADEN  |  ADSC | ADATE | ADIF  | ADIE  | ADPS2 | ADPS1 | ADPS0 |
+    /// NORMAL
+    /// | (0x78)       | ADC7  | ADC6  | ADC5  | ADC4  | ADC3  | ADC2  | ADC1  | ADC0  |
+    /// LEFT-ALIGNED
+    /// | (0x78)       | ADC1  | ADC0  |   -   |   -   |   -   |   -   |   -   |   -   |
     /// --------------------------------------------------------------------------------
-    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
+    /// | Read/Write   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |
     /// --------------------------------------------------------------------------------
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// --------------------------------------------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var controlRegisterA: UInt8 {
+    public static var dataRegisterL: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x7A)
-        }
-        set {
-            _volatileRegisterWriteUInt8(0x7A, newValue)
+            _volatileRegisterReadUInt8(0x78)
         }
     }
-    
-    /// ADEN - ADC Enable
-    ///
-    /// Writing this bit to one enables the ADC.
-    /// By writing it to zero, the ADC is turned off.
-    /// Turning off the ADC off while a conversion is in progress, will terminate this conversion.
-    @inlinable
-    @inline(__always)
-    public static var enabled: Bool {
-        get {
-            let flag = (controlRegisterA & 0b10000000) >> UInt8(7)
-            return flag == 1
-        }
-        set {
-            controlRegisterA |= (newValue ? 1 : 0) << UInt8(7)
-        }
-    }
-    
-    /// ADSC - ADC Start Conversion
-    ///
-    /// In Single Conversion mode, write this bit to one to start each conversion.
-    /// In Free Running mode, write this bit to one to start the first conversion.
-    /// The first conversion after ADSC has been written after the ADC has been enabled, or if ADSC is written at the same time as the ADC is enabled, will take 25 ADC clock cycles instead of the normal 13.
-    /// This first conversion performs initialization of the ADC.
-    ///
-    /// ADSC will read as one as long as a conversion is in progress. When the conversion is complete, it returns to zero.
-    /// Writing zero to this bit has no effect.
-    @inlinable
-    @inline(__always)
-    public static var converting: Bool {
-        get {
-            let flag = (controlRegisterA & 0b01000000) >> UInt8(6)
-            return flag == 1
-        }
-        set {
-            controlRegisterA |= (newValue ? 1 : 0) << UInt8(6)
-        }
-    }
-    
-    /// ADATE - ADC Auto Trigger Enable
-    ///
-    /// When this bit is written to one, Auto Triggering of the ADC is enabled.
-    /// The ADC will start a conversion on a positive edge of the selected trigger signal. The trigger source is selected by setting the ADC Trigger Select bits, ADTS in ADCSRB.
-    @inlinable
-    @inline(__always)
-    public static var autoTriggerEnabled: Bool {
-        get {
-            let flag = (controlRegisterA & 0b00100000) >> UInt8(5)
-            return flag == 1
-        }
-        set {
-            controlRegisterA |= (newValue ? 1 : 0) << UInt8(5)
-        }
-    }
-    
-    /// ADIF - ADC Interrupt Flag
-    ///
-    /// This bit is set when an ADC conversion completes and the Data Registers are updated.
-    /// The ADC Conversion Complete Interrupt is executed if the ADIE bit and the I-bit in SREG are set.
-    /// ADIF is cleared by hardware when executing the corresponding interrupt handling vector.
-    /// Alternatively, ADIF is cleared by writing a logical one to the flag.
-    /// Beware that if doing a Read-Modify-Write on ADCSRA, a pending interrupt can be disabled.
-    /// This also applies if the SBI and CBI instructions are used.
-    @inlinable
-    @inline(__always)
-    public static var interruptFlag: Bool {
-        get {
-            let flag = (controlRegisterA & 0b00010000) >> UInt8(4)
-            return flag == 1
-        }
-        set {
-            controlRegisterA |= (newValue ? 1 : 0) << UInt8(4)
-        }
-    }
-    
-    /// ADIE - ADC Interrupt Enable
-    ///
-    /// When this bit is written to one and the I-bit in SREG is set, the ADC Conversion Complete Interrupt is activated.
-    @inlinable
-    @inline(__always)
-    public static var interruptEnabled: Bool {
-        get {
-            let flag = (controlRegisterA & 0b00001000) >> UInt8(3)
-            return flag == 1
-        }
-        set {
-            controlRegisterA |= (newValue ? 1 : 0) << UInt8(3)
-        }
-    }
-    
-    /// ADPS[2:0] - ADC Prescaler Select Bits
-    ///
-    /// These bits determine the division factor between the system clock frequency and the input clock to the ADC.
-    ///
+
+    /// ADCH - ADC Data Register (high bits)
     /// ```
-    /// | ADPS2 | ADPS1 | ADPS0 | Division Factor |
-    /// |-------|-------|-------|-----------------|
-    /// |   0   |   0   |   0   | 2               |
-    /// |   0   |   0   |   1   | 2               |
-    /// |   0   |   1   |   0   | 4               |
-    /// |   0   |   1   |   1   | 8               |
-    /// |   1   |   0   |   0   | 16              |
-    /// |   1   |   0   |   1   | 32              |
-    /// |   1   |   1   |   0   | 64              |
-    /// |   1   |   1   |   1   | 128             |
+    /// --------------------------------------------------------------------------------
+    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
+    /// --------------------------------------------------------------------------------
+    /// NORMAL
+    /// | (0x79)       |   -   |   -   |   -   |   -   |   -   |   -   | ADC9  | ADC8  |
+    /// LEFT-ALIGNED
+    /// | (0x79)       | ADC9  | ADC8  | ADC7  | ADC6  | ADC5  | ADC4  | ADC3  | ADC2  |
+    /// --------------------------------------------------------------------------------
+    /// | Read/Write   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |
+    /// --------------------------------------------------------------------------------
+    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
+    /// --------------------------------------------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var prescaler: AnalogPrescalerSelection {
+    public static var dataRegisterH: UInt8 {
         get {
-            let mode = (controlRegisterA & 0b00000111)
-            return .init(rawValue: mode) ?? .divide2
-        }
-        set {
-            controlRegisterA |= (newValue.rawValue & 0b00000111)
+            _volatileRegisterReadUInt8(0x79)
         }
     }
-    
-    /// ADC - ADC Data Register
-    ///
+
     /// ```
     /// --------------------------------------------------------------------------------
     /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -335,70 +228,152 @@ public struct AnalogToDigitalConverter {
     @inline(__always)
     public static var dataRegister: UInt16 {
         get {
-            _volatileRegisterReadUInt16(0x78)
+            atomic {
+                _volatileRegisterReadUInt16(0x78)
+            }
         }
-        // Register is read-only
-        set {}
     }
-    
-    /// ADCH - ADC Data Register (high bits)
-    ///
+
+    /// ADCSRA – The ADC Control and Status register A
     /// ```
     /// --------------------------------------------------------------------------------
     /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     /// --------------------------------------------------------------------------------
-    /// NORMAL
-    /// | (0x79)       |   -   |   -   |   -   |   -   |   -   |   -   | ADC9  | ADC8  |
-    /// LEFT-ALIGNED
-    /// | (0x79)       | ADC9  | ADC8  | ADC7  | ADC6  | ADC5  | ADC4  | ADC3  | ADC2  |
+    /// | (0x7A)       | ADEN  | ADSC  | ADATE | ADIF  | ADIE  | ADPS2 | ADPS1 | ADPS0 |
     /// --------------------------------------------------------------------------------
-    /// | Read/Write   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |
+    /// | Read/Write   |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |  R/W  |
     /// --------------------------------------------------------------------------------
     /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
     /// --------------------------------------------------------------------------------
     /// ```
     @inlinable
     @inline(__always)
-    public static var dataRegisterH: UInt8 {
+    public static var controlRegisterA: UInt8 {
         get {
-            _volatileRegisterReadUInt8(0x79)
+            _volatileRegisterReadUInt8(0x7A)
         }
-        // Register is read-only
-        set {}
+        set {
+            _volatileRegisterWriteUInt8(0x7A, newValue)
+        }
     }
-    
-    /// ADCL - ADC Data Register (low bits)
+
+    /// ADEN - ADC Enable
+    /// Writing this bit to one enables the ADC.
+    /// By writing it to zero, the ADC is turned off.
+    /// Turning off the ADC off while a conversion is in progress, will terminate this conversion.
+    @inlinable
+    @inline(__always)
+    public static var enabled: Bool {
+        get {
+            let flag = (controlRegisterA & 0b10000000) >> UInt8(7)
+            return flag == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b10000000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(7))
+        }
+    }
+
+    /// ADSC - ADC Start Conversion
+    /// In Single Conversion mode, write this bit to one to start each conversion.
+    /// In Free Running mode, write this bit to one to start the first conversion.
+    /// The first conversion after ADSC has been written after the ADC has been enabled, or if ADSC is written at the same time as the ADC is enabled, will take 25 ADC clock cycles instead of the normal 13.
+    /// This first conversion performs initialization of the ADC.
+    ///
+    /// ADSC will read as one as long as a conversion is in progress. When the conversion is complete, it returns to zero.
+    /// Writing zero to this bit has no effect.
+    @inlinable
+    @inline(__always)
+    public static var converting: Bool {
+        get {
+            let flag = (controlRegisterA & 0b01000000) >> UInt8(6)
+            return flag == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b01000000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(6))
+        }
+    }
+
+    /// ADATE - ADC  Auto Trigger Enable
+    /// When this bit is written to one, Auto Triggering of the ADC is enabled.
+    /// The ADC will start a conversion on a positive edge of the selected trigger signal. The trigger source is selected by setting the ADC Trigger Select bits, ADTS in ADCSRB.
+    @inlinable
+    @inline(__always)
+    public static var autoTriggerEnabled: Bool {
+        get {
+            let flag = (controlRegisterA & 0b00100000) >> UInt8(5)
+            return flag == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b00100000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(5))
+        }
+    }
+
+    /// ADIF - ADC Interrupt Flag
+    /// This bit is set when an ADC conversion completes and the Data Registers are updated.
+    /// The ADC Conversion Complete Interrupt is executed if the ADIE bit and the I-bit in SREG are set.
+    /// ADIF is cleared by hardware when executing the corresponding interrupt handling vector.
+    /// Alternatively, ADIF is cleared by writing a logical one to the flag.
+    /// Beware that if doing a Read-Modify-Write on ADCSRA, a pending interrupt can be disabled.
+    /// This also applies if the SBI and CBI instructions are used.
+    @inlinable
+    @inline(__always)
+    public static var interruptFlag: Bool {
+        get {
+            let flag = (controlRegisterA & 0b00010000) >> UInt8(4)
+            return flag == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b00010000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(4))
+        }
+    }
+
+    /// ADIE - ADC Interrupt Enable
+    /// When this bit is written to one and the I-bit in SREG is set, the ADC Conversion Complete Interrupt is activated.
+    @inlinable
+    @inline(__always)
+    public static var interruptEnabled: Bool {
+        get {
+            let flag = (controlRegisterA & 0b00001000) >> UInt8(3)
+            return flag == 1
+        }
+        set {
+            controlRegisterA = (controlRegisterA & ~0b00001000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(3))
+        }
+    }
+
+    /// ADPS - ADC  Prescaler Select Bits
+    /// These bits determine the division factor between the system clock frequency and the input clock to the ADC.
     ///
     /// ```
-    /// --------------------------------------------------------------------------------
-    /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-    /// --------------------------------------------------------------------------------
-    /// NORMAL
-    /// | (0x78)       | ADC7  | ADC6  | ADC5  | ADC4  | ADC3  | ADC2  | ADC1  | ADC0  |
-    /// LEFT-ALIGNED
-    /// | (0x78)       | ADC1  | ADC0  |   -   |   -   |   -   |   -   |   -   |   -   |
-    /// --------------------------------------------------------------------------------
-    /// | Read/Write   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |   R   |
-    /// --------------------------------------------------------------------------------
-    /// | InitialValue |   0   |   0   |   0   |   0   |   0   |   0   |   0   |   0   |
-    /// --------------------------------------------------------------------------------
+    /// | ADPS2 | ADPS1 | ADPS0 | Division Factor |
+    /// |-------|-------|-------|-----------------|
+    /// |   0   |   0   |   0   | 2               |
+    /// |   0   |   0   |   1   | 2               |
+    /// |   0   |   1   |   0   | 4               |
+    /// |   0   |   1   |   1   | 8               |
+    /// |   1   |   0   |   0   | 16              |
+    /// |   1   |   0   |   1   | 32              |
+    /// |   1   |   1   |   0   | 64              |
+    /// |   1   |   1   |   1   | 128             |
     /// ```
     @inlinable
     @inline(__always)
-    public static var dataRegisterL: UInt8 {
+    public static var prescaler: AnalogPrescalerSelection {
         get {
-            _volatileRegisterReadUInt8(0x78)
+            let mode = (controlRegisterA & 0b00000111) >> UInt8(0)
+            return AnalogPrescalerSelection.init(rawValue: mode) ?? .divide2
         }
-        // Register is read-only
-        set {}
+        set {
+            controlRegisterA = (controlRegisterA & ~0b00000111) | (newValue.rawValue & 0b00000111)
+        }
     }
-    
-    /// ADCSRB - ADC Control and Status Register B
+
+    /// ADCSRB – The ADC Control and Status register B
     /// ```
     /// --------------------------------------------------------------------------------
     /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     /// --------------------------------------------------------------------------------
-    /// | (0x7B)       |   -   |  ACME |   -   |   -   |   -   | ADTS2 | ADTS1 | ADTS0 |
+    /// | (0x7B)       |   -   | ACME  |   -   |   -   |   -   | ADTS2 | ADTS1 | ADTS0 |
     /// --------------------------------------------------------------------------------
     /// | Read/Write   |   R   |  R/W  |   R   |   R   |   R   |  R/W  |  R/W  |  R/W  |
     /// --------------------------------------------------------------------------------
@@ -415,9 +390,8 @@ public struct AnalogToDigitalConverter {
             _volatileRegisterWriteUInt8(0x7B, newValue)
         }
     }
-    
-    /// ACME - Analog Comparator Multiplexer Enable
-    ///
+
+    /// ACME -
     /// When this bit is written logic one and the ADC is switched off (ADEN in ADCSRA is zero), the ADC multiplexer selects the negative input to the Analog Comparator.
     /// When this bit is written logic zero, AIN1 is applied to the negative input of the Analog Comparator.
     @inlinable
@@ -428,12 +402,11 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            controlRegisterB |= (newValue ? 1 : 0) << UInt8(6)
+            controlRegisterB = (controlRegisterB & ~0b01000000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(6))
         }
     }
-    
-    /// ADTS[2:0] - ADC Auto Trigger Source
-    ///
+
+    /// ADTS - ADC Auto Trigger Source bits
     /// If ADATE in ADCSRA is written to one, the value of these bits selects which source will trigger an ADC conversion.
     /// If ADATE is cleared, the ADTS[2:0] settings will have no effect.
     /// A conversion will be triggered by the rising edge of the selected Interrupt Flag.
@@ -457,15 +430,15 @@ public struct AnalogToDigitalConverter {
     @inline(__always)
     public static var autoTriggerSource: AutoTriggerSource {
         get {
-            let mode = (controlRegisterB & 0b00000111)
-            return .init(rawValue: mode) ?? .freeRunning
+            let mode = (controlRegisterB & 0b00000111) >> UInt8(0)
+            return AutoTriggerSource.init(rawValue: mode) ?? .freeRunning
         }
         set {
-            controlRegisterB |= (newValue.rawValue & 0b00000111)
+            controlRegisterB = (controlRegisterB & ~0b00000111) | (newValue.rawValue & 0b00000111)
         }
     }
-    
-    /// DIDR0 - Digital Input Disable Register 0
+
+    /// DIDR0 – Digital Input Disable Register
     /// ```
     /// --------------------------------------------------------------------------------
     /// | Bit          |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -487,13 +460,11 @@ public struct AnalogToDigitalConverter {
             _volatileRegisterWriteUInt8(0x7E, newValue)
         }
     }
-    
-    /// ADC5D - Digital Input Disable 5
-    ///
+
+    /// ADC5D -
     /// When this bit is written to a logic one, the digital input buffer on the corresponding ADC pin is disabled.
     /// The corresponding PIN Register bit will always read as zero when this bit is set.
     /// When an analog signal is applied to the ADC5 pin and the digital input from this pin is not needed, this bit should be written to logic one to reduce power consumption in the digital input buffer.
-    ///
     @inlinable
     @inline(__always)
     public static var digitalInput5Disabled: Bool {
@@ -502,16 +473,14 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            digitalInputDisableRegister |= (newValue ? 1 : 0) << UInt8(5)
+            digitalInputDisableRegister = (digitalInputDisableRegister & ~0b00100000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(5))
         }
     }
-    
-    /// ADC4D - Digital Input Disable 4
-    ///
+
+    /// ADC4D -
     /// When this bit is written to a logic one, the digital input buffer on the corresponding ADC pin is disabled.
     /// The corresponding PIN Register bit will always read as zero when this bit is set.
     /// When an analog signal is applied to the ADC4 pin and the digital input from this pin is not needed, this bit should be written to logic one to reduce power consumption in the digital input buffer.
-    ///
     @inlinable
     @inline(__always)
     public static var digitalInput4Disabled: Bool {
@@ -520,16 +489,14 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            digitalInputDisableRegister |= (newValue ? 1 : 0) << UInt8(4)
+            digitalInputDisableRegister = (digitalInputDisableRegister & ~0b00010000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(4))
         }
     }
-    
-    /// ADC3D - Digital Input Disable 3
-    ///
+
+    /// ADC3D -
     /// When this bit is written to a logic one, the digital input buffer on the corresponding ADC pin is disabled.
     /// The corresponding PIN Register bit will always read as zero when this bit is set.
     /// When an analog signal is applied to the ADC3 pin and the digital input from this pin is not needed, this bit should be written to logic one to reduce power consumption in the digital input buffer.
-    ///
     @inlinable
     @inline(__always)
     public static var digitalInput3Disabled: Bool {
@@ -538,16 +505,14 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            digitalInputDisableRegister |= (newValue ? 1 : 0) << UInt8(3)
+            digitalInputDisableRegister = (digitalInputDisableRegister & ~0b00001000) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(3))
         }
     }
-    
-    /// ADC2D - Digital Input Disable 2
-    ///
+
+    /// ADC2D -
     /// When this bit is written to a logic one, the digital input buffer on the corresponding ADC pin is disabled.
     /// The corresponding PIN Register bit will always read as zero when this bit is set.
     /// When an analog signal is applied to the ADC2 pin and the digital input from this pin is not needed, this bit should be written to logic one to reduce power consumption in the digital input buffer.
-    ///
     @inlinable
     @inline(__always)
     public static var digitalInput2Disabled: Bool {
@@ -556,16 +521,14 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            digitalInputDisableRegister |= (newValue ? 1 : 0) << UInt8(2)
+            digitalInputDisableRegister = (digitalInputDisableRegister & ~0b00000100) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(2))
         }
     }
-    
-    /// ADC1D - Digital Input Disable 1
-    ///
+
+    /// ADC1D -
     /// When this bit is written to a logic one, the digital input buffer on the corresponding ADC pin is disabled.
     /// The corresponding PIN Register bit will always read as zero when this bit is set.
     /// When an analog signal is applied to the ADC1 pin and the digital input from this pin is not needed, this bit should be written to logic one to reduce power consumption in the digital input buffer.
-    ///
     @inlinable
     @inline(__always)
     public static var digitalInput1Disabled: Bool {
@@ -574,25 +537,23 @@ public struct AnalogToDigitalConverter {
             return flag == 1
         }
         set {
-            digitalInputDisableRegister |= (newValue ? 1 : 0) << UInt8(1)
+            digitalInputDisableRegister = (digitalInputDisableRegister & ~0b00000010) | (((newValue ? 1 : 0) & 0b00000001) << UInt8(1))
         }
     }
-    
-    /// ADC0D - Digital Input Disable 0
-    ///
+
+    /// ADC0D -
     /// When this bit is written to a logic one, the digital input buffer on the corresponding ADC pin is disabled.
     /// The corresponding PIN Register bit will always read as zero when this bit is set.
     /// When an analog signal is applied to the ADC0 pin and the digital input from this pin is not needed, this bit should be written to logic one to reduce power consumption in the digital input buffer.
-    ///
     @inlinable
     @inline(__always)
     public static var digitalInput0Disabled: Bool {
         get {
-            let flag = (digitalInputDisableRegister & 0b00000001)
+            let flag = (digitalInputDisableRegister & 0b00000001) >> UInt8(0)
             return flag == 1
         }
         set {
-            digitalInputDisableRegister |= (newValue ? 1 : 0)
+            digitalInputDisableRegister = (digitalInputDisableRegister & ~0b00000001) | ((newValue ? 1 : 0) & 0b00000001)
         }
     }
 }
