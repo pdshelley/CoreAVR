@@ -20,7 +20,7 @@ as a template to then generate the same code for other AVR chips.
 
 <h4>
 
-| Section |  | Support |  | Generator Support |
+| Section | Support | Generator Support |
 |--|--|--|--|
 | 8 | Memory | ❌ | ❌ |
 | 9 | System Clock and Clock Options | ❌ | ❌ |
