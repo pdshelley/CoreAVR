@@ -20,28 +20,28 @@ as a template to then generate the same code for other AVR chips.
 
 <h4>
 
-| Section |  | Support |
+| Section |  | Support |  | Generator Support |
 |--|--|--|
-| 8 | Memory | ❌ |
-| 9 | System Clock and Clock Options | ❌ |
-| 10 | Power Management and Sleep Modes | ❌ |
-| 11 | System Control and Reset | ❌ |
-| 12 | Interrupts | ✅ |
-| 13 | External Interrupts | ✅ |
-| 14 | I/O-Ports | ✅ |
-| 15 | 8-bit Timer/Counter0 with PWM | ✅ |
-| 17 | 16-bit Timer/Counter1 with PWM | ✅ |
-| 19 | Timer/Counter0 and Timer/Counter1 Prescalers | ✅ |
-| 20 | 8-bit Timer/Counter2 with PWM and Asynchronous Operation | ✅ |
-| 21 | SPI – Serial Peripheral Interface | ✅ |
-| 22 | USART0 | ✅ |
-| 23 | USART in SPI Mode | ❌ |
-| 24 | 2-wire Serial Interface | ❌ |
-| 25 | Analog Comparator | ❌ |
-| 26 | Analog-to-Digital Converter | ❌ |
-| 27 | debugWIRE On-chip Debug System | ❌ |
-| 28 | Self-Programming the Flash | ❌ |
-| 29 | Boot Loader Support | ❌ |
+| 8 | Memory | ❌ | ❌ |
+| 9 | System Clock and Clock Options | ❌ | ❌ |
+| 10 | Power Management and Sleep Modes | ❌ | ❌ |
+| 11 | System Control and Reset | ❌ | ❌ |
+| 12 | Interrupts | ✅ | ❌ |
+| 13 | External Interrupts | ✅ | ❌ |
+| 14 | I/O-Ports | ✅ | ✅ |
+| 15 | 8-bit Timer/Counter0 with PWM | ✅ | ✅ |
+| 17 | 16-bit Timer/Counter1 with PWM | ✅ | ✅ |
+| 19 | Timer/Counter0 and Timer/Counter1 Prescalers | ✅ | ✅ |
+| 20 | 8-bit Timer/Counter2 with PWM and Asynchronous Operation | ✅ | ✅ |
+| 21 | SPI – Serial Peripheral Interface | ✅ | ✅ |
+| 22 | USART0 | ✅ | ✅ |
+| 23 | USART in SPI Mode | ❌ | ❌ |
+| 24 | 2-wire Serial Interface | ✅ | ❌ |
+| 25 | Analog Comparator | ❌ | ❌ |
+| 26 | Analog-to-Digital Converter | ✅ | ✅ |
+| 27 | debugWIRE On-chip Debug System | ❌ | ❌ |
+| 28 | Self-Programming the Flash | ❌ | ❌ |
+| 29 | Boot Loader Support | ❌ | ❌ |
 
 </h4>
 
