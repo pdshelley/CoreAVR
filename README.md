@@ -22,9 +22,10 @@ as a template to then generate the same code for other AVR chips.
 
 | Section | Name | Support | Generator Support |
 |--|--|--|--|
-| 8 | Memory | ❌ | ❌ |
+| 7 | CPU Core | ✅ | ❌ |
+| 8 | Memory (EEPROM) | ✅ | ❌ |
 | 9 | System Clock and Clock Options | ❌ | ❌ |
-| 10 | Power Management and Sleep Modes | ❌ | ❌ |
+| 10 | Power Management and Sleep Modes | ✅ | ❌ |
 | 11 | System Control and Reset | ❌ | ❌ |
 | 12 | Interrupts | ✅ | ❌ |
 | 13 | External Interrupts | ✅ | ❌ |
