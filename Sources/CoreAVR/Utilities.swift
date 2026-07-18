@@ -50,8 +50,6 @@ public func atomic<T>(block: () -> T) -> T {
     return result
 }
 
-public let cpuFrequency: UInt32 = _cpuFreqencyHz
-
 //public func noInterrupts() {
 //    cli()
 //    }
