@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-static const uint32_t _cpuFreqencyHz = F_CPU;
+#define _cpuFreqencyHz F_CPU;
 
 /**
  * @brief Read a 32-bit value from a volatile pointer.
