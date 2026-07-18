@@ -5,10 +5,9 @@
 // getting something to compile, add a normal .c file (and optionally header)
 // with wrapper functions, then declare the wrapper function here instead
 
-#define cpuFrequency F_CPU
-
-
 #include <stdint.h>
+
+static const uint32_t _cpuFreqencyHz = F_CPU;
 
 /**
  * @brief Read a 32-bit value from a volatile pointer.
